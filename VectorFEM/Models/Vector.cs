@@ -21,5 +21,5 @@ public struct Vector
     }
 
     public static double operator *(Vector vector1, Vector vector2) =>
-        vector1.Data.Sum(i => vector2.Data.Sum(j => i * j));
+        vector1.Data.Select((i, j) => i * vector2.Data[j]).Sum();
 }

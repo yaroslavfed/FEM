@@ -6,11 +6,13 @@ public class Startup
 {
     public async Task Run()
     {
-        var sensor = new Sensor(0, 0, 0);
+        var position = new Sensor(0.5, 0.5, 0.5);
 
-        var finiteElement = new FiniteElement(
+        var element = new FiniteElement(
             X0: -1, Xn: 1, Y0: -1, Yn: 1, Z0: -1, Zn: 1,
             Edges: Enumerable.Range(1, 12).Select(i => new Edge(i)).ToList());
+
+        Console.WriteLine(GetMassMatrix(element, position).ToString());
     }
 
     private IReadOnlyList<Vector> GetBasicVectorFunction(FiniteElement element, Sensor position)
@@ -147,28 +149,32 @@ public class Startup
     private double HierarchicalFunctionsPlus(double startPoint, double endPoint, double position) =>
         (position - startPoint) / (endPoint - startPoint);
 
-    private Matrix GetMassMatrix(FiniteElement element, IReadOnlyList<Sensor> positions)
+    private Matrix GetMassMatrix(FiniteElement element, Sensor position)
     {
-        foreach (var position in positions)
+        var basicVectorFunctions = GetBasicVectorFunction(element, position);
+        var matrix = new List<List<double>>();
+        for (int i = 0; i < element.Edges.Count; i++)
         {
-            var matrix = new List<List<double>>();
-            for (int i = 0; i < element.Edges.Count; i++)
+            var line = new List<double>();
+            for (int j = 0; j < element.Edges.Count; j++)
             {
-                var line = new List<double>();
-                for (int j = 0; j < element.Edges.Count; j++)
-                {
-                    line.Add(
-                        GetBasicVectorFunction(element, position)[i]
-                        * GetBasicVectorFunction(element, position)[j]
-                    );
-                }
-                matrix.Add(line);
+                var test = basicVectorFunctions[i]
+                           * basicVectorFunctions[j];
+                line.Add(
+                    test
+                );
             }
-            
+
+            matrix.Add(line);
         }
+
+        return new Matrix()
+        {
+            Data = matrix
+        };
     }
 
-    private Matrix GetStiffnessMatrix()
-    {
-    }
+    //private Matrix GetStiffnessMatrix()
+    //{
+    //}
 }
