@@ -1,8 +1,11 @@
-﻿using Autofac;
+﻿using System.Diagnostics.CodeAnalysis;
+using Autofac;
+using VectorFEM.Installers;
 
 namespace VectorFEM;
 
-internal class Program
+[ExcludeFromCodeCoverage]
+internal abstract class Program
 {
     private static IContainer ContainerRoot()
     {
@@ -10,7 +13,8 @@ internal class Program
 
         builder.RegisterType<Startup>();
 
-        // registers
+        builder.RegisterServices();
+        builder.RegisterAutofac();
 
         return builder.Build();
     }
