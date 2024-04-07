@@ -1,5 +1,9 @@
-﻿namespace VectorFEM.Services.StiffnessMatrixResolver;
+﻿using VectorFEM.Enums;
+using VectorFEM.Models;
 
-public interface IStiffnessMatrixResolver
+namespace VectorFEM.Services.StiffnessMatrixResolver;
+
+public interface IStiffnessMatrixResolver<out TData>
 {
+    IStiffnessMatrix<TData> ResolveStiffnessMatrixStrategy(EFemType femType);
 }

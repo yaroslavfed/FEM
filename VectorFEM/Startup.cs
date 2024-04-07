@@ -6,6 +6,9 @@ namespace VectorFEM;
 
 public class Startup(IMassMatrixResolver<Matrix> massMatrixResolver)
 {
+    private const double _gamma = 1;
+    private const double _mu = 1;
+
     public Task Run()
     {
         var position = new Sensor(0, 0.5, 0);
@@ -14,8 +17,8 @@ public class Startup(IMassMatrixResolver<Matrix> massMatrixResolver)
             X0: -1, Xn: 1, Y0: -1, Yn: 1, Z0: -1, Zn: 1,
             Edges: Enumerable.Range(1, 12).Select(i => new Edge(i)).ToList());
 
-        Console.WriteLine(massMatrixResolver.ResolveMassMatrixStrategy(EFemType.Vector)
-            .GetMassMatrix(element, position).ToString());
+        var massMatrix = massMatrixResolver.ResolveMassMatrixStrategy(EFemType.Vector);
+        Console.WriteLine(massMatrix.GetMassMatrix(_gamma, position).ToString());
 
         return Task.CompletedTask;
     }

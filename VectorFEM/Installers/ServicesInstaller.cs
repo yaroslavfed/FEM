@@ -17,6 +17,6 @@ public static class ServicesInstaller
     {
         builder.RegisterType<BasicFunctionsResolver<Vector>>().As<IBasicFunctionsResolver<Vector>>();
         builder.RegisterType<MassMatrixResolver<Matrix>>().As<IMassMatrixResolver<Matrix>>();
-        builder.RegisterType<StiffnessMatrixResolver>().As<IStiffnessMatrixResolver>();
+        builder.RegisterType<StiffnessMatrixResolver<Matrix>>().As<IStiffnessMatrixResolver<Matrix>>();
     }
 }
