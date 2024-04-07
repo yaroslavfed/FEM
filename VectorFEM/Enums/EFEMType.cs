@@ -1,4 +1,4 @@
-﻿namespace VectorFEM.Data;
+﻿namespace VectorFEM.Enums;
 
 public enum EFemType
 {

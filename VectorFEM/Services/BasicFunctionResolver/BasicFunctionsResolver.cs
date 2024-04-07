@@ -1,5 +1,6 @@
-﻿using VectorFEM.Data;
-using VectorFEM.Data.VectorFEM;
+﻿using VectorFEM.Enums;
+using VectorFEM.Models;
+using VectorFEM.Models.VectorFEM;
 
 namespace VectorFEM.Services.BasicFunctionResolver;
 

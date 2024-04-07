@@ -1,4 +1,5 @@
 ﻿using VectorFEM.Data;
+using VectorFEM.Enums;
 using VectorFEM.Services.MassMatrixResolver;
 
 namespace VectorFEM;

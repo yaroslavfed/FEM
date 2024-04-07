@@ -1,6 +1,7 @@
-﻿using VectorFEM.Services.BasicFunctionResolver;
+﻿using VectorFEM.Data;
+using VectorFEM.Services.BasicFunctionResolver;
 
-namespace VectorFEM.Data.VectorFEM;
+namespace VectorFEM.Models.VectorFEM;
 
 public class VectorMassMatrix(IBasicFunctionsResolver<Vector> basicFunctionsResolver) : IMassMatrix<Matrix>
 {

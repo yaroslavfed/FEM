@@ -1,4 +1,6 @@
-﻿namespace VectorFEM.Data.VectorFEM;
+﻿using VectorFEM.Data;
+
+namespace VectorFEM.Models.VectorFEM;
 
 public class BasicVectorFunction : IBasicFunction<Vector>
 {

@@ -1,4 +1,6 @@
-﻿namespace VectorFEM.Data;
+﻿using VectorFEM.Data;
+
+namespace VectorFEM.Models;
 
 public interface IMassMatrix<out TData>
 {

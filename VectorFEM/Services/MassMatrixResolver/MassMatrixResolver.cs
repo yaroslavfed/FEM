@@ -1,5 +1,7 @@
 ﻿using VectorFEM.Data;
-using VectorFEM.Data.VectorFEM;
+using VectorFEM.Enums;
+using VectorFEM.Models;
+using VectorFEM.Models.VectorFEM;
 using VectorFEM.Services.BasicFunctionResolver;
 
 namespace VectorFEM.Services.MassMatrixResolver;
