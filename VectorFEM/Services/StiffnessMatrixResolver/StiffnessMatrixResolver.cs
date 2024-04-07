@@ -5,9 +5,9 @@ using VectorFEM.Models.VectorFEM;
 
 namespace VectorFEM.Services.StiffnessMatrixResolver;
 
-public class StiffnessMatrixResolver<TData>(FiniteElement element) : IStiffnessMatrixResolver<TData>
+public class StiffnessMatrixResolver<TData> : IStiffnessMatrixResolver<TData>
 {
-    public IStiffnessMatrix<TData> ResolveStiffnessMatrixStrategy(EFemType femType) =>
+    public IStiffnessMatrix<TData> ResolveStiffnessMatrixStrategy(FiniteElement element, EFemType femType) =>
         femType switch
         {
             EFemType.Vector => (IStiffnessMatrix<TData>)new VectorStiffnessMatrix(element),

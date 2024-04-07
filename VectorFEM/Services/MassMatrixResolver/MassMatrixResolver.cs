@@ -5,9 +5,9 @@ using VectorFEM.Models.VectorFEM;
 
 namespace VectorFEM.Services.MassMatrixResolver;
 
-public class MassMatrixResolver<TData>(FiniteElement element) : IMassMatrixResolver<TData>
+public class MassMatrixResolver<TData> : IMassMatrixResolver<TData>
 {
-    public IMassMatrix<TData> ResolveMassMatrixStrategy(EFemType femType) =>
+    public IMassMatrix<TData> ResolveMassMatrixStrategy(FiniteElement element, EFemType femType) =>
         femType switch
         {
             EFemType.Vector => (IMassMatrix<TData>)new VectorMassMatrix(element),
