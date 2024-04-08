@@ -13,8 +13,9 @@ internal abstract class Program
 
         builder.RegisterType<Startup>();
 
-        builder.RegisterServices();
         builder.RegisterAutofac();
+        builder.RegisterResolvers();
+        builder.RegisterServices();
 
         return builder.Build();
     }

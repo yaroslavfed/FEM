@@ -2,7 +2,7 @@
 
 namespace VectorFEM.Models.VectorFEM;
 
-public class BasicVectorFunction : IBasicFunction<Vector>
+internal class BasicVectorFunction : IBasicFunction<Vector>
 {
     public Vector GetBasicFunctions(FiniteElement element, int? number, Sensor? position)
     {

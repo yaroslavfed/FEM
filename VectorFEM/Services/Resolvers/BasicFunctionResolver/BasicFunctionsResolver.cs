@@ -2,9 +2,9 @@
 using VectorFEM.Models;
 using VectorFEM.Models.VectorFEM;
 
-namespace VectorFEM.Services.BasicFunctionResolver;
+namespace VectorFEM.Services.Resolvers.BasicFunctionResolver;
 
-public class BasicFunctionsResolver<TData> : IBasicFunctionsResolver<TData>
+internal class BasicFunctionsResolver<TData> : IBasicFunctionsResolver<TData>
 {
     public IBasicFunction<TData> ResolveBasicFunctionStrategy(EFemType femType)
     {

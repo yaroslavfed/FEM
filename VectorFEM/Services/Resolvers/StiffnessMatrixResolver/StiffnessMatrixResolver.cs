@@ -3,9 +3,9 @@ using VectorFEM.Enums;
 using VectorFEM.Models;
 using VectorFEM.Models.VectorFEM;
 
-namespace VectorFEM.Services.StiffnessMatrixResolver;
+namespace VectorFEM.Services.Resolvers.StiffnessMatrixResolver;
 
-public class StiffnessMatrixResolver<TData> : IStiffnessMatrixResolver<TData>
+internal class StiffnessMatrixResolver<TData> : IStiffnessMatrixResolver<TData>
 {
     public IStiffnessMatrix<TData> ResolveStiffnessMatrixStrategy(FiniteElement element, EFemType femType) =>
         femType switch

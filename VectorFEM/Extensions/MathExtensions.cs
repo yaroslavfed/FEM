@@ -1,5 +1,4 @@
-﻿using System.Text;
-using VectorFEM.Data;
+﻿using VectorFEM.Data;
 
 namespace VectorFEM.Extensions;
 

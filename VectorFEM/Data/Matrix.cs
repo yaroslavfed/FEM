@@ -17,7 +17,7 @@ public record Matrix
         {
             Data = matrix1.Data
                 .Select((t1, i) =>
-                    matrix1.Data.Select((t, j) =>
+                    matrix1.Data.Select((_, j) =>
                         t1[j] + matrix2.Data[i][j]).ToList())
                 .Cast<IReadOnlyList<double>>().ToList()
         };

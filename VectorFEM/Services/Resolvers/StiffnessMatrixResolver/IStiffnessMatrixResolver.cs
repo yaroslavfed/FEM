@@ -2,7 +2,7 @@
 using VectorFEM.Enums;
 using VectorFEM.Models;
 
-namespace VectorFEM.Services.StiffnessMatrixResolver;
+namespace VectorFEM.Services.Resolvers.StiffnessMatrixResolver;
 
 public interface IStiffnessMatrixResolver<out TData>
 {

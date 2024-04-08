@@ -2,7 +2,7 @@
 using VectorFEM.Enums;
 using VectorFEM.Models;
 
-namespace VectorFEM.Services.MassMatrixResolver;
+namespace VectorFEM.Services.Resolvers.MassMatrixResolver;
 
 public interface IMassMatrixResolver<out TData>
 {

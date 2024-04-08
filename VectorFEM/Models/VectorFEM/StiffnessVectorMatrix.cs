@@ -3,7 +3,7 @@ using VectorFEM.Extensions;
 
 namespace VectorFEM.Models.VectorFEM;
 
-public class StiffnessVectorMatrix(FiniteElement element) : IStiffnessMatrix<Matrix>
+internal class StiffnessVectorMatrix(FiniteElement element) : IStiffnessMatrix<Matrix>
 {
     private readonly Lazy<double[][]> _stiffnessMatrix1 = new(() =>
     [

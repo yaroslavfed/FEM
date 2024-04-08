@@ -2,7 +2,7 @@
 
 namespace VectorFEM.Models.VectorFEM;
 
-public class MassVectorMatrix(FiniteElement element) : IMassMatrix<Matrix>
+internal class MassVectorMatrix(FiniteElement element) : IMassMatrix<Matrix>
 {
     private readonly Lazy<double[][]> _massMatrix = new(() =>
         [
