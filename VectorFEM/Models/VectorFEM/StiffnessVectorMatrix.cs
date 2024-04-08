@@ -1,9 +1,9 @@
 ﻿using VectorFEM.Data;
-using VectorFEM.Services.StiffnessMatrixResolver;
+using VectorFEM.Extensions;
 
 namespace VectorFEM.Models.VectorFEM;
 
-public class VectorStiffnessMatrix(FiniteElement element) : IStiffnessMatrix<Matrix>
+public class StiffnessVectorMatrix(FiniteElement element) : IStiffnessMatrix<Matrix>
 {
     private readonly Lazy<double[][]> _stiffnessMatrix1 = new(() =>
     [
@@ -29,7 +29,7 @@ public class VectorStiffnessMatrix(FiniteElement element) : IStiffnessMatrix<Mat
         [1, -1, 2, -2],
     ]);
 
-    public Matrix GetStiffnessMatrix(double mu, FiniteElement element, Sensor? position = null)
+    public Matrix GetStiffnessMatrix(double mu, Sensor? position = null)
     {
         var m111 = new Matrix { Data = _stiffnessMatrix1.Value };
         m111 *= (element.Xn - element.X0) * (element.Yn - element.Y0) / 6 * (element.Zn - element.Z0);
@@ -50,20 +50,96 @@ public class VectorStiffnessMatrix(FiniteElement element) : IStiffnessMatrix<Mat
         var m33 = m331 + m332;
 
         var m121 = new Matrix { Data = _stiffnessMatrix2.Value };
-        m121 *= -(element.Zn - element.Z0) / 6;
+        m121 *= (element.Zn - element.Z0) / -6;
         var m12 = m121;
 
         var m131 = new Matrix { Data = _stiffnessMatrix3.Value };
         m131 *= (element.Yn - element.Y0) / 6;
         var m13 = m131;
 
+        var m31 = m13.Transpose();
+
         var m231 = new Matrix { Data = _stiffnessMatrix1.Value };
-        m231 *= -(element.Xn - element.X0) / 6;
+        m231 *= (element.Xn - element.X0) / -6;
         var m23 = m231;
+
+        var array = new double[12, 12];
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i, j] = m11.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i + 4, j + 4] = m22.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i + 8, j + 8] = m33.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i, j + 4] = m12.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i, j + 8] = m13.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i + 4, j] = m12.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i + 4, j + 8] = m23.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i + 8, j] = m31.Data[i][j];
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                array[i + 8, j + 4] = m23.Data[i][j];
+            }
+        }
 
         var matrix = new Matrix
         {
-            // Data = 
+            Data = array.ArrayToList()
         };
 
         matrix *= 1 / mu;

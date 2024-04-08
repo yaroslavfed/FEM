@@ -1,11 +1,14 @@
 ﻿using VectorFEM.Data;
 using VectorFEM.Enums;
-using VectorFEM.Extensions;
 using VectorFEM.Services.MassMatrixResolver;
+using VectorFEM.Services.StiffnessMatrixResolver;
 
 namespace VectorFEM;
 
-public class Startup(IMassMatrixResolver<Matrix> massMatrixResolver)
+public class Startup(
+    IMassMatrixResolver<Matrix> massMatrixResolver,
+    IStiffnessMatrixResolver<Matrix> stiffnessMatrixResolver
+)
 {
     private const double _gamma = 1;
     private const double _mu = 1;
@@ -21,17 +24,8 @@ public class Startup(IMassMatrixResolver<Matrix> massMatrixResolver)
         var massMatrix = massMatrixResolver.ResolveMassMatrixStrategy(element, EFemType.Vector);
         Console.WriteLine(massMatrix.GetMassMatrix(_gamma, position).ToString());
 
-        var test = new Matrix()
-        {
-            Data =
-            [
-                [1, 2, 3],
-                [4, 5, 6],
-                [7, 8, 9]
-            ]
-        };
-        Console.WriteLine(test.ToString());
-        Console.WriteLine(test.Transpose().ToString());
+        var stiffnessMatrix = stiffnessMatrixResolver.ResolveStiffnessMatrixStrategy(element, EFemType.Vector);
+        Console.WriteLine(stiffnessMatrix.GetStiffnessMatrix(_mu, position).ToString());
 
         return Task.CompletedTask;
     }

@@ -4,5 +4,5 @@ namespace VectorFEM.Models;
 
 public interface IStiffnessMatrix<out TData>
 {
-    TData GetStiffnessMatrix(double mu, FiniteElement element, Sensor? position = null);
+    TData GetStiffnessMatrix(double mu, Sensor? position = null);
 }

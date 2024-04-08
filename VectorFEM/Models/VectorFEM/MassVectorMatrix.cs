@@ -1,11 +1,10 @@
 ﻿using VectorFEM.Data;
-using VectorFEM.Services.BasicFunctionResolver;
 
 namespace VectorFEM.Models.VectorFEM;
 
-public class VectorMassMatrix(FiniteElement element) : IMassMatrix<Matrix>
+public class MassVectorMatrix(FiniteElement element) : IMassMatrix<Matrix>
 {
-    private readonly Lazy<double[][]> massMatrix = new(() =>
+    private readonly Lazy<double[][]> _massMatrix = new(() =>
         [
             [4, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0],
             [2, 4, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,7 +25,7 @@ public class VectorMassMatrix(FiniteElement element) : IMassMatrix<Matrix>
     {
         var matrix = new Matrix
         {
-            Data = massMatrix.Value
+            Data = _massMatrix.Value
         };
         matrix *= gamma
                   * (element.Xn - element.X0)
