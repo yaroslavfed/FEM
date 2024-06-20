@@ -4,7 +4,7 @@ using VectorFEM.Data;
 using VectorFEM.GridBuilder.Parsers;
 using VectorFEM.Resources.Data.YamlModels;
 
-namespace VectorFEM.Resources.RichDomainObjects;
+namespace VectorFEM.GridBuilder.RichDomainObjects;
 
 public class Mesh
 {
@@ -42,10 +42,7 @@ public class Mesh
         var additional = await GetParsedEntity<Additional>(_directories["additional"]);
         var testingSettings = await GetParsedEntity<TestingSettings>(_directories["testingSettings"]);
 
-        Console.WriteLine(estimatedArea);
-        Console.WriteLine(splitting);
-        Console.WriteLine(additional);
-        Console.WriteLine(testingSettings);
+        // TODO: перенести строитель КЭ
     }
 
     private async Task<TData> GetParsedEntity<TData>(string path)

@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\VectorFEM.InputData\VectorFEM.InputData.csproj" />
+      <ProjectReference Include="..\VectorFEM.Resources\VectorFEM.Resources.csproj" />
     </ItemGroup>
 
 </Project>

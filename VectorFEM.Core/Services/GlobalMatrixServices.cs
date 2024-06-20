@@ -7,11 +7,13 @@ namespace VectorFEM.Core.Services;
 
 internal class GlobalMatrixServices(
     IMassMatrixResolver<Matrix> massMatrixResolver,
-    IStiffnessMatrixResolver<Matrix> stiffnessMatrixResolver) : IGlobalMatrixServices
+    IStiffnessMatrixResolver<Matrix> stiffnessMatrixResolver
+) : IGlobalMatrixServices
 {
     public Matrix GetGlobalMatrix(double mu, double gamma, FiniteElement element, EFemType femType)
     {
-        var massMatrix = massMatrixResolver.ResolveMassMatrixStrategy(element, femType).GetMassMatrix(gamma);
+        var massMatrix = massMatrixResolver.ResolveMassMatrixStrategy(element, femType)
+            .GetMassMatrix(gamma);
         var stiffnessMatrix = stiffnessMatrixResolver.ResolveStiffnessMatrixStrategy(element, femType)
             .GetStiffnessMatrix(mu);
 

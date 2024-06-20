@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.InputData", "Vect
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.Resources", "VectorFEM.Resources\VectorFEM.Resources.csproj", "{8B9BD577-1369-48E9-92AB-C4CFAD0DE46F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.TerminalGui", "VectorFEM.TerminalGui\VectorFEM.TerminalGui.csproj", "{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{8B9BD577-1369-48E9-92AB-C4CFAD0DE46F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B9BD577-1369-48E9-92AB-C4CFAD0DE46F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B9BD577-1369-48E9-92AB-C4CFAD0DE46F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

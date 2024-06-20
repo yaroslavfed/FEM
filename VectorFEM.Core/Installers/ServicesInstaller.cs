@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using VectorFEM.Core.Services;
-using VectorFEM.Resources.RichDomainObjects;
+using VectorFEM.GridBuilder.RichDomainObjects;
 
 namespace VectorFEM.Core.Installers;
 
