@@ -1,3 +1,8 @@
-﻿splitting:
-  step_count: [ 4, 4, 4 ]
-  kr: [ 1, 1, 1 ]
+﻿step_count:
+  hx: 4
+  hy: 4
+  hz: 4
+kr:
+  kr_x: 1
+  kr_y: 1
+  kr_z: 1

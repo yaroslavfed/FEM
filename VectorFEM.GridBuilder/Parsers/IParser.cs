@@ -1,8 +1,8 @@
 ﻿namespace VectorFEM.GridBuilder.Parsers;
 
-public interface IParser<TEntity>
+public interface IParser
 {
-    Task<TEntity> DeserializeOutput(string nonDeserializedLine);
+    Task<TEntity> DeserializeOutput<TEntity>(string nonDeserializedLine);
 
-    Task<string> SerializeInput(TEntity @object);
+    Task<string> SerializeInput<TEntity>(TEntity @object);
 }

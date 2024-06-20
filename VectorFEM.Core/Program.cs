@@ -16,6 +16,7 @@ internal abstract class Program
         builder.RegisterAutofac();
         builder.RegisterResolvers();
         builder.RegisterServices();
+        builder.RegisterParsers();
 
         return builder.Build();
     }

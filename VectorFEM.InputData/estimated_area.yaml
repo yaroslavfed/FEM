@@ -1,3 +1,8 @@
-﻿estimated_area:
-  low_point: [ 0, 0, 0 ]
-  high_point: [ 1, 1, 1 ]
+﻿low_point:
+  x: 0
+  y: 0
+  z: 0
+high_point:
+  x: 1
+  y: 1
+  z: 1

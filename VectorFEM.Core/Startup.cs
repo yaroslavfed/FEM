@@ -1,12 +1,15 @@
 ﻿using VectorFEM.Core.Services;
-using VectorFEM.Services;
+using VectorFEM.Resources.RichDomainObjects;
 
 namespace VectorFEM.Core;
 
-public class Startup(IGlobalMatrixServices globalMatrixServices)
+public class Startup(
+    IGlobalMatrixServices globalMatrixServices,
+    Mesh mesh
+)
 {
-    public Task Run()
+    public async Task Run()
     {
-        
+        await mesh.ResolveMesh();
     }
 }
