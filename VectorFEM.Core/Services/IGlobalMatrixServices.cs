@@ -1,5 +1,6 @@
 ﻿using VectorFEM.Core.Enums;
-using VectorFEM.Data;
+using VectorFEM.Shared.Domain;
+using VectorFEM.Shared.Domain.MathModels;
 
 namespace VectorFEM.Core.Services;
 

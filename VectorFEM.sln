@@ -9,9 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.GridBuilder", "Ve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.InputData", "VectorFEM.InputData\VectorFEM.InputData.csproj", "{A138A22C-60D9-4FB0-BBFD-3869BA793E6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.Resources", "VectorFEM.Resources\VectorFEM.Resources.csproj", "{8B9BD577-1369-48E9-92AB-C4CFAD0DE46F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.Shared", "VectorFEM.Shared\VectorFEM.Shared.csproj", "{8B9BD577-1369-48E9-92AB-C4CFAD0DE46F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.TerminalGui", "VectorFEM.TerminalGui\VectorFEM.TerminalGui.csproj", "{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{42F00FCC-BB25-486B-AE64-7DFE6A68FBCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,5 +47,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1A165BD-7520-4F6A-91E6-85AE62EE901F}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF} = {42F00FCC-BB25-486B-AE64-7DFE6A68FBCB}
+		{D2D464DE-C194-45E5-A84F-AB7FBEA2F612} = {42F00FCC-BB25-486B-AE64-7DFE6A68FBCB}
 	EndGlobalSection
 EndGlobal

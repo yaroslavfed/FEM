@@ -1,0 +1,8 @@
+﻿coordinate:
+  x: 0.5
+  y: 0.5
+  z: 0.5
+bounds_distance:
+  h_x: 0.5
+  h_y: 0.5
+  h_z: 0.5

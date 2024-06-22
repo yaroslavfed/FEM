@@ -1,131 +1,215 @@
-﻿using VectorFEM.Data;
+﻿using AutoMapper;
+using VectorFEM.Shared.Domain;
+using VectorFEM.Shared.Domain.Dto;
+using VectorFEM.Shared.Domain.MathModels;
 
 namespace VectorFEM.Core.Models.VectorFEM;
 
 internal class BasicVectorFunction : IBasicFunction<Vector>
 {
-    public Vector GetBasicFunctions(FiniteElement element, int? number, Sensor? position)
+    private readonly FiniteElementDto _feDto;
+
+    public BasicVectorFunction(
+        FiniteElement finiteElement,
+        IMapper mapper)
+    {
+        _feDto = mapper.Map<FiniteElementDto>(finiteElement);
+    }
+
+    public Vector GetBasicFunctions(int? number, Sensor? position)
     {
         return number switch
         {
             1 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
-                    HierarchicalFunctionsMinus(element.Y0, element.Yn, position!.Y)
-                    * HierarchicalFunctionsMinus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position!.Coordinate.Y)
+                    * HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0,
                     0
                 }
             },
             2 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
-                    HierarchicalFunctionsPlus(element.Y0, element.Yn, position!.Y)
-                    * HierarchicalFunctionsMinus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position!.Coordinate.Y)
+                    * HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0,
                     0
                 }
             },
             3 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
-                    HierarchicalFunctionsMinus(element.Y0, element.Yn, position!.Y)
-                    * HierarchicalFunctionsPlus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position!.Coordinate.Y)
+                    * HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0,
                     0
                 }
             },
             4 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
-                    HierarchicalFunctionsPlus(element.Y0, element.Yn, position!.Y)
-                    * HierarchicalFunctionsPlus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position!.Coordinate.Y)
+                    * HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0,
                     0
                 }
             },
             5 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
-                    HierarchicalFunctionsMinus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsMinus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0
                 }
             },
             6 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
-                    HierarchicalFunctionsPlus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsMinus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0
                 }
             },
             7 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
-                    HierarchicalFunctionsMinus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsPlus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0
                 }
             },
             8 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
-                    HierarchicalFunctionsPlus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsPlus(element.Z0, element.Zn, position.Z),
+                    HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Z,
+                        _feDto.HighCoordinate.Z,
+                        position.Coordinate.Z),
                     0
                 }
             },
             9 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
                     0,
-                    HierarchicalFunctionsMinus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsMinus(element.Y0, element.Yn, position.Y)
+                    HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position.Coordinate.Y)
                 }
             },
             10 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
                     0,
-                    HierarchicalFunctionsPlus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsMinus(element.Y0, element.Yn, position.Y)
+                    HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position.Coordinate.Y)
                 }
             },
             11 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
                     0,
-                    HierarchicalFunctionsMinus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsPlus(element.Y0, element.Yn, position.Y)
+                    HierarchicalFunctionsMinus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position.Coordinate.Y)
                 }
             },
             12 => new Vector
             {
-                Data = new List<double>()
+                Data = new List<double>
                 {
                     0,
                     0,
-                    HierarchicalFunctionsPlus(element.X0, element.Xn, position!.X)
-                    * HierarchicalFunctionsPlus(element.Y0, element.Yn, position.Y)
+                    HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.X,
+                        _feDto.HighCoordinate.X,
+                        position!.Coordinate.X)
+                    * HierarchicalFunctionsPlus(
+                        _feDto.LowCoordinate.Y,
+                        _feDto.HighCoordinate.Y,
+                        position.Coordinate.Y)
                 }
             },
             _ => throw new ArgumentOutOfRangeException()

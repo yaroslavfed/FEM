@@ -1,4 +1,4 @@
-﻿namespace VectorFEM.Data;
+﻿namespace VectorFEM.Shared.Domain.MathModels;
 
 public record Vector
 {

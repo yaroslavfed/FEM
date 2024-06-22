@@ -1,4 +1,5 @@
-﻿using VectorFEM.Data;
+﻿using VectorFEM.Core.Enums;
+using VectorFEM.Shared.Domain.MathModels;
 
 namespace VectorFEM.Core.Extensions;
 
@@ -28,5 +29,22 @@ public static class MathExtensions
         }
 
         return result;
+    }
+
+    public static TResult GetBoundsPoint<TSource, TResult>(
+        this IEnumerable<TSource> elements,
+        Func<TSource, TResult> selector,
+        EPosition position
+    )
+    {
+        var coordinates = elements.Select(selector).ToList();
+        coordinates.Sort();
+
+        return position switch
+        {
+            EPosition.First => coordinates.First(),
+            EPosition.Last => coordinates.Last(),
+            _ => throw new ArgumentOutOfRangeException(nameof(position), position, null)
+        };
     }
 }

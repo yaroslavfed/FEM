@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace VectorFEM.Data;
+namespace VectorFEM.Shared.Domain.MathModels;
 
 public record Matrix
 {

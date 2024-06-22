@@ -1,6 +1,6 @@
 ﻿using VectorFEM.Core.Enums;
 using VectorFEM.Core.Models;
-using VectorFEM.Data;
+using VectorFEM.Shared.Domain;
 
 namespace VectorFEM.Core.Services.Resolvers.MassMatrixResolver;
 

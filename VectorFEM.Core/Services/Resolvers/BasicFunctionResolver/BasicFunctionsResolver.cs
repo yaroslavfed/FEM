@@ -1,16 +1,23 @@
-﻿using VectorFEM.Core.Enums;
+﻿using Splat;
+using VectorFEM.Core.Enums;
+using VectorFEM.Core.Extensions;
 using VectorFEM.Core.Models;
 using VectorFEM.Core.Models.VectorFEM;
+using VectorFEM.Shared.Domain;
 
 namespace VectorFEM.Core.Services.Resolvers.BasicFunctionResolver;
 
 internal class BasicFunctionsResolver<TData> : IBasicFunctionsResolver<TData>
 {
-    public IBasicFunction<TData> ResolveBasicFunctionStrategy(EFemType femType)
+    public IBasicFunction<TData> ResolveBasicFunctionStrategy(FiniteElement element, EFemType femType)
     {
         return femType switch
         {
-            EFemType.Vector => (IBasicFunction<TData>)new BasicVectorFunction(),
+            EFemType.Vector => (IBasicFunction<TData>)
+                Locator.Current
+                    .WithBuilder<BasicVectorFunction>()
+                    .WithAutocomplete(element)
+                    .BuildService(),
             _ => throw new TypeAccessException()
         };
     }

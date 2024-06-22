@@ -1,7 +1,8 @@
 ﻿using VectorFEM.Core.Enums;
 using VectorFEM.Core.Services.Resolvers.MassMatrixResolver;
 using VectorFEM.Core.Services.Resolvers.StiffnessMatrixResolver;
-using VectorFEM.Data;
+using VectorFEM.Shared.Domain;
+using VectorFEM.Shared.Domain.MathModels;
 
 namespace VectorFEM.Core.Services;
 

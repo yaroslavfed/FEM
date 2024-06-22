@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using VectorFEM.GridBuilder.Parsers;
-using VectorFEM.Resources.Data;
 
 namespace VectorFEM.Core.Installers;
 

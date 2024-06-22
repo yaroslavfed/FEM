@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.0.0" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Splat.Autofac" Version="15.1.1" />
   </ItemGroup>
 
@@ -22,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VectorFEM.GridBuilder\VectorFEM.GridBuilder.csproj" />
-    <ProjectReference Include="..\VectorFEM.Resources\VectorFEM.Resources.csproj" />
+    <ProjectReference Include="..\VectorFEM.Shared\VectorFEM.Shared.csproj" />
   </ItemGroup>
 
 </Project>

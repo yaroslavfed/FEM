@@ -1,7 +1,7 @@
 ﻿step_count:
-  hx: 4
-  hy: 4
-  hz: 4
+  h_x: 4
+  h_y: 4
+  h_z: 4
 kr:
   kr_x: 1
   kr_y: 1

@@ -1,4 +1,6 @@
-﻿namespace VectorFEM.Data;
+﻿using VectorFEM.Shared.Domain.MathModels;
+
+namespace VectorFEM.Shared.Domain;
 
 /// <summary>
 /// Структура узла трехмерной сетки 
@@ -8,7 +10,5 @@
 /// <param name="Z">Координата по OZ</param>
 public record Node
 {
-    public double X { get; init; }
-    public double Y { get; init; }
-    public double Z { get; init; }
+    public required Point3D Coordinate { get; init; }
 }

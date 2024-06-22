@@ -13,6 +13,8 @@ internal abstract class Program
 
         builder.RegisterType<Startup>();
 
+        builder.RegisterAutoMapperConfiguration();
+        builder.RegisterAutoMapper();
         builder.RegisterAutofac();
         builder.RegisterResolvers();
         builder.RegisterServices();

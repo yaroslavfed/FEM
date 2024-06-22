@@ -1,8 +1,9 @@
-﻿using System.Collections.Frozen;
+﻿using System.Collections;
+using System.Collections.Frozen;
 using System.Text;
-using VectorFEM.Data;
 using VectorFEM.GridBuilder.Parsers;
-using VectorFEM.Resources.Data.YamlModels;
+using VectorFEM.Shared.Domain;
+using VectorFEM.Shared.Domain.YamlModels;
 
 namespace VectorFEM.GridBuilder.RichDomainObjects;
 
@@ -16,13 +17,13 @@ public class Mesh
     private double _kx, _ky, _kz;
 
     private readonly FrozenDictionary<string, string> _directories = new KeyValuePair<string, string>[]
-        {
-            new("estimatedArea", Path.Combine(Directory.GetCurrentDirectory(), "estimated_area.yaml")),
-            new("splitting", Path.Combine(Directory.GetCurrentDirectory(), "splitting.yaml")),
-            new("additional", Path.Combine(Directory.GetCurrentDirectory(), "additional.yaml")),
-            new("testingSettings", Path.Combine(Directory.GetCurrentDirectory(), "testing_settings.yaml"))
-        }
-        .ToFrozenDictionary();
+    {
+        new("estimatedArea", Path.Combine(Directory.GetCurrentDirectory(), "estimated_area.yaml")),
+        new("positioning", Path.Combine(Directory.GetCurrentDirectory(), "positioning.yaml")),
+        new("splitting", Path.Combine(Directory.GetCurrentDirectory(), "splitting.yaml")),
+        new("additionalParameters", Path.Combine(Directory.GetCurrentDirectory(), "additional_parameters.yaml")),
+        new("testingSettings", Path.Combine(Directory.GetCurrentDirectory(), "testing_settings.yaml"))
+    }.ToFrozenDictionary();
 
     public Mesh(IParser yamlParser)
     {
@@ -37,18 +38,16 @@ public class Mesh
 
     public async Task ResolveMesh()
     {
-        var estimatedArea = await GetParsedEntity<EstimatedArea>(_directories["estimatedArea"]);
-        var splitting = await GetParsedEntity<Splitting>(_directories["splitting"]);
-        var additional = await GetParsedEntity<Additional>(_directories["additional"]);
-        var testingSettings = await GetParsedEntity<TestingSettings>(_directories["testingSettings"]);
-
-        // TODO: перенести строитель КЭ
+        var positioning = await _yamlParser.ParseEntityFromFile<Positioning>(_directories["positioning"]);
+        var splitting = await _yamlParser.ParseEntityFromFile<Splitting>(_directories["splitting"]);
+        var additionalParameters = await _yamlParser.ParseEntityFromFile<AdditionalParameters>(_directories["additionalParameters"]);
+        var testingSettings = await _yamlParser.ParseEntityFromFile<TestingSettings>(_directories["testingSettings"]);
+        
+        
     }
-
-    private async Task<TData> GetParsedEntity<TData>(string path)
-    {
-        using var streamReader = new StreamReader(path, Encoding.UTF8);
-        var inputData = await streamReader.ReadToEndAsync();
-        return await _yamlParser.DeserializeOutput<TData>(inputData);
-    }
+    //
+    // private Task<IReadOnlyList<FiniteElement>> GenerateFiniteElements()
+    // {
+    //     return new Task<IReadOnlyList<FiniteElement>>();
+    // }
 }

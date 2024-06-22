@@ -1,66 +1,88 @@
-﻿using VectorFEM.Core.Extensions;
-using VectorFEM.Data;
+﻿using AutoMapper;
+using VectorFEM.Core.Extensions;
+using VectorFEM.Shared.Domain;
+using VectorFEM.Shared.Domain.Dto;
+using VectorFEM.Shared.Domain.MathModels;
 
 namespace VectorFEM.Core.Models.VectorFEM;
 
-internal class StiffnessVectorMatrix(FiniteElement element) : IStiffnessMatrix<Matrix>
+internal class StiffnessVectorMatrix : IStiffnessMatrix<Matrix>
 {
-    private readonly Lazy<double[][]> _stiffnessMatrix1 = new(() =>
+    private readonly FiniteElementDto _feDto;
+
+    private readonly IReadOnlyList<IReadOnlyList<double>> _stiffnessMatrix1 =
     [
         [2, 1, -2, -1],
         [1, 2, -1, -2],
         [-2, -1, 2, 1],
         [-1, -2, 1, 2],
-    ]);
+    ];
 
-    private readonly Lazy<double[][]> _stiffnessMatrix2 = new(() =>
+    private readonly IReadOnlyList<IReadOnlyList<double>> _stiffnessMatrix2 =
     [
         [2, -2, 1, -1],
         [-2, 2, -1, 1],
         [1, -1, 2, -2],
         [-1, 1, -2, 2],
-    ]);
+    ];
 
-    private readonly Lazy<double[][]> _stiffnessMatrix3 = new(() =>
+    private readonly IReadOnlyList<IReadOnlyList<double>> _stiffnessMatrix3 =
     [
         [-2, 2, -1, 1],
         [-1, 1, -2, 2],
         [2, -2, 1, -1],
         [1, -1, 2, -2],
-    ]);
+    ];
 
-    public Matrix GetStiffnessMatrix(double mu, Sensor? position = null)
+    public StiffnessVectorMatrix(
+        FiniteElement finiteElement,
+        IMapper mapper
+    )
     {
-        var m111 = new Matrix { Data = _stiffnessMatrix1.Value };
-        m111 *= (element.Xn - element.X0) * (element.Yn - element.Y0) / 6 * (element.Zn - element.Z0);
-        var m112 = new Matrix { Data = _stiffnessMatrix2.Value };
-        m112 *= (element.Xn - element.X0) * (element.Zn - element.Z0) / 6 * (element.Yn - element.Y0);
+        _feDto = mapper.Map<FiniteElementDto>(finiteElement);
+    }
+
+    public Matrix GetStiffnessMatrix(double mu)
+    {
+        var x0 = _feDto.LowCoordinate.X;
+        var xn = _feDto.HighCoordinate.X;
+
+        var y0 = _feDto.LowCoordinate.Y;
+        var yn = _feDto.HighCoordinate.Y;
+
+        var z0 = _feDto.LowCoordinate.Z;
+        var zn = _feDto.HighCoordinate.Z;
+
+        var m111 = new Matrix { Data = _stiffnessMatrix1 };
+        m111 *= (xn - x0) * (yn - y0) / 6 * (zn - z0);
+        var m112 = new Matrix { Data = _stiffnessMatrix2 };
+        m112 *= (xn - x0) * (zn - z0) / 6 * (yn - y0);
         var m11 = m111 + m112;
 
-        var m221 = new Matrix { Data = _stiffnessMatrix1.Value };
-        m221 *= (element.Xn - element.X0) * (element.Yn - element.Y0) / 6 * (element.Zn - element.Z0);
-        var m222 = new Matrix { Data = _stiffnessMatrix2.Value };
-        m222 *= (element.Yn - element.Y0) * (element.Zn - element.Z0) / 6 * (element.Xn - element.X0);
+        var m221 = new Matrix { Data = _stiffnessMatrix1 };
+        m221 *= (xn - x0) * (yn - y0) / 6 * (zn - z0);
+        var m222 = new Matrix { Data = _stiffnessMatrix2 };
+        m222 *= (yn - y0) * (zn - z0) / 6 * (xn - x0);
         var m22 = m221 + m222;
 
-        var m331 = new Matrix { Data = _stiffnessMatrix1.Value };
-        m331 *= (element.Xn - element.X0) * (element.Zn - element.Z0) / 6 * (element.Yn - element.Y0);
-        var m332 = new Matrix { Data = _stiffnessMatrix2.Value };
-        m332 *= (element.Yn - element.Y0) * (element.Zn - element.Z0) / 6 * (element.Xn - element.X0);
+        var m331 = new Matrix { Data = _stiffnessMatrix1 };
+        m331 *= (xn - x0) * (zn - z0) / 6 * (yn - y0);
+        var m332 = new Matrix { Data = _stiffnessMatrix2 };
+        m332 *= (yn - y0) * (zn - z0) / 6 * (xn - x0);
         var m33 = m331 + m332;
 
-        var m121 = new Matrix { Data = _stiffnessMatrix2.Value };
-        m121 *= (element.Zn - element.Z0) / -6;
+        var m121 = new Matrix { Data = _stiffnessMatrix2 };
+        m121 *= (zn - z0) / -6;
         var m12 = m121;
 
-        var m131 = new Matrix { Data = _stiffnessMatrix3.Value };
-        m131 *= (element.Yn - element.Y0) / 6;
+        var m131 = new Matrix { Data = _stiffnessMatrix3 };
+        m131 *= (yn - y0) / 6;
         var m13 = m131;
 
         var m31 = m13.Transpose();
 
-        var m231 = new Matrix { Data = _stiffnessMatrix1.Value };
-        m231 *= (element.Xn - element.X0) / -6;
+        var m231 = new Matrix { Data = _stiffnessMatrix1 };
+        m231 *= (xn - x0) / -6;
         var m23 = m231;
 
         var array = new double[12, 12];

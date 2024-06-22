@@ -1,4 +1,4 @@
-﻿namespace VectorFEM.Resources.Data.YamlModels;
+﻿namespace VectorFEM.Shared.Domain.YamlModels;
 
 public record TestingSettings
 {

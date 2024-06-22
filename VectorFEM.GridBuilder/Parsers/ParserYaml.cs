@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Serialization;
+﻿using System.Text;
+using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace VectorFEM.GridBuilder.Parsers;
@@ -23,5 +24,12 @@ public class ParserYaml : IParser
         var result = serializer.Serialize(@object);
 
         return Task.FromResult(result);
+    }
+
+    public async Task<TEntity> ParseEntityFromFile<TEntity>(string path)
+    {
+        using var streamReader = new StreamReader(path, Encoding.UTF8);
+        var inputData = await streamReader.ReadToEndAsync();
+        return await DeserializeOutput<TEntity>(inputData);
     }
 }

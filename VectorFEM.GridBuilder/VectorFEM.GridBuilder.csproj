@@ -12,7 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\VectorFEM.InputData\VectorFEM.InputData.csproj" />
-      <ProjectReference Include="..\VectorFEM.Resources\VectorFEM.Resources.csproj" />
+      <ProjectReference Include="..\VectorFEM.Shared\VectorFEM.Shared.csproj" />
     </ItemGroup>
 
 </Project>
