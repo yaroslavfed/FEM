@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>FEM.Common</AssemblyName>
+        <RootNamespace>FEM.Common</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="YamlDotNet" Version="15.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FEM.InputData\FEM.InputData.csproj" />
+      <ProjectReference Include="..\FEM.Shared\FEM.Shared.csproj" />
+    </ItemGroup>
+
+</Project>
