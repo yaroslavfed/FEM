@@ -1,10 +1,10 @@
 ﻿using VectorFEM.Core.Enums;
-using VectorFEM.Core.Services.Resolvers.MassMatrixResolver;
-using VectorFEM.Core.Services.Resolvers.StiffnessMatrixResolver;
+using VectorFEM.Core.Services.MatrixServices.Resolvers.MassMatrixResolver;
+using VectorFEM.Core.Services.MatrixServices.Resolvers.StiffnessMatrixResolver;
 using VectorFEM.Shared.Domain;
 using VectorFEM.Shared.Domain.MathModels;
 
-namespace VectorFEM.Core.Services;
+namespace VectorFEM.Core.Services.MatrixServices.GlobalMatrixServices;
 
 internal class GlobalMatrixServices(
     IMassMatrixResolver<Matrix> massMatrixResolver,

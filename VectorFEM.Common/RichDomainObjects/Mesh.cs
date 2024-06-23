@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Frozen;
-using System.Text;
-using VectorFEM.GridBuilder.Parsers;
+﻿using System.Collections.Frozen;
+using VectorFEM.Common.Parsers;
 using VectorFEM.Shared.Domain;
 using VectorFEM.Shared.Domain.YamlModels;
 
@@ -42,8 +40,6 @@ public class Mesh
         var splitting = await _yamlParser.ParseEntityFromFile<Splitting>(_directories["splitting"]);
         var additionalParameters = await _yamlParser.ParseEntityFromFile<AdditionalParameters>(_directories["additionalParameters"]);
         var testingSettings = await _yamlParser.ParseEntityFromFile<TestingSettings>(_directories["testingSettings"]);
-        
-        
     }
     //
     // private Task<IReadOnlyList<FiniteElement>> GenerateFiniteElements()

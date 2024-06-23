@@ -5,7 +5,7 @@ using VectorFEM.Core.Models;
 using VectorFEM.Core.Models.VectorFEM;
 using VectorFEM.Shared.Domain;
 
-namespace VectorFEM.Core.Services.Resolvers.StiffnessMatrixResolver;
+namespace VectorFEM.Core.Services.MatrixServices.Resolvers.StiffnessMatrixResolver;
 
 internal class StiffnessMatrixResolver<TData> : IStiffnessMatrixResolver<TData>
 {

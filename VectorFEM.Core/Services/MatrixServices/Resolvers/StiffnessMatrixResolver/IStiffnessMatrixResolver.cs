@@ -2,7 +2,7 @@
 using VectorFEM.Core.Models;
 using VectorFEM.Shared.Domain;
 
-namespace VectorFEM.Core.Services.Resolvers.StiffnessMatrixResolver;
+namespace VectorFEM.Core.Services.MatrixServices.Resolvers.StiffnessMatrixResolver;
 
 public interface IStiffnessMatrixResolver<out TData>
 {

@@ -2,7 +2,7 @@
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace VectorFEM.GridBuilder.Parsers;
+namespace VectorFEM.Common.Parsers;
 
 public class ParserYaml : IParser
 {

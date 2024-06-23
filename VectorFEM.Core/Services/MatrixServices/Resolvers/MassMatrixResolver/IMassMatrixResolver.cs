@@ -2,7 +2,7 @@
 using VectorFEM.Core.Models;
 using VectorFEM.Shared.Domain;
 
-namespace VectorFEM.Core.Services.Resolvers.MassMatrixResolver;
+namespace VectorFEM.Core.Services.MatrixServices.Resolvers.MassMatrixResolver;
 
 public interface IMassMatrixResolver<out TData>
 {

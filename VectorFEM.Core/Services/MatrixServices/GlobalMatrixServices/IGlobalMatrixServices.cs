@@ -2,7 +2,7 @@
 using VectorFEM.Shared.Domain;
 using VectorFEM.Shared.Domain.MathModels;
 
-namespace VectorFEM.Core.Services;
+namespace VectorFEM.Core.Services.MatrixServices.GlobalMatrixServices;
 
 public interface IGlobalMatrixServices
 {

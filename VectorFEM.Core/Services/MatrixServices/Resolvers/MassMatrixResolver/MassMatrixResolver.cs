@@ -5,7 +5,7 @@ using VectorFEM.Core.Models;
 using VectorFEM.Core.Models.VectorFEM;
 using VectorFEM.Shared.Domain;
 
-namespace VectorFEM.Core.Services.Resolvers.MassMatrixResolver;
+namespace VectorFEM.Core.Services.MatrixServices.Resolvers.MassMatrixResolver;
 
 internal class MassMatrixResolver<TData> : IMassMatrixResolver<TData>
 {

@@ -2,7 +2,7 @@
 using VectorFEM.Core.Models;
 using VectorFEM.Shared.Domain;
 
-namespace VectorFEM.Core.Services.Resolvers.BasicFunctionResolver;
+namespace VectorFEM.Core.Services.MatrixServices.Resolvers.BasicFunctionResolver;
 
 public interface IBasicFunctionsResolver<out TData>
 {

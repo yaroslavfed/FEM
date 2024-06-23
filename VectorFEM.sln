@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.Core", "VectorFEM.Core\VectorFEM.Core.csproj", "{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.GridBuilder", "VectorFEM.GridBuilder\VectorFEM.GridBuilder.csproj", "{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.Common", "VectorFEM.Common\VectorFEM.Common.csproj", "{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.InputData", "VectorFEM.InputData\VectorFEM.InputData.csproj", "{A138A22C-60D9-4FB0-BBFD-3869BA793E6C}"
 EndProject

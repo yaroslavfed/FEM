@@ -1,4 +1,4 @@
-﻿using VectorFEM.Core.Services;
+﻿using VectorFEM.Core.Services.MatrixServices.GlobalMatrixServices;
 using VectorFEM.GridBuilder.RichDomainObjects;
 
 namespace VectorFEM.Core;

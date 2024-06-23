@@ -18,11 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Resolvers\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\VectorFEM.GridBuilder\VectorFEM.GridBuilder.csproj" />
+    <ProjectReference Include="..\VectorFEM.Common\VectorFEM.Common.csproj" />
     <ProjectReference Include="..\VectorFEM.Shared\VectorFEM.Shared.csproj" />
   </ItemGroup>
 

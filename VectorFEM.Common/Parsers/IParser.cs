@@ -1,4 +1,4 @@
-﻿namespace VectorFEM.GridBuilder.Parsers;
+﻿namespace VectorFEM.Common.Parsers;
 
 public interface IParser
 {

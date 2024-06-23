@@ -5,7 +5,7 @@ using VectorFEM.Core.Models;
 using VectorFEM.Core.Models.VectorFEM;
 using VectorFEM.Shared.Domain;
 
-namespace VectorFEM.Core.Services.Resolvers.BasicFunctionResolver;
+namespace VectorFEM.Core.Services.MatrixServices.Resolvers.BasicFunctionResolver;
 
 internal class BasicFunctionsResolver<TData> : IBasicFunctionsResolver<TData>
 {

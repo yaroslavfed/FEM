@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using VectorFEM.Core.Services.Resolvers.BasicFunctionResolver;
-using VectorFEM.Core.Services.Resolvers.MassMatrixResolver;
-using VectorFEM.Core.Services.Resolvers.StiffnessMatrixResolver;
+using VectorFEM.Core.Services.MatrixServices.Resolvers.BasicFunctionResolver;
+using VectorFEM.Core.Services.MatrixServices.Resolvers.MassMatrixResolver;
+using VectorFEM.Core.Services.MatrixServices.Resolvers.StiffnessMatrixResolver;
 using VectorFEM.Shared.Domain.MathModels;
 
 namespace VectorFEM.Core.Installers;
