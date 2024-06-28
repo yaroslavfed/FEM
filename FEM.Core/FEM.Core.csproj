@@ -21,4 +21,8 @@
     <ProjectReference Include="..\FEM.Shared\FEM.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Storages\YamlStorages\" />
+  </ItemGroup>
+
 </Project>

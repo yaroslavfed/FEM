@@ -1,4 +1,4 @@
-﻿namespace FEM.Shared.Domain;
+﻿namespace FEM.Shared.Domain.Data;
 
 public record FiniteElement
 {

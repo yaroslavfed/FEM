@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using FEM.Common.RichDomainObjects;
 using FEM.Core.Services.MatrixServices.GlobalMatrixServices;
+using FEM.Core.Services.MeshService;
 
 namespace FEM.Core.Installers;
 
@@ -9,6 +9,6 @@ public static class ServicesInstaller
     public static void RegisterServices(this ContainerBuilder builder)
     {
         builder.RegisterType<GlobalMatrixServices>().As<IGlobalMatrixServices>();
-        builder.RegisterType<Mesh>();
+        builder.RegisterType<MeshService>().As<IMeshService>();
     }
 }

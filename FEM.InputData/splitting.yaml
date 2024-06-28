@@ -1,8 +1,8 @@
-﻿step_count:
-  h_x: 4
-  h_y: 4
-  h_z: 4
-kr:
-  kr_x: 1
-  kr_y: 1
-  kr_z: 1
+﻿splitting_coefficient:
+  x: 4
+  y: 4
+  z: 4
+multiply_coefficient:
+  x: 1
+  y: 1
+  z: 1

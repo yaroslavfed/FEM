@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FEM.Core.Enums;
 using FEM.Core.Extensions;
-using FEM.Shared.Domain;
+using FEM.Shared.Domain.Data;
 using FEM.Shared.Domain.Dto;
 
 namespace FEM.Core.Profiles;

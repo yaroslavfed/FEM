@@ -1,6 +1,4 @@
-﻿using VectorFEM.Shared.Domain;
-
-namespace FEM.Shared.Domain;
+﻿namespace FEM.Shared.Domain.Data;
 
 /// <summary>
 /// Структура ребра конечного элемента

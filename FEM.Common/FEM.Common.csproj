@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FEM.InputData\FEM.InputData.csproj" />
-      <ProjectReference Include="..\FEM.Shared\FEM.Shared.csproj" />
     </ItemGroup>
 
 </Project>

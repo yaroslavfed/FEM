@@ -1,4 +1,4 @@
-﻿using FEM.Shared.Domain;
+﻿using FEM.Shared.Domain.Data;
 
 namespace FEM.Core.Models;
 

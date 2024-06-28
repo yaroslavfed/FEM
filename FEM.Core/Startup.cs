@@ -1,15 +1,9 @@
-﻿using FEM.Common.RichDomainObjects;
-using FEM.Core.Services.MatrixServices.GlobalMatrixServices;
+﻿namespace FEM.Core;
 
-namespace FEM.Core;
-
-public class Startup(
-    IGlobalMatrixServices globalMatrixServices,
-    Mesh mesh
-)
+public class Startup
 {
-    public async Task Run()
+    public Task Run()
     {
-        await mesh.ResolveMesh();
+        return Task.CompletedTask;
     }
 }

@@ -1,11 +1,13 @@
-﻿using YamlDotNet.Serialization;
+﻿using FEM.Shared.Domain.MathModels;
+using YamlDotNet.Serialization;
 
 namespace FEM.Shared.Domain.YamlModels;
 
 public record Splitting
 {
-    [YamlMember(Alias = "step_count", ApplyNamingConventions = false)]
-    public required Step StepCount { get; init; }
+    [YamlMember(Alias = "splitting_coefficient", ApplyNamingConventions = false)]
+    public required Point3D StepCount { get; init; }
     
-    public required Kr Kr { get; init; }
+    [YamlMember(Alias = "multiply_coefficient", ApplyNamingConventions = false)]
+    public required Point3D Kr { get; init; }
 }

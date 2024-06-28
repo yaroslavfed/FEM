@@ -14,23 +14,6 @@ public static class MathExtensions
                 .Select(a => a.ToList()).ToList()
         };
 
-    public static IReadOnlyList<IReadOnlyList<TData>> ArrayToList<TData>(this TData[,] array)
-    {
-        var result = new List<List<TData>>();
-        for (var i = 0; i < Math.Sqrt(array.Length); i++)
-        {
-            var line = new List<TData>();
-            for (var j = 0; j < Math.Sqrt(array.Length); j++)
-            {
-                line.Add(array[i, j]);
-            }
-
-            result.Add(line);
-        }
-
-        return result;
-    }
-
     public static TResult GetBoundsPoint<TSource, TResult>(
         this IEnumerable<TSource> elements,
         Func<TSource, TResult> selector,
@@ -46,5 +29,31 @@ public static class MathExtensions
             EPosition.Last => coordinates.Last(),
             _ => throw new ArgumentOutOfRangeException(nameof(position), position, null)
         };
+    }
+
+    public static List<double> SplitAxis(
+        this List<double> axis,
+        double multiplyCoefficient,
+        int splittingCoefficient,
+        double strataLastPoint,
+        double strataFirstPoint
+    )
+    {
+        // Обработка по X
+        var h = multiplyCoefficient is not 1.0
+            ? (strataLastPoint - strataFirstPoint)
+              * (1.0 - multiplyCoefficient)
+              / (1.0 - Math.Pow(multiplyCoefficient, splittingCoefficient))
+            : (strataLastPoint - strataFirstPoint)
+              / splittingCoefficient;
+
+        axis.Add(strataFirstPoint);
+        for (var i = 0; i < splittingCoefficient; i++)
+        {
+            axis.Add(axis.Last() + h);
+            h *= multiplyCoefficient;
+        }
+
+        return axis;
     }
 }

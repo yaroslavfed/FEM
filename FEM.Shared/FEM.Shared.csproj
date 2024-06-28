@@ -12,4 +12,8 @@
       <PackageReference Include="YamlDotNet" Version="15.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
+    </ItemGroup>
+
 </Project>

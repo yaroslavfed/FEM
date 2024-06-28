@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FEM.Shared.Domain;
+using FEM.Shared.Domain.Data;
 using FEM.Shared.Domain.Dto;
 using FEM.Shared.Domain.MathModels;
 

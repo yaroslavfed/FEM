@@ -1,6 +1,6 @@
-﻿namespace FEM.Shared.Domain;
+﻿namespace FEM.Shared.Domain.Data;
 
-public record Strata
+public record Mesh
 {
     public IEnumerable<FiniteElement> Elements { get; init; } = [];
 }
