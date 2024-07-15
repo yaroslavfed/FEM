@@ -10,5 +10,7 @@ public static class ServicesInstaller
     {
         builder.RegisterType<GlobalMatrixServices>().As<IGlobalMatrixServices>();
         builder.RegisterType<MeshService>().As<IMeshService>();
+
+        Storage.Installers.ServicesInstaller.RegisterServices(builder);
     }
 }

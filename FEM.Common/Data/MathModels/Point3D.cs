@@ -19,4 +19,9 @@ public record Point3D
     /// Координата по Z
     /// </summary>
     public double Z { get; init; }
+
+    public override string ToString()
+    {
+        return $"[{X}, {Y}, {Z}]";
+    }
 }

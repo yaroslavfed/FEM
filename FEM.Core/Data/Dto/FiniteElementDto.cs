@@ -1,6 +1,6 @@
 ﻿using FEM.Shared.Domain.MathModels;
 
-namespace FEM.Shared.Domain.Dto;
+namespace FEM.Core.Data.Dto;
 
 public record FiniteElementDto
 {

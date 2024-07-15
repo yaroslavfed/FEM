@@ -1,4 +1,5 @@
-﻿using FEM.Core.Enums;
+﻿using FEM.Common.Data.InputModels;
+using FEM.Core.Enums;
 using FEM.Shared.Domain.MathModels;
 
 namespace FEM.Core.Extensions;
@@ -55,5 +56,25 @@ public static class MathExtensions
         }
 
         return axis;
+    }
+    
+    public static Point3D GetLowPoint3D(this Positioning positioning)
+    {
+        return new()
+        {
+            X = positioning.Coordinate.X - positioning.BoundsDistance.X,
+            Y = positioning.Coordinate.Y - positioning.BoundsDistance.Y,
+            Z = positioning.Coordinate.Z - positioning.BoundsDistance.Z
+        };
+    }
+
+    public static Point3D GetHighPoint3D(this Positioning positioning)
+    {
+        return new()
+        {
+            X = positioning.Coordinate.X + positioning.BoundsDistance.X,
+            Y = positioning.Coordinate.Y + positioning.BoundsDistance.Y,
+            Z = positioning.Coordinate.Z + positioning.BoundsDistance.Z
+        };
     }
 }

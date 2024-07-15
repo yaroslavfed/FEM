@@ -18,11 +18,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
-    <ProjectReference Include="..\FEM.Shared\FEM.Shared.csproj" />
+    <ProjectReference Include="..\FEM.Storage\FEM.Storage.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Storages\YamlStorages\" />
+    <Folder Include="Data\" />
+    <Folder Include="Storages\" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,11 @@
 ﻿using FEM.Shared.Domain.MathModels;
 using YamlDotNet.Serialization;
 
-namespace FEM.Shared.Domain.YamlModels;
+namespace FEM.Storage.FileStorage.YamlStorage.Data;
 
-public record Positioning
+public abstract record Positioning
 {
+    [YamlMember(Alias = "coordinate", ApplyNamingConventions = false)]
     public required Point3D Coordinate { get; init; }
     
     [YamlMember(Alias = "bounds_distance", ApplyNamingConventions = false)]

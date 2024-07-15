@@ -1,31 +1,34 @@
-﻿using FEM.Core.Extensions;
+﻿using FEM.Common.Data.Domain;
+using FEM.Core.Extensions;
 using FEM.Core.Storages;
 using FEM.Shared.Domain.Data;
 using FEM.Shared.Domain.MathModels;
-using FEM.Shared.Domain.YamlModels.YamlExtensions;
-using FEM.Shared.Domain.YamlModels.YamlMeshBuilder;
 
 namespace FEM.Core.Services.MeshService;
 
 public class MeshService : IMeshService
 {
-    private readonly IReadable<YamlMesh> _meshStorage;
+    private readonly IReadableStorage _meshStorage;
 
-    public MeshService(IReadable<YamlMesh> meshStorage)
+    public MeshService(IReadableStorage meshStorage)
     {
         _meshStorage = meshStorage;
     }
 
     public async Task<Mesh> GenerateMesh()
     {
-        var yamlMeshModel = await _meshStorage.GetItemAsync();
-        await ConfigureMesh(yamlMeshModel);
+        var meshModel = await _meshStorage.GetAxisAsync();
+        var result = await ConfigureMesh(meshModel);
+        foreach (var point3D in result)
+        {
+            Console.WriteLine(point3D.ToString());
+        }
 
         // TODO: доделать генерацию сетки
         return new Mesh();
     }
 
-    private Task<List<Point3D>> ConfigureMesh(YamlMesh yamlMeshModel)
+    private Task<List<Point3D>> ConfigureMesh(Axis yamlMeshModel)
     {
         var x = new List<double>().ToList().SplitAxis(
             yamlMeshModel.Splitting.Kr.X,

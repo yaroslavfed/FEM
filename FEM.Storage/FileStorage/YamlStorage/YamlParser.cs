@@ -1,15 +1,16 @@
 ﻿using System.Text;
+using FEM.Common.Parsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace FEM.Common.Parsers;
+namespace FEM.Storage.FileStorage.YamlStorage;
 
-public class ParserYaml : IParser
+internal class YamlParser : IParser
 {
     public Task<TEntity> DeserializeOutput<TEntity>(string nonDeserializedLine)
     {
         var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .WithNamingConvention(UnderscoredNamingConvention.Instance)
             .Build();
 
         var result = deserializer.Deserialize<TEntity>(nonDeserializedLine);
@@ -19,7 +20,7 @@ public class ParserYaml : IParser
     public Task<string> SerializeInput<TEntity>(TEntity @object)
     {
         var serializer = new SerializerBuilder()
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .WithNamingConvention(PascalCaseNamingConvention.Instance)
             .Build();
         var result = serializer.Serialize(@object);
 

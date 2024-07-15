@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using FEM.Core.Installers;
+using FEM.Storage.Installers;
 
 namespace FEM.Core;
 

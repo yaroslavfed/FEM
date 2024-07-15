@@ -2,7 +2,6 @@
 using FEM.Core.Extensions;
 using FEM.Core.Models;
 using FEM.Core.Models.VectorFEM;
-using FEM.Shared.Domain;
 using FEM.Shared.Domain.Data;
 using Splat;
 

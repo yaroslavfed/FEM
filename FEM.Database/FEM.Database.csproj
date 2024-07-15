@@ -7,16 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="additional_parameters.yaml">
+      <None Update="YAML\additional_parameters.yaml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="splitting.yaml">
+      <None Update="YAML\positioning.yaml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="testing_settings.yaml">
+      <None Update="YAML\splitting.yaml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="positioning.yaml">
+      <None Update="YAML\testing_settings.yaml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
