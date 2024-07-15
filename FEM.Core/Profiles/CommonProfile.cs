@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FEM.Common.Data.Domain;
 using FEM.Core.Data.Dto;
 using FEM.Core.Enums;
 using FEM.Core.Extensions;

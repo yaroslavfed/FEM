@@ -1,9 +1,9 @@
-﻿using FEM.Shared.Domain.MathModels;
+﻿using FEM.Common.Data.MathModels;
 using YamlDotNet.Serialization;
 
 namespace FEM.Storage.FileStorage.YamlStorage.Data;
 
-public abstract record Splitting
+public record Splitting
 {
     [YamlMember(Alias = "splitting_coefficient", ApplyNamingConventions = false)]
     public required Point3D StepCount { get; init; }

@@ -1,4 +1,4 @@
-﻿namespace FEM.Shared.Domain.MathModels;
+﻿namespace FEM.Common.Data.MathModels;
 
 /// <summary>
 /// Координаты в декартовом пространстве

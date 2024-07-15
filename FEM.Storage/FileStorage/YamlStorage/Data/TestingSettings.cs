@@ -2,7 +2,7 @@
 
 namespace FEM.Storage.FileStorage.YamlStorage.Data;
 
-public abstract record TestingSettings
+public record TestingSettings
 {
     [YamlMember(Alias = "test_function_number", ApplyNamingConventions = false)]
     public int Function { get; init; }

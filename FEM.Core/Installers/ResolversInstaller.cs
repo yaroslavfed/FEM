@@ -1,8 +1,8 @@
 ﻿using Autofac;
+using FEM.Common.Data.MathModels;
 using FEM.Core.Services.MatrixServices.Resolvers.BasicFunctionResolver;
 using FEM.Core.Services.MatrixServices.Resolvers.MassMatrixResolver;
 using FEM.Core.Services.MatrixServices.Resolvers.StiffnessMatrixResolver;
-using FEM.Shared.Domain.MathModels;
 
 namespace FEM.Core.Installers;
 

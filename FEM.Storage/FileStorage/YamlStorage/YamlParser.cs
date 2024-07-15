@@ -9,9 +9,18 @@ internal class YamlParser : IParser
 {
     public Task<TEntity> DeserializeOutput<TEntity>(string nonDeserializedLine)
     {
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)
-            .Build();
+        IDeserializer deserializer;
+        try
+        {
+            deserializer = new DeserializerBuilder()
+                .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                .Build();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception(e.Message);
+        }
 
         var result = deserializer.Deserialize<TEntity>(nonDeserializedLine);
         return Task.FromResult(result);
@@ -29,8 +38,17 @@ internal class YamlParser : IParser
 
     public async Task<TEntity> ParseEntityFromFile<TEntity>(string path)
     {
-        using var streamReader = new StreamReader(path, Encoding.UTF8);
-        var inputData = await streamReader.ReadToEndAsync();
-        return await DeserializeOutput<TEntity>(inputData);
+        try
+        {
+            using var streamReader = new StreamReader(path, Encoding.UTF8);
+            var inputData = await streamReader.ReadToEndAsync();
+            var result = DeserializeOutput<TEntity>(inputData);
+            return await result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception(e.Message);
+        }
     }
 }

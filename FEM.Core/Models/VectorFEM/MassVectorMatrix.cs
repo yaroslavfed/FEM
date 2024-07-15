@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using FEM.Common.Data.Domain;
+using FEM.Common.Data.MathModels;
 using FEM.Core.Data.Dto;
 using FEM.Shared.Domain.Data;
-using FEM.Shared.Domain.MathModels;
 
 namespace FEM.Core.Models.VectorFEM;
 

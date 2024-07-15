@@ -1,8 +1,8 @@
 ﻿using FEM.Common.Data.Domain;
+using FEM.Common.Data.MathModels;
 using FEM.Core.Extensions;
 using FEM.Core.Storages;
 using FEM.Shared.Domain.Data;
-using FEM.Shared.Domain.MathModels;
 
 namespace FEM.Core.Services.MeshService;
 

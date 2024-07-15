@@ -1,6 +1,6 @@
 ﻿namespace FEM.Storage.FileStorage.YamlStorage.Data;
 
-public abstract record AdditionalParameters
+public record AdditionalParameters
 {
     public int Mu { get; init; }
 

@@ -1,6 +1,6 @@
-﻿using FEM.Shared.Domain.MathModels;
+﻿using FEM.Common.Data.MathModels;
 
-namespace FEM.Shared.Domain.Data;
+namespace FEM.Common.Data.Domain;
 
 public record Sensor
 {

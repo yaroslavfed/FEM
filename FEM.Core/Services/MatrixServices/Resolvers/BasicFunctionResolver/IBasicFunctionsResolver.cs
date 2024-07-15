@@ -1,4 +1,5 @@
-﻿using FEM.Core.Enums;
+﻿using FEM.Common.Data.Domain;
+using FEM.Core.Enums;
 using FEM.Core.Models;
 using FEM.Shared.Domain.Data;
 

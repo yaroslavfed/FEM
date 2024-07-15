@@ -1,4 +1,4 @@
-﻿using FEM.Shared.Domain.MathModels;
+﻿using FEM.Common.Data.MathModels;
 
 namespace FEM.Common.Data.InputModels;
 

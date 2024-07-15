@@ -1,4 +1,5 @@
-﻿using FEM.Shared.Domain.Data;
+﻿using FEM.Common.Data.Domain;
+using FEM.Shared.Domain.Data;
 
 namespace FEM.Core.Models;
 
