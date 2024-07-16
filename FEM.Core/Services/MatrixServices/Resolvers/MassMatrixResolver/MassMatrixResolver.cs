@@ -14,9 +14,9 @@ internal class MassMatrixResolver<TData> : IMassMatrixResolver<TData>
         {
             EFemType.Vector => (IMassMatrix<TData>)
                 Locator.Current
-                    .WithBuilder<MassVectorMatrix>()
-                    .WithAutocomplete(element)
-                    .BuildService(),
+                       .WithBuilder<MassVectorMatrix>()
+                       .WithAutocomplete(element)
+                       .BuildService(),
             _ => throw new TypeAccessException()
         };
 }

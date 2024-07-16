@@ -9,8 +9,6 @@ public static class LocatorExtensions
     public static InjectionBuilder<TService> WithBuilder<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
         TService
-    >(this IReadonlyDependencyResolver @this)
-    {
-        return new InjectionBuilder<TService>(@this);
-    }
+    >(this IReadonlyDependencyResolver @this) =>
+        new(@this);
 }

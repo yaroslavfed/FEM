@@ -6,8 +6,7 @@ Application.Init();
 try
 {
     Application.Run(new MyView());
-}
-finally
+} finally
 {
     Application.Shutdown();
 }

@@ -9,16 +9,14 @@ namespace FEM.Core.Services.MatrixServices.Resolvers.BasicFunctionResolver;
 
 internal class BasicFunctionsResolver<TData> : IBasicFunctionsResolver<TData>
 {
-    public IBasicFunction<TData> ResolveBasicFunctionStrategy(FiniteElement element, EFemType femType)
-    {
-        return femType switch
+    public IBasicFunction<TData> ResolveBasicFunctionStrategy(FiniteElement element, EFemType femType) =>
+        femType switch
         {
             EFemType.Vector => (IBasicFunction<TData>)
                 Locator.Current
-                    .WithBuilder<BasicVectorFunction>()
-                    .WithAutocomplete(element)
-                    .BuildService(),
+                       .WithBuilder<BasicVectorFunction>()
+                       .WithAutocomplete(element)
+                       .BuildService(),
             _ => throw new TypeAccessException()
         };
-    }
 }

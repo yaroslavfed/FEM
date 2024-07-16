@@ -22,7 +22,7 @@ internal class MassVectorMatrix : IMassMatrix<Matrix>
         [0, 0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 1],
         [0, 0, 0, 0, 0, 0, 0, 0, 2, 4, 1, 2],
         [0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 4, 2],
-        [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 4],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 4]
     ];
 
     public MassVectorMatrix(
@@ -35,10 +35,7 @@ internal class MassVectorMatrix : IMassMatrix<Matrix>
 
     public Matrix GetMassMatrix(double gamma)
     {
-        var matrix = new Matrix
-        {
-            Data = _massMatrix
-        };
+        var matrix = new Matrix { Data = _massMatrix };
         matrix *= gamma
                   * (_feDto.HighCoordinate.X - _feDto.LowCoordinate.X)
                   * (_feDto.HighCoordinate.Y - _feDto.LowCoordinate.Y)

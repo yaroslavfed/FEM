@@ -17,8 +17,8 @@ internal class YamlParser : IParser
             throw new ArgumentException($"Input generic type must be string, but that type is {context?.GetType()}");
 
         var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)
-            .Build();
+                           .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                           .Build();
 
         var result = deserializer.Deserialize<TEntity>(nonDeserializedLine);
         return Task.FromResult(result);
@@ -28,8 +28,8 @@ internal class YamlParser : IParser
     public Task<string> SerializeInputAsync<TEntity>(TEntity @object)
     {
         var serializer = new SerializerBuilder()
-            .WithNamingConvention(PascalCaseNamingConvention.Instance)
-            .Build();
+                         .WithNamingConvention(PascalCaseNamingConvention.Instance)
+                         .Build();
         var result = serializer.Serialize(@object);
 
         return Task.FromResult(result);

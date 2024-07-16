@@ -8,19 +8,19 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <DocumentationFile>bin\Release\FEM.Storage.xml</DocumentationFile>
+        <DocumentationFile>bin\Release\FEM.Storage.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Autofac" Version="8.0.0" />
-      <PackageReference Include="AutoMapper" Version="13.0.1" />
-      <PackageReference Include="Splat.Autofac" Version="15.1.1" />
-      <PackageReference Include="YamlDotNet" Version="16.0.0" />
+        <PackageReference Include="Autofac" Version="8.0.0"/>
+        <PackageReference Include="AutoMapper" Version="13.0.1"/>
+        <PackageReference Include="Splat.Autofac" Version="15.1.1"/>
+        <PackageReference Include="YamlDotNet" Version="16.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
-      <ProjectReference Include="..\FEM.Database\FEM.Database.csproj" />
+        <ProjectReference Include="..\FEM.Common\FEM.Common.csproj"/>
+        <ProjectReference Include="..\FEM.Database\FEM.Database.csproj"/>
     </ItemGroup>
 
 </Project>

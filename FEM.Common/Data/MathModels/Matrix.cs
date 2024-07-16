@@ -7,19 +7,22 @@ public record Matrix
     public IReadOnlyList<IReadOnlyList<double>> Data { get; init; } = [];
 
     public static Matrix operator *(Matrix matrix, double unit) =>
-        new()
-        {
-            Data = matrix.Data.Select(line => line.Select(item => item * unit).ToList()).ToList()
-        };
+        new() { Data = matrix.Data.Select(line => line.Select(item => item * unit).ToList()).ToList() };
 
     public static Matrix operator +(Matrix matrix1, Matrix matrix2) =>
         new()
         {
             Data = matrix1.Data
-                .Select((t1, i) =>
-                    matrix1.Data.Select((_, j) =>
-                        t1[j] + matrix2.Data[i][j]).ToList())
-                .Cast<IReadOnlyList<double>>().ToList()
+                          .Select(
+                              (t1, i) =>
+                                  matrix1.Data.Select(
+                                             (_, j) =>
+                                                 t1[j] + matrix2.Data[i][j]
+                                         )
+                                         .ToList()
+                          )
+                          .Cast<IReadOnlyList<double>>()
+                          .ToList()
         };
 
     public override string ToString()

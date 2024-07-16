@@ -25,10 +25,7 @@ internal class YamlStorage : IReadableStorage
         _converter = converter;
     }
 
-    public async Task<Axis> GetAxisAsync()
-    {
-        return await ReadConfigurationFromFile();
-    }
+    public async Task<Axis> GetAxisAsync() => await ReadConfigurationFromFile();
 
     private async Task<Axis> ReadConfigurationFromFile()
     {
@@ -46,7 +43,8 @@ internal class YamlStorage : IReadableStorage
                 await _converter.ConvertTo<Splitting, Common.Data.InputModels.Splitting>(splitting),
             AdditionalParameters =
                 await _converter.ConvertTo<AdditionalParameters, Common.Data.InputModels.AdditionalParameters>(
-                    additionalParameters),
+                    additionalParameters
+                ),
             TestingSettings =
                 await _converter.ConvertTo<TestingSettings, Common.Data.InputModels.TestingSettings>(testingSettings)
         };

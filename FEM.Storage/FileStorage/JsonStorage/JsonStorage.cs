@@ -23,10 +23,7 @@ public class JsonStorage : IReadableStorage
     }
 
 
-    public async Task<Axis> GetAxisAsync()
-    {
-        return await ReadConfigurationFromFile();
-    }
+    public async Task<Axis> GetAxisAsync() => await ReadConfigurationFromFile();
 
     private async Task<Axis> ReadConfigurationFromFile()
     {

@@ -23,8 +23,8 @@ internal abstract class Program
         return builder.Build();
     }
 
-    public static async Task Main(string[] args)
-    {
-        await ContainerRoot().Resolve<Startup>().Run();
-    }
+    public static async Task Main(string[] args) =>
+        await ContainerRoot()
+              .Resolve<Startup>()
+              .Run();
 }

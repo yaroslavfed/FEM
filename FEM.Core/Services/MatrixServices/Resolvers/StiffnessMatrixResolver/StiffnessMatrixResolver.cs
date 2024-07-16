@@ -14,9 +14,9 @@ internal class StiffnessMatrixResolver<TData> : IStiffnessMatrixResolver<TData>
         {
             EFemType.Vector => (IStiffnessMatrix<TData>)
                 Locator.Current
-                    .WithBuilder<StiffnessVectorMatrix>()
-                    .WithAutocomplete(element)
-                    .BuildService(),
+                       .WithBuilder<StiffnessVectorMatrix>()
+                       .WithAutocomplete(element)
+                       .BuildService(),
             _ => throw new TypeAccessException()
         };
 }

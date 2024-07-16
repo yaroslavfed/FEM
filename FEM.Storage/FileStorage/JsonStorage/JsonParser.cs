@@ -13,11 +13,13 @@ public class JsonParser : IParser
     {
         if (context is not FileStream openStream)
             throw new ArgumentException(
-                $"Input generic type must be string, but that type is {context?.GetType()}");
+                $"Input generic type must be string, but that type is {context?.GetType()}"
+            );
 
-        var result = JsonSerializer.Deserialize<TEntity>(openStream) ??
-                     throw new ArgumentNullException(
-                         $"Returned model must be not null\n{context.GetType()} context is {context}");
+        var result = JsonSerializer.Deserialize<TEntity>(openStream)
+                     ?? throw new ArgumentNullException(
+                         $"Returned model must be not null\n{context.GetType()} context is {context}"
+                     );
 
         return Task.FromResult<TEntity>(result);
     }
@@ -25,13 +27,10 @@ public class JsonParser : IParser
     /// <inheritdoc cref="IParser.ParseEntityFromFileAsync{TEntity}"/>
     public async Task<TEntity> ParseEntityFromFileAsync<TEntity>(string path)
     {
-        await using FileStream openStream = File.OpenRead(path);
+        await using var openStream = File.OpenRead(path);
         return await DeserializeOutputAsync<TEntity, FileStream>(openStream);
     }
 
     /// <inheritdoc cref="IParser.SerializeInputAsync{TEntity}"/>
-    public Task<string> SerializeInputAsync<TEntity>(TEntity @object)
-    {
-        throw new NotImplementedException();
-    }
+    public Task<string> SerializeInputAsync<TEntity>(TEntity @object) => throw new NotImplementedException();
 }

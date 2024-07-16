@@ -11,8 +11,5 @@ public class YamlConverter : IConverter
         _mapper = mapper;
     }
 
-    public Task<TOutput> ConvertTo<TInput, TOutput>(TInput input)
-    {
-        return Task.FromResult(_mapper.Map<TOutput>(input));
-    }
+    public Task<TOutput> ConvertTo<TInput, TOutput>(TInput input) => Task.FromResult(_mapper.Map<TOutput>(input));
 }

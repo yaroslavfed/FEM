@@ -13,10 +13,12 @@ internal class GlobalMatrixServices(
 {
     public Matrix GetGlobalMatrix(double mu, double gamma, FiniteElement element, EFemType femType)
     {
-        var massMatrix = massMatrixResolver.ResolveMassMatrixStrategy(element, femType)
-            .GetMassMatrix(gamma);
-        var stiffnessMatrix = stiffnessMatrixResolver.ResolveStiffnessMatrixStrategy(element, femType)
-            .GetStiffnessMatrix(mu);
+        var massMatrix = massMatrixResolver
+                         .ResolveMassMatrixStrategy(element, femType)
+                         .GetMassMatrix(gamma);
+        var stiffnessMatrix = stiffnessMatrixResolver
+                              .ResolveStiffnessMatrixStrategy(element, femType)
+                              .GetStiffnessMatrix(mu);
 
         // TODO: реализовать сбор глобальной матрицы в соответствии с профилем
 

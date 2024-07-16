@@ -10,9 +10,10 @@ public static class MathExtensions
         new()
         {
             Data = matrix.Data.Select(inner => inner.Select((s, i) => new { s, i }))
-                .SelectMany(a => a.ToList())
-                .GroupBy(a => a.i, a => a.s)
-                .Select(a => a.ToList()).ToList()
+                         .SelectMany(a => a.ToList())
+                         .GroupBy(a => a.i, a => a.s)
+                         .Select(a => a.ToList())
+                         .ToList()
         };
 
     public static TResult GetBoundsPoint<TSource, TResult>(
@@ -27,8 +28,8 @@ public static class MathExtensions
         return position switch
         {
             EPosition.First => coordinates.First(),
-            EPosition.Last => coordinates.Last(),
-            _ => throw new ArgumentOutOfRangeException(nameof(position), position, null)
+            EPosition.Last  => coordinates.Last(),
+            _               => throw new ArgumentOutOfRangeException(nameof(position), position, null)
         };
     }
 
@@ -57,24 +58,20 @@ public static class MathExtensions
 
         return axis;
     }
-    
-    public static Point3D GetLowPoint3D(this Positioning positioning)
-    {
-        return new()
+
+    public static Point3D GetLowPoint3D(this Positioning positioning) =>
+        new()
         {
             X = positioning.Coordinate.X - positioning.BoundsDistance.X,
             Y = positioning.Coordinate.Y - positioning.BoundsDistance.Y,
             Z = positioning.Coordinate.Z - positioning.BoundsDistance.Z
         };
-    }
 
-    public static Point3D GetHighPoint3D(this Positioning positioning)
-    {
-        return new()
+    public static Point3D GetHighPoint3D(this Positioning positioning) =>
+        new()
         {
             X = positioning.Coordinate.X + positioning.BoundsDistance.X,
             Y = positioning.Coordinate.Y + positioning.BoundsDistance.Y,
             Z = positioning.Coordinate.Z + positioning.BoundsDistance.Z
         };
-    }
 }

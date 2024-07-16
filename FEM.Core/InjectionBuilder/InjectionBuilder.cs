@@ -8,7 +8,7 @@ public class InjectionBuilder<
     TService
 >
 {
-    private readonly IReadonlyDependencyResolver _dependencyResolver;
+    private readonly IReadonlyDependencyResolver         _dependencyResolver;
     private readonly IList<(Type Type, object Instance)> _autocompleteMap = new List<(Type Type, object Instance)>();
 
     internal InjectionBuilder(IReadonlyDependencyResolver dependencyResolver)
@@ -28,8 +28,9 @@ public class InjectionBuilder<
         var serviceType = typeof(TService);
         var dependenciesQuantity = _autocompleteMap.Count;
 
-        var constructor = serviceType.GetConstructors()
-            .FirstOrDefault(c => c.GetParameters().Length >= dependenciesQuantity);
+        var constructor = serviceType
+                          .GetConstructors()
+                          .FirstOrDefault(c => c.GetParameters().Length >= dependenciesQuantity);
 
         if (constructor is null)
             throw new ArgumentException("No matching constructor");
@@ -37,11 +38,15 @@ public class InjectionBuilder<
         var inputDependenciesTypeList = _autocompleteMap.Select(dependencyEntry => dependencyEntry.Type).ToHashSet();
 
         var dependenciesToResolve = constructor.GetParameters()
-            .Where(parameter => !inputDependenciesTypeList.Contains(parameter.ParameterType));
+                                               .Where(
+                                                   parameter =>
+                                                       !inputDependenciesTypeList.Contains(parameter.ParameterType)
+                                               );
 
         var resolvedDependencyList =
             dependenciesToResolve.Select(
-                dependency => _dependencyResolver.GetService(dependency.ParameterType));
+                dependency => _dependencyResolver.GetService(dependency.ParameterType)
+            );
 
         var autocompleteDependencyList = _autocompleteMap.Select(dependencyEntry => dependencyEntry.Instance);
         var fullDependenciesList = autocompleteDependencyList.Concat(resolvedDependencyList).ToArray();

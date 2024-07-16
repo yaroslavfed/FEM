@@ -20,8 +20,5 @@ public record Point3D
     /// </summary>
     public double Z { get; init; }
 
-    public override string ToString()
-    {
-        return $"[{X}, {Y}, {Z}]";
-    }
+    public override string ToString() => $"[{X}, {Y}, {Z}]";
 }

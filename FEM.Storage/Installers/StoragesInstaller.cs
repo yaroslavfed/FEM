@@ -6,8 +6,6 @@ namespace FEM.Storage.Installers;
 
 public static class StoragesInstaller
 {
-    public static void RegisterStorages(ContainerBuilder builder)
-    {
+    public static void RegisterStorages(ContainerBuilder builder) =>
         builder.RegisterType<JsonStorage>().As<IReadableStorage>();
-    }
 }

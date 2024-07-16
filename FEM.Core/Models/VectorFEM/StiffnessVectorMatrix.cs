@@ -16,7 +16,7 @@ internal class StiffnessVectorMatrix : IStiffnessMatrix<Matrix>
         [2, 1, -2, -1],
         [1, 2, -1, -2],
         [-2, -1, 2, 1],
-        [-1, -2, 1, 2],
+        [-1, -2, 1, 2]
     ];
 
     private readonly IReadOnlyList<IReadOnlyList<double>> _stiffnessMatrix2 =
@@ -24,7 +24,7 @@ internal class StiffnessVectorMatrix : IStiffnessMatrix<Matrix>
         [2, -2, 1, -1],
         [-2, 2, -1, 1],
         [1, -1, 2, -2],
-        [-1, 1, -2, 2],
+        [-1, 1, -2, 2]
     ];
 
     private readonly IReadOnlyList<IReadOnlyList<double>> _stiffnessMatrix3 =
@@ -32,7 +32,7 @@ internal class StiffnessVectorMatrix : IStiffnessMatrix<Matrix>
         [-2, 2, -1, 1],
         [-1, 1, -2, 2],
         [2, -2, 1, -1],
-        [1, -1, 2, -2],
+        [1, -1, 2, -2]
     ];
 
     public StiffnessVectorMatrix(
@@ -88,46 +88,43 @@ internal class StiffnessVectorMatrix : IStiffnessMatrix<Matrix>
 
         var array = new double[12, 12];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i, j] = m11.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i + 4, j + 4] = m22.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i + 8, j + 8] = m33.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i, j + 4] = m12.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i, j + 8] = m13.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i + 4, j] = m12.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i + 4, j + 8] = m23.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i + 8, j] = m31.Data[i][j];
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
+        for (var i = 0; i < 4; i++)
+            for (var j = 0; j < 4; j++)
                 array[i + 8, j + 4] = m23.Data[i][j];
 
-        var matrix = new Matrix
-        {
-            Data = array.ArrayToList()
-        };
+        var matrix = new Matrix { Data = array.ArrayToList() };
 
         matrix *= 1 / mu;
 
