@@ -13,8 +13,25 @@ public class AxisProfile : Profile
     private void CreateYamlProfileMap()
     {
         CreateMap<Positioning, Common.Data.InputModels.Positioning>().ReverseMap();
-        CreateMap<Splitting, Common.Data.InputModels.Splitting>().ReverseMap();
+
+        CreateMap<Splitting, Common.Data.InputModels.Splitting>()
+            .ForMember(dest => dest.MultiplyCoefficient,
+                       opt => opt.MapFrom(src => src.Kr))
+            .ForMember(dest => dest.SplittingCoefficient,
+                       opt => opt.MapFrom(src => src.StepCount))
+            .ReverseMap()
+            .ForMember(dest => dest.Kr,
+                       opt => opt.MapFrom(src => src.MultiplyCoefficient))
+            .ForMember(dest => dest.StepCount,
+                       opt => opt.MapFrom(src => src.SplittingCoefficient));
+
         CreateMap<AdditionalParameters, Common.Data.InputModels.AdditionalParameters>().ReverseMap();
-        CreateMap<TestingSettings, Common.Data.InputModels.TestingSettings>().ReverseMap();
+
+        CreateMap<TestingSettings, Common.Data.InputModels.TestingSettings>()
+            .ForMember(dest => dest.TestFunctionNumber,
+                       opt => opt.MapFrom(src => src.Function))
+            .ReverseMap()
+            .ForMember(dest => dest.Function,
+                       opt => opt.MapFrom(src => src.TestFunctionNumber));
     }
 }

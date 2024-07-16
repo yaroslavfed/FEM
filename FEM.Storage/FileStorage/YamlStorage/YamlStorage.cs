@@ -1,7 +1,6 @@
 ﻿using System.Collections.Frozen;
 using FEM.Common.Data.Domain;
 using FEM.Common.Parsers;
-using FEM.Core.Storages;
 using FEM.Storage.Converter;
 using FEM.Storage.FileStorage.YamlStorage.Data;
 
@@ -9,7 +8,7 @@ namespace FEM.Storage.FileStorage.YamlStorage;
 
 internal class YamlStorage : IReadableStorage
 {
-    private readonly IParser _parser;
+    private readonly IParser    _parser;
     private readonly IConverter _converter;
 
     private readonly FrozenDictionary<string, string> _directories = new KeyValuePair<string, string>[]
@@ -33,11 +32,11 @@ internal class YamlStorage : IReadableStorage
 
     private async Task<Axis> ReadConfigurationFromFile()
     {
-        var positioning = await _parser.ParseEntityFromFile<Positioning>(_directories["positioning"]);
-        var splitting = await _parser.ParseEntityFromFile<Splitting>(_directories["splitting"]);
+        var positioning = await _parser.ParseEntityFromFileAsync<Positioning>(_directories["positioning"]);
+        var splitting = await _parser.ParseEntityFromFileAsync<Splitting>(_directories["splitting"]);
         var additionalParameters
-            = await _parser.ParseEntityFromFile<AdditionalParameters>(_directories["additionalParameters"]);
-        var testingSettings = await _parser.ParseEntityFromFile<TestingSettings>(_directories["testingSettings"]);
+            = await _parser.ParseEntityFromFileAsync<AdditionalParameters>(_directories["additionalParameters"]);
+        var testingSettings = await _parser.ParseEntityFromFileAsync<TestingSettings>(_directories["testingSettings"]);
 
         return new()
         {

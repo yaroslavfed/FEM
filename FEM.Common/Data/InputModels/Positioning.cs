@@ -2,7 +2,7 @@
 
 namespace FEM.Common.Data.InputModels;
 
-public abstract record Positioning
+public record Positioning
 {
     public required Point3D Coordinate { get; init; }
 

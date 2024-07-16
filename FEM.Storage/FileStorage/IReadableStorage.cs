@@ -1,6 +1,6 @@
 ﻿using FEM.Common.Data.Domain;
 
-namespace FEM.Core.Storages;
+namespace FEM.Storage.FileStorage;
 
 public interface IReadableStorage
 {

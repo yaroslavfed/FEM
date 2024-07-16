@@ -7,14 +7,17 @@
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     <PackageId>FEM.Core</PackageId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DocumentationFile>bin\Release\FEM.Core.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.0.0" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="8.0.7" />
-    <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.7" />
     <PackageReference Include="Splat.Autofac" Version="15.1.1" />
   </ItemGroup>
 

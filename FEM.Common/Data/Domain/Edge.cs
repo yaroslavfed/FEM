@@ -1,13 +1,8 @@
-﻿using FEM.Shared.Domain.Data;
-
-namespace FEM.Common.Data.Domain;
+﻿namespace FEM.Common.Data.Domain;
 
 /// <summary>
 /// Структура ребра конечного элемента
 /// </summary>
-/// <param name="EdgeNumber">Номер ребра в конечном элементе</param>
-/// <param name="FirstNode">Первый узел ребра</param>
-/// <param name="SecondNode">Второй узел ребра</param>
 public record Edge
 {
     public int EdgeNumber { get; init; }

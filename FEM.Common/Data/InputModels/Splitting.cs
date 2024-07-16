@@ -2,9 +2,9 @@
 
 namespace FEM.Common.Data.InputModels;
 
-public abstract record Splitting
+public record Splitting
 {
-    public required Point3D StepCount { get; init; }
+    public required Point3D SplittingCoefficient { get; init; }
     
-    public required Point3D Kr { get; init; }
+    public required Point3D MultiplyCoefficient { get; init; }
 }

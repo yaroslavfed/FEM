@@ -27,10 +27,7 @@ public record Matrix
         var matrixBuilder = new StringBuilder();
         foreach (var line in Data)
         {
-            foreach (var item in line)
-            {
-                matrixBuilder.Append($"{item:N3} ");
-            }
+            foreach (var item in line) matrixBuilder.Append($"{item:N3} ");
 
             matrixBuilder.Append('\n');
         }

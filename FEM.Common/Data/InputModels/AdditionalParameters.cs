@@ -1,6 +1,6 @@
 ﻿namespace FEM.Common.Data.InputModels;
 
-public abstract record AdditionalParameters
+public record AdditionalParameters
 {
     public int Mu { get; init; }
 

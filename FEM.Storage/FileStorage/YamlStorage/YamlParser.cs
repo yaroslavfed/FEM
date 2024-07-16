@@ -5,28 +5,27 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace FEM.Storage.FileStorage.YamlStorage;
 
+/// <summary>
+/// Парсер сырых моделей формата YAML
+/// </summary>
 internal class YamlParser : IParser
 {
-    public Task<TEntity> DeserializeOutput<TEntity>(string nonDeserializedLine)
+    /// <inheritdoc cref="IParser.DeserializeOutputAsync{TEntity,TData}"/>
+    public Task<TEntity> DeserializeOutputAsync<TEntity, TData>(TData context)
     {
-        IDeserializer deserializer;
-        try
-        {
-            deserializer = new DeserializerBuilder()
-                .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                .Build();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception(e.Message);
-        }
+        if (context is not string nonDeserializedLine)
+            throw new ArgumentException($"Input generic type must be string, but that type is {context?.GetType()}");
+
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .Build();
 
         var result = deserializer.Deserialize<TEntity>(nonDeserializedLine);
         return Task.FromResult(result);
     }
 
-    public Task<string> SerializeInput<TEntity>(TEntity @object)
+    /// <inheritdoc cref="IParser.SerializeInputAsync{TEntity}"/>
+    public Task<string> SerializeInputAsync<TEntity>(TEntity @object)
     {
         var serializer = new SerializerBuilder()
             .WithNamingConvention(PascalCaseNamingConvention.Instance)
@@ -36,19 +35,11 @@ internal class YamlParser : IParser
         return Task.FromResult(result);
     }
 
-    public async Task<TEntity> ParseEntityFromFile<TEntity>(string path)
+    /// <inheritdoc cref="IParser.ParseEntityFromFileAsync{TEntity}"/>
+    public async Task<TEntity> ParseEntityFromFileAsync<TEntity>(string path)
     {
-        try
-        {
-            using var streamReader = new StreamReader(path, Encoding.UTF8);
-            var inputData = await streamReader.ReadToEndAsync();
-            var result = DeserializeOutput<TEntity>(inputData);
-            return await result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception(e.Message);
-        }
+        using var streamReader = new StreamReader(path, Encoding.UTF8);
+        var inputData = await streamReader.ReadToEndAsync();
+        return await DeserializeOutputAsync<TEntity, string>(inputData);
     }
 }

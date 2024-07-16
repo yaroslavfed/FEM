@@ -1,6 +1,6 @@
 ﻿namespace FEM.Common.Data.InputModels;
 
-public abstract record TestingSettings
+public record TestingSettings
 {
-    public int Function { get; init; }
+    public int TestFunctionNumber { get; init; }
 }

@@ -1,6 +1,6 @@
 ﻿using FEM.Common.Data.MathModels;
 
-namespace FEM.Shared.Domain.Data.TestSession;
+namespace FEM.Common.Data.TestSession;
 
 /// <summary>
 /// Коэффициент дробления сетки

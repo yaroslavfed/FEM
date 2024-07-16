@@ -3,7 +3,6 @@ using FEM.Common.Data.MathModels;
 using FEM.Core.Enums;
 using FEM.Core.Services.MatrixServices.Resolvers.MassMatrixResolver;
 using FEM.Core.Services.MatrixServices.Resolvers.StiffnessMatrixResolver;
-using FEM.Shared.Domain.Data;
 
 namespace FEM.Core.Services.MatrixServices.GlobalMatrixServices;
 

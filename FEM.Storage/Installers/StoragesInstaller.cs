@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using FEM.Core.Storages;
-using FEM.Storage.FileStorage.YamlStorage;
+using FEM.Storage.FileStorage;
+using FEM.Storage.FileStorage.JsonStorage;
 
 namespace FEM.Storage.Installers;
 
@@ -8,6 +8,6 @@ public static class StoragesInstaller
 {
     public static void RegisterStorages(ContainerBuilder builder)
     {
-        builder.RegisterType<YamlStorage>().As<IReadableStorage>();
+        builder.RegisterType<JsonStorage>().As<IReadableStorage>();
     }
 }

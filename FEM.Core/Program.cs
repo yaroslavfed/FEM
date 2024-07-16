@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using FEM.Core.Installers;
-using FEM.Storage.Installers;
 
 namespace FEM.Core;
 
@@ -20,7 +19,6 @@ internal abstract class Program
         builder.RegisterResolvers();
         builder.RegisterServices();
         builder.RegisterStorages();
-        builder.RegisterParsers();
 
         return builder.Build();
     }

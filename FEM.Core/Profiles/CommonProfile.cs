@@ -3,7 +3,6 @@ using FEM.Common.Data.Domain;
 using FEM.Core.Data.Dto;
 using FEM.Core.Enums;
 using FEM.Core.Extensions;
-using FEM.Shared.Domain.Data;
 
 namespace FEM.Core.Profiles;
 
