@@ -2,7 +2,14 @@
 
 namespace FEM.Core.Services.MeshService;
 
+/// <summary>
+/// Сервис расчёта сетки
+/// </summary>
 public interface IMeshService
 {
-    Task<Mesh> GenerateMesh();
+    /// <summary>
+    /// Генерация сетки расчётной области
+    /// </summary>
+    /// <returns></returns>
+    Task<Mesh> GenerateMeshAsync();
 }

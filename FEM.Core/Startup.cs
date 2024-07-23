@@ -1,4 +1,5 @@
-﻿using FEM.Core.Services.MeshService;
+﻿using System.Xml.Linq;
+using FEM.Core.Services.MeshService;
 
 namespace FEM.Core;
 
@@ -11,10 +12,8 @@ public class Startup
         _meshService = meshService;
     }
 
-    public Task Run()
+    public async Task Run()
     {
-        _meshService.GenerateMesh();
-
-        return Task.CompletedTask;
+        var mesh = await _meshService.GenerateMeshAsync();
     }
 }

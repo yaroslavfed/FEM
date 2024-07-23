@@ -1,56 +1,79 @@
 ﻿using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels;
 using FEM.Core.Extensions;
+using FEM.Core.Services.NumberingService.EdgesNumberingService;
+using FEM.Core.Services.NumberingService.NodesNumberingService;
 using FEM.Storage.FileStorage;
+using FiniteElement = FEM.Core.Data.FiniteElement;
 
 namespace FEM.Core.Services.MeshService;
 
 public class MeshService : IMeshService
 {
-    private readonly IReadableStorage _meshStorage;
+    private readonly IReadableStorage       _meshStorage;
+    private readonly IEdgesNumberingService _edgesNumberingService;
+    private readonly INodesNumberingService _nodesNumberingService;
 
-    public MeshService(IReadableStorage meshStorage)
+    public MeshService(
+        IReadableStorage meshStorage,
+        IEdgesNumberingService edgesNumberingService,
+        INodesNumberingService nodesNumberingService
+    )
     {
         _meshStorage = meshStorage;
+        _edgesNumberingService = edgesNumberingService;
+        _nodesNumberingService = nodesNumberingService;
     }
 
-    public async Task<Mesh> GenerateMesh()
+    public async Task<Mesh> GenerateMeshAsync()
     {
         var meshModel = await _meshStorage.GetAxisAsync();
-        var result = await ConfigureMesh(meshModel);
+        var result = await ConfigurePointsListAsync(meshModel);
 
-        // HACK: вывод точек на консоль
-        foreach (var point3D in result)
-            Console.WriteLine(point3D.ToString());
+        var nx = result.Select(points => points.X).Distinct().ToArray().Length;
+        var ny = result.Select(points => points.Y).Distinct().ToArray().Length;
+        var nz = result.Select(points => points.Z).Distinct().ToArray().Length;
 
-        // TODO: доделать генерацию сетки
+        var finiteElements = Enumerable
+                             .Range(0, (nx - 1) * (ny - 1) * (nz - 1))
+                             .Select(i => new FiniteElement())
+                             .ToArray();
+
+        await _nodesNumberingService.ConfigureGlobalNumbering(nx, ny, nz, finiteElements);
+        await _edgesNumberingService.ConfigureGlobalNumbering(nx, ny, nz, finiteElements);
+
         return new();
     }
 
-    private Task<List<Point3D>> ConfigureMesh(Axis yamlMeshModel)
+    /// <summary>
+    /// Получение списка точек из параметров конфигурации расчетной области
+    /// </summary>
+    /// <param name="meshParameters">Входные параметры сетки</param>
+    /// <returns>Список точек принадлежащих расчетной области</returns>
+    private Task<List<Point3D>> ConfigurePointsListAsync(Axis meshParameters)
     {
         var x = new List<double>().ToList()
                                   .SplitAxis(
-                                      yamlMeshModel.Splitting.MultiplyCoefficient.X,
-                                      (int)yamlMeshModel.Splitting.SplittingCoefficient.X,
-                                      yamlMeshModel.Positioning.GetHighPoint3D().X,
-                                      yamlMeshModel.Positioning.GetLowPoint3D().X
+                                      meshParameters.Splitting.MultiplyCoefficient.X,
+                                      (int)meshParameters.Splitting.SplittingCoefficient.X,
+                                      meshParameters.Positioning.GetHighPoint3D().X,
+                                      meshParameters.Positioning.GetLowPoint3D().X
                                   );
 
         var y = new List<double>().ToList()
                                   .SplitAxis(
-                                      yamlMeshModel.Splitting.MultiplyCoefficient.Y,
-                                      (int)yamlMeshModel.Splitting.SplittingCoefficient.Y,
-                                      yamlMeshModel.Positioning.GetHighPoint3D().Y,
-                                      yamlMeshModel.Positioning.GetLowPoint3D().Y
+                                      meshParameters.Splitting.MultiplyCoefficient.Y,
+                                      (int)meshParameters.Splitting.SplittingCoefficient.Y,
+                                      meshParameters.Positioning.GetHighPoint3D().Y,
+                                      meshParameters.Positioning.GetLowPoint3D().Y
                                   );
 
         var z = new List<double>().ToList()
                                   .SplitAxis(
-                                      yamlMeshModel.Splitting.MultiplyCoefficient.Z,
-                                      (int)yamlMeshModel.Splitting.SplittingCoefficient.Z,
-                                      yamlMeshModel.Positioning.GetHighPoint3D().Z,
-                                      yamlMeshModel.Positioning.GetLowPoint3D().Z
+                                      meshParameters.Splitting.MultiplyCoefficient.Z,
+                                      (int)meshParameters.Splitting.SplittingCoefficient.Z,
+                                      meshParameters.Positioning.GetHighPoint3D().Z,
+                                      meshParameters.Positioning.GetLowPoint3D().Z
                                   );
 
         var strataMesh = (

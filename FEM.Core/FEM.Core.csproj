@@ -26,9 +26,4 @@
         <ProjectReference Include="..\FEM.Storage\FEM.Storage.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Data\"/>
-        <Folder Include="Storages\"/>
-    </ItemGroup>
-
 </Project>
