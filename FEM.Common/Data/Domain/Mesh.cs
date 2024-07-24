@@ -8,5 +8,5 @@ public record Mesh
     /// <summary>
     /// Список конечных элементов в сетке
     /// </summary>
-    public IEnumerable<FiniteElement> Elements { get; init; } = [];
+    public IList<FiniteElement> Elements { get; init; } = [];
 }

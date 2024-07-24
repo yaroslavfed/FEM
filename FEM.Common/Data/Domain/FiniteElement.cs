@@ -2,5 +2,5 @@
 
 public record FiniteElement
 {
-    public IEnumerable<Edge> Edges { get; init; } = [];
+    public IList<Edge> Edges { get; init; } = [];
 }

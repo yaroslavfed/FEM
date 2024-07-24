@@ -9,9 +9,9 @@ public record Edge
     /// Номер ребра в конечном элементе
     /// </summary>
     public int EdgeIndex { get; init; }
-    
+
     /// <summary>
     /// Узлы принадлежащие ребру
     /// </summary>
-    public IEnumerable<Node> Nodes { get; init; } = new Node[2];
+    public IList<Node> Nodes { get; init; } = [];
 }

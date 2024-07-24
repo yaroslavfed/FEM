@@ -14,90 +14,90 @@ public class EdgesNumberingService : IEdgesNumberingService
             for (int i = 0; i < ny - 1; i++)
                 for (int j = 0; j < nx - 1; j++, finiteElementIndex++)
                 {
-                    int gr = nx * (ny - 1) + ny * (nx - 1);
-                    int pop = nx * ny;
+                    int splitSlices = nx * (ny - 1) + ny * (nx - 1);
+                    int sliceCount = nx * ny;
 
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + i * (2 * nx - 1) + j,
+                        k * (splitSlices + sliceCount) + i * (2 * nx - 1) + j,
                         0,
                         1
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + (i + 1) * (2 * nx - 1) + j,
+                        k * (splitSlices + sliceCount) + (i + 1) * (2 * nx - 1) + j,
                         2,
                         3
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        (k + 1) * (gr + pop) + i * (2 * nx - 1) + j,
+                        (k + 1) * (splitSlices + sliceCount) + i * (2 * nx - 1) + j,
                         4,
                         5
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        (k + 1) * (gr + pop) + (i + 1) * (2 * nx - 1) + j,
+                        (k + 1) * (splitSlices + sliceCount) + (i + 1) * (2 * nx - 1) + j,
                         6,
                         7
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + i * (2 * nx - 1) + j + (nx - 1),
+                        k * (splitSlices + sliceCount) + i * (2 * nx - 1) + j + (nx - 1),
                         0,
                         2
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + i * (2 * nx - 1) + j + 1 + (nx - 1),
+                        k * (splitSlices + sliceCount) + i * (2 * nx - 1) + j + 1 + (nx - 1),
                         1,
                         3
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        (k + 1) * (gr + pop) + i * (2 * nx - 1) + (nx - 1) + j,
+                        (k + 1) * (splitSlices + sliceCount) + i * (2 * nx - 1) + (nx - 1) + j,
                         4,
                         6
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        (k + 1) * (gr + pop) + i * (2 * nx - 1) + (nx - 1) + j + 1,
+                        (k + 1) * (splitSlices + sliceCount) + i * (2 * nx - 1) + (nx - 1) + j + 1,
                         5,
                         7
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + gr + j + i * nx,
+                        k * (splitSlices + sliceCount) + splitSlices + j + i * nx,
                         0,
                         4
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + gr + j + i * nx + 1,
+                        k * (splitSlices + sliceCount) + splitSlices + j + i * nx + 1,
                         1,
                         5
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + gr + j + i * nx + nx,
+                        k * (splitSlices + sliceCount) + splitSlices + j + i * nx + nx,
                         2,
                         6
                     );
                     await FillFiniteElementsAsync(
                         finiteElements,
                         finiteElementIndex,
-                        k * (gr + pop) + gr + j + i * nx + nx + 1,
+                        k * (splitSlices + sliceCount) + splitSlices + j + i * nx + nx + 1,
                         3,
                         7
                     );
@@ -110,12 +110,12 @@ public class EdgesNumberingService : IEdgesNumberingService
     private Task FillFiniteElementsAsync(
         IList<FiniteElement> finiteElements,
         int finiteElementIndex,
-        int edgesCount,
+        int edgeIndex,
         int firstIndex,
         int secondIndex
     )
     {
-        finiteElements[finiteElementIndex].Edges.Add(edgesCount);
+        finiteElements[finiteElementIndex].Edges.Add(edgeIndex);
         finiteElements[finiteElementIndex]
             .MapNodesEdges.Add(
                 new()
