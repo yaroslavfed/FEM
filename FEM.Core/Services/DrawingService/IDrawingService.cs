@@ -2,5 +2,5 @@
 
 public interface IDrawingService<in TData>
 {
-    Task StartDrawProcess(TData mesh);
+    Task StartDrawingProcess(TData mesh);
 }

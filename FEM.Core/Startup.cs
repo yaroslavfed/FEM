@@ -18,6 +18,8 @@ public class Startup
     public async Task Run()
     {
         var mesh = await _meshService.GenerateMeshAsync();
-        await _drawingService.StartDrawProcess(mesh);
+        await _drawingService.StartDrawingProcess(mesh);
+
+        Console.ReadKey();
     }
 }

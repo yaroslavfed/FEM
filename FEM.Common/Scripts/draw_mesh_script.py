@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 units = []
 
-with open("output.txt", "r") as f:
+with open("Scripts\\output.txt", "r") as f:
     nums = f.readline()[:-1]
     for i in range(int(nums)):
         units.append([float(j) for j in f.readline()[:-2].replace(',', '.').split(' ')])

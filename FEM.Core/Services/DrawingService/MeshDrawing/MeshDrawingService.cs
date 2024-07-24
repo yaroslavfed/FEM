@@ -8,7 +8,7 @@ public class MeshDrawingService<TData> : IDrawingService<TData> where TData : Me
     private readonly string _dataFileName = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\output.txt");
     private readonly string _scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\draw_mesh_script.py");
 
-    public async Task StartDrawProcess(TData mesh)
+    public async Task StartDrawingProcess(TData mesh)
     {
         var isScriptFileExist = await CheckFilesToAvailabilityAsync(_scriptPath);
         if (!isScriptFileExist)
