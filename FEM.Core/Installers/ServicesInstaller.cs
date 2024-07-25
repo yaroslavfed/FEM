@@ -3,6 +3,7 @@ using FEM.Common.Data.Domain;
 using FEM.Core.Services.DrawingService;
 using FEM.Core.Services.DrawingService.MeshDrawing;
 using FEM.Core.Services.MatrixServices.GlobalMatrixServices;
+using FEM.Core.Services.MatrixServices.MatrixPortraitService;
 using FEM.Core.Services.MeshService;
 using FEM.Core.Services.NumberingService.EdgesNumberingService;
 using FEM.Core.Services.NumberingService.NodesNumberingService;
@@ -18,6 +19,7 @@ public static class ServicesInstaller
         builder.RegisterType<NodesNumberingService>().As<INodesNumberingService>();
         builder.RegisterType<EdgesNumberingService>().As<IEdgesNumberingService>();
         builder.RegisterType<MeshDrawingService<Mesh>>().As<IDrawingService<Mesh>>().SingleInstance();
+        builder.RegisterType<VectorMatrixPortraitService<Mesh>>().As<IMatrixPortraitService<Mesh>>().SingleInstance();
 
         Storage.Installers.ServicesInstaller.RegisterServices(builder);
     }

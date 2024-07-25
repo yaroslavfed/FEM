@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 units = []
 
-with open("Scripts\\output.txt", "r") as f:
+with open("output.txt", "r") as f:
     nums = f.readline()[:-1]
     for i in range(int(nums)):
         units.append([float(j) for j in f.readline()[:-2].replace(',', '.').split(' ')])
@@ -39,7 +39,7 @@ if __name__ == '__main__':
                  [Z[4], Z[7], Z[3], Z[0]]]
 
         # plot sides
-        ax.add_collection3d(Poly3DCollection(verts, linewidths=.2, edgecolors='b', alpha=.2))
+        ax.add_collection3d(Poly3DCollection(verts, linewidths=.3, edgecolors='b', alpha=.1))
 
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
