@@ -8,7 +8,7 @@ namespace FEM.Core.Services.NumberingService.EdgesNumberingService;
 public class EdgesNumberingService : IEdgesNumberingService
 {
     /// <inheritdoc cref="INumberingService.ConfigureGlobalNumbering"/>
-    public async Task ConfigureGlobalNumbering(int nx, int ny, int nz, IList<FiniteElement> finiteElements)
+    public async Task ConfigureGlobalNumbering(int nx, int ny, int nz, IList<FiniteElementWithNumerics> finiteElements)
     {
         for (int k = 0, finiteElementIndex = 0; k < nz - 1; k++)
             for (int i = 0; i < ny - 1; i++)
@@ -108,7 +108,7 @@ public class EdgesNumberingService : IEdgesNumberingService
     /// Заполнение списка конечных элементов
     /// </summary>
     private Task FillFiniteElementsAsync(
-        IList<FiniteElement> finiteElements,
+        IList<FiniteElementWithNumerics> finiteElements,
         int finiteElementIndex,
         int edgeIndex,
         int firstIndex,

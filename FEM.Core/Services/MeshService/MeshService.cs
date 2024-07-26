@@ -1,10 +1,10 @@
 ﻿using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels;
+using FEM.Core.Data;
 using FEM.Core.Extensions;
 using FEM.Core.Services.NumberingService.EdgesNumberingService;
 using FEM.Core.Services.NumberingService.NodesNumberingService;
 using FEM.Storage.FileStorage;
-using FiniteElement = FEM.Core.Data.FiniteElement;
 
 namespace FEM.Core.Services.MeshService;
 
@@ -36,7 +36,7 @@ public class MeshService : IMeshService
         var nz = pointsList.Select(points => points.Z).Distinct().ToArray().Length;
 
         var finiteElements
-            = Enumerable.Range(0, (nx - 1) * (ny - 1) * (nz - 1)).Select(i => new FiniteElement()).ToArray();
+            = Enumerable.Range(0, (nx - 1) * (ny - 1) * (nz - 1)).Select(i => new FiniteElementWithNumerics()).ToArray();
 
         await _nodesNumberingService.ConfigureGlobalNumbering(nx, ny, nz, finiteElements);
         await _edgesNumberingService.ConfigureGlobalNumbering(nx, ny, nz, finiteElements);

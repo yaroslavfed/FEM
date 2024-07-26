@@ -8,7 +8,7 @@ namespace FEM.Core.Services.NumberingService.NodesNumberingService;
 public class NodesNumberingService : INodesNumberingService
 {
     /// <inheritdoc cref="INumberingService.ConfigureGlobalNumbering"/>
-    public Task ConfigureGlobalNumbering(int nx, int ny, int nz, IList<FiniteElement> finiteElements)
+    public Task ConfigureGlobalNumbering(int nx, int ny, int nz, IList<FiniteElementWithNumerics> finiteElements)
     {
         for (int i = 0, k = 0, m = 1; i < nz - 1; i++, m += nx)
             for (int j = 0; j < ny - 1; j++, m++)

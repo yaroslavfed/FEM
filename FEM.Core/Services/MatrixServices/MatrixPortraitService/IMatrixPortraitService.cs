@@ -1,6 +1,16 @@
 ﻿namespace FEM.Core.Services.MatrixServices.MatrixPortraitService;
 
-public interface IMatrixPortraitService<in TMesh>
+/// <summary>
+/// Сервис построения профиля матрицы
+/// </summary>
+/// <typeparam name="TMesh">Тип модели хранения сетки</typeparam>
+/// <typeparam name="TMatrixFormat">Тип хранения матрицы</typeparam>
+public interface IMatrixPortraitService<in TMesh, TMatrixFormat>
 {
-    Task ResolveMatrixPortrait(TMesh mesh);
+    /// <summary>
+    /// Получаем портрет матрицы
+    /// </summary>
+    /// <param name="mesh">Сетка расчётной области</param>
+    /// <returns>Получаем матрицу в заданном формате</returns>
+    Task<TMatrixFormat> ResolveMatrixPortrait(TMesh mesh);
 }

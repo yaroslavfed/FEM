@@ -3,7 +3,7 @@
 /// <summary>
 /// Структура конечного элемента с нумерованными узлами и ребрами
 /// </summary>
-public record FiniteElement
+public record FiniteElementWithNumerics
 {
     public IList<int> Nodes { get; set; } = [];
 

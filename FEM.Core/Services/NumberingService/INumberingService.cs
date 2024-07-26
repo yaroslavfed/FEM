@@ -14,5 +14,5 @@ public interface INumberingService
     /// <param name="ny">Количество узлов по OY</param>
     /// <param name="nz">Количество узлов по OZ</param>
     /// <param name="finiteElements">Список конечных элементов</param>
-    Task ConfigureGlobalNumbering(int nx, int ny, int nz, IList<FiniteElement> finiteElements);
+    Task ConfigureGlobalNumbering(int nx, int ny, int nz, IList<FiniteElementWithNumerics> finiteElements);
 }

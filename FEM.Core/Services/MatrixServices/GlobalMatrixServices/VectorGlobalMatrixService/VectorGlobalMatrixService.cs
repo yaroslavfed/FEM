@@ -4,9 +4,9 @@ using FEM.Core.Enums;
 using FEM.Core.Services.MatrixServices.Resolvers.MassMatrixResolver;
 using FEM.Core.Services.MatrixServices.Resolvers.StiffnessMatrixResolver;
 
-namespace FEM.Core.Services.MatrixServices.GlobalMatrixServices;
+namespace FEM.Core.Services.MatrixServices.GlobalMatrixServices.VectorGlobalMatrixService;
 
-internal class GlobalMatrixServices(
+internal class VectorGlobalMatrixService(
     IMassMatrixResolver<Matrix> massMatrixResolver,
     IStiffnessMatrixResolver<Matrix> stiffnessMatrixResolver
 ) : IGlobalMatrixServices
