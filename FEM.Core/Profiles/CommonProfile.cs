@@ -14,7 +14,7 @@ public class CommonProfile : Profile
     }
 
     private void CreateFiniteElementMapper() =>
-        CreateMap<FiniteElement, FiniteElementDto>()
+        CreateMap<FiniteElement, FiniteElementBounds>()
             .ForPath(
                 dest => dest.HighCoordinate.X,
                 opt => opt.MapFrom(

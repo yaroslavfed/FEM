@@ -7,7 +7,7 @@ namespace FEM.Core.Models.VectorFEM;
 
 internal class MassVectorMatrix : IMassMatrix<Matrix>
 {
-    private readonly FiniteElementDto _feDto;
+    private readonly FiniteElementBounds _feBounds;
 
     private readonly IReadOnlyList<IReadOnlyList<double>> _massMatrix =
     [
@@ -30,16 +30,16 @@ internal class MassVectorMatrix : IMassMatrix<Matrix>
         IMapper mapper
     )
     {
-        _feDto = mapper.Map<FiniteElementDto>(finiteElement);
+        _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
     }
 
     public Matrix GetMassMatrix(double gamma)
     {
         var matrix = new Matrix { Data = _massMatrix };
         matrix *= gamma
-                  * (_feDto.HighCoordinate.X - _feDto.LowCoordinate.X)
-                  * (_feDto.HighCoordinate.Y - _feDto.LowCoordinate.Y)
-                  * (_feDto.HighCoordinate.Z - _feDto.LowCoordinate.Z)
+                  * (_feBounds.HighCoordinate.X - _feBounds.LowCoordinate.X)
+                  * (_feBounds.HighCoordinate.Y - _feBounds.LowCoordinate.Y)
+                  * (_feBounds.HighCoordinate.Z - _feBounds.LowCoordinate.Z)
                   / 36;
 
         return matrix;

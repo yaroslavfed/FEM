@@ -1,6 +1,6 @@
 ﻿using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels;
-using FEM.Core.Data;
+using FEM.Core.Data.Dto;
 using FEM.Core.Extensions;
 using FEM.Core.Services.NumberingService.EdgesNumberingService;
 using FEM.Core.Services.NumberingService.NodesNumberingService;
