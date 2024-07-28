@@ -7,14 +7,14 @@ namespace FEM.Core.Models.VectorFEM;
 
 internal class BasicVectorFunction : IBasicFunction<Vector>
 {
-    private readonly FiniteElementDto _feDto;
+    private readonly FiniteElementBounds _feBounds;
 
     public BasicVectorFunction(
         FiniteElement finiteElement,
         IMapper mapper
     )
     {
-        _feDto = mapper.Map<FiniteElementDto>(finiteElement);
+        _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
     }
 
     public Vector GetBasicFunctions(int? number, Sensor? position) =>
@@ -25,13 +25,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 Data = new List<double>
                 {
                     HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position!.Coordinate.Y
                     )
                     * HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0,
@@ -43,13 +43,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 Data = new List<double>
                 {
                     HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position!.Coordinate.Y
                     )
                     * HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0,
@@ -61,13 +61,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 Data = new List<double>
                 {
                     HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position!.Coordinate.Y
                     )
                     * HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0,
@@ -79,13 +79,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 Data = new List<double>
                 {
                     HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position!.Coordinate.Y
                     )
                     * HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0,
@@ -98,13 +98,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 {
                     0,
                     HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0
@@ -116,13 +116,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 {
                     0,
                     HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0
@@ -134,13 +134,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 {
                     0,
                     HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0
@@ -152,13 +152,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                 {
                     0,
                     HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Z,
-                        _feDto.HighCoordinate.Z,
+                        _feBounds.LowCoordinate.Z,
+                        _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
                     0
@@ -171,13 +171,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                     0,
                     0,
                     HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
                 }
@@ -189,13 +189,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                     0,
                     0,
                     HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
                 }
@@ -207,13 +207,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                     0,
                     0,
                     HierarchicalFunctionsMinus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
                 }
@@ -225,13 +225,13 @@ internal class BasicVectorFunction : IBasicFunction<Vector>
                     0,
                     0,
                     HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.X,
-                        _feDto.HighCoordinate.X,
+                        _feBounds.LowCoordinate.X,
+                        _feBounds.HighCoordinate.X,
                         position!.Coordinate.X
                     )
                     * HierarchicalFunctionsPlus(
-                        _feDto.LowCoordinate.Y,
-                        _feDto.HighCoordinate.Y,
+                        _feBounds.LowCoordinate.Y,
+                        _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
                 }

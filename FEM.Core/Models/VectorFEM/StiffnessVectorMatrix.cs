@@ -9,7 +9,7 @@ namespace FEM.Core.Models.VectorFEM;
 
 internal class StiffnessVectorMatrix : IStiffnessMatrix<Matrix>
 {
-    private readonly FiniteElementDto _feDto;
+    private readonly FiniteElementBounds _feBounds;
 
     private readonly IReadOnlyList<IReadOnlyList<double>> _stiffnessMatrix1 =
     [
@@ -40,19 +40,19 @@ internal class StiffnessVectorMatrix : IStiffnessMatrix<Matrix>
         IMapper mapper
     )
     {
-        _feDto = mapper.Map<FiniteElementDto>(finiteElement);
+        _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
     }
 
     public Matrix GetStiffnessMatrix(double mu)
     {
-        var x0 = _feDto.LowCoordinate.X;
-        var xn = _feDto.HighCoordinate.X;
+        var x0 = _feBounds.LowCoordinate.X;
+        var xn = _feBounds.HighCoordinate.X;
 
-        var y0 = _feDto.LowCoordinate.Y;
-        var yn = _feDto.HighCoordinate.Y;
+        var y0 = _feBounds.LowCoordinate.Y;
+        var yn = _feBounds.HighCoordinate.Y;
 
-        var z0 = _feDto.LowCoordinate.Z;
-        var zn = _feDto.HighCoordinate.Z;
+        var z0 = _feBounds.LowCoordinate.Z;
+        var zn = _feBounds.HighCoordinate.Z;
 
         var m111 = new Matrix { Data = _stiffnessMatrix1 };
         m111 *= (xn - x0) * (yn - y0) / 6 * (zn - z0);
