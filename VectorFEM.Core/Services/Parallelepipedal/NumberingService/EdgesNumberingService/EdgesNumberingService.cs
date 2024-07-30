@@ -11,11 +11,11 @@ public class EdgesNumberingService : IEdgesNumberingService
     public async Task ConfigureGlobalNumbering(int nx, int ny, int nz, IList<FiniteElementWithNumerics> finiteElements)
     {
         for (int k = 0, finiteElementIndex = 0; k < nz - 1; k++)
-            for (int i = 0; i < ny - 1; i++)
-                for (int j = 0; j < nx - 1; j++, finiteElementIndex++)
+            for (var i = 0; i < ny - 1; i++)
+                for (var j = 0; j < nx - 1; j++, finiteElementIndex++)
                 {
-                    int splitSlices = nx * (ny - 1) + ny * (nx - 1);
-                    int sliceCount = nx * ny;
+                    var splitSlices = nx * (ny - 1) + ny * (nx - 1);
+                    var sliceCount = nx * ny;
 
                     await FillFiniteElementsAsync(
                         finiteElements,

@@ -1,6 +1,4 @@
-﻿using FEM.Common.Data.Domain;
-
-namespace FEM.Common.Data.TestSession;
+﻿namespace FEM.Common.Data.TestSession;
 
 /// <summary>
 /// Структура сессии решения прямой задачи

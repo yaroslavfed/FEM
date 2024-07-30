@@ -1,5 +1,4 @@
-﻿using FEM.Common.Data.Domain;
-using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
+﻿using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.MeshService;
 
 namespace FEM.Core;

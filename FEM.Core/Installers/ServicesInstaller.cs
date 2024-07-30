@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels.MatrixFormats;
 using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
