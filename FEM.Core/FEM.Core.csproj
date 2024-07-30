@@ -28,9 +28,4 @@
         <ProjectReference Include="..\VectorFEM.Core\VectorFEM.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Data\Dto\" />
-      <Folder Include="Services\" />
-    </ItemGroup>
-
 </Project>
