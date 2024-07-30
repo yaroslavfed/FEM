@@ -25,6 +25,12 @@
     <ItemGroup>
         <ProjectReference Include="..\FEM.Common\FEM.Common.csproj"/>
         <ProjectReference Include="..\FEM.Storage\FEM.Storage.csproj"/>
+        <ProjectReference Include="..\VectorFEM.Core\VectorFEM.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\Dto\" />
+      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

@@ -1,14 +1,12 @@
 ﻿using Autofac;
 using FEM.Common.Data.Domain;
-using FEM.Core.Data.Dto.MatrixFormat;
-using FEM.Core.Services.DrawingService;
-using FEM.Core.Services.DrawingService.MeshDrawing;
-using FEM.Core.Services.MatrixServices.GlobalMatrixServices;
-using FEM.Core.Services.MatrixServices.GlobalMatrixServices.VectorGlobalMatrixService;
-using FEM.Core.Services.MatrixServices.MatrixPortraitService;
-using FEM.Core.Services.MeshService;
-using FEM.Core.Services.NumberingService.EdgesNumberingService;
-using FEM.Core.Services.NumberingService.NodesNumberingService;
+using FEM.Common.Data.MathModels.MatrixFormats;
+using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
+using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
+using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
+using VectorFEM.Core.Services.Parallelepipedal.MeshService;
+using VectorFEM.Core.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
+using VectorFEM.Core.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 
 namespace FEM.Core.Installers;
 
@@ -16,14 +14,16 @@ public static class ServicesInstaller
 {
     public static void RegisterServices(this ContainerBuilder builder)
     {
-        builder.RegisterType<VectorGlobalMatrixService>().As<IGlobalMatrixServices>();
+        builder
+            .RegisterType<ProfileGlobalMatrixService<MatrixProfileFormat>>()
+            .As<IGlobalMatrixServices<MatrixProfileFormat>>();
         builder.RegisterType<MeshService>().As<IMeshService>();
         builder.RegisterType<NodesNumberingService>().As<INodesNumberingService>();
         builder.RegisterType<EdgesNumberingService>().As<IEdgesNumberingService>();
-        builder.RegisterType<MeshDrawingService<Mesh>>().As<IDrawingService<Mesh>>().SingleInstance();
+        builder.RegisterType<MeshDrawingService>().As<IMeshDrawingService>().SingleInstance();
         builder
-            .RegisterType<VectorMatrixPortraitService<Mesh, MatrixProfileFormat>>()
-            .As<IMatrixPortraitService<Mesh, MatrixProfileFormat>>()
+            .RegisterType<MatrixPortraitService<MatrixProfileFormat>>()
+            .As<IMatrixPortraitService<MatrixProfileFormat>>()
             .SingleInstance();
 
         Storage.Installers.ServicesInstaller.RegisterServices(builder);

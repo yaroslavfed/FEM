@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Autofac;
 using AutoMapper;
-using FEM.Core.Profiles;
+using VectorFEM.Core.Profiles;
 
 namespace FEM.Core.Installers;
 

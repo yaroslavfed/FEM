@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.TerminalGui", "FEM.Term
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.Storage", "FEM.Storage\FEM.Storage.csproj", "{FEA8D4B2-49AD-4AB4-BA7C-7992D129C954}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.Core", "VectorFEM.Core\VectorFEM.Core.csproj", "{70004A8B-777E-4B72-B166-6D4657306B8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FEA8D4B2-49AD-4AB4-BA7C-7992D129C954}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEA8D4B2-49AD-4AB4-BA7C-7992D129C954}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEA8D4B2-49AD-4AB4-BA7C-7992D129C954}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70004A8B-777E-4B72-B166-6D4657306B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70004A8B-777E-4B72-B166-6D4657306B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70004A8B-777E-4B72-B166-6D4657306B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70004A8B-777E-4B72-B166-6D4657306B8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

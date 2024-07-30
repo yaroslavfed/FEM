@@ -16,15 +16,11 @@ internal abstract class Program
         builder.RegisterAutoMapperConfiguration();
         builder.RegisterAutoMapper();
         builder.RegisterAutofac();
-        builder.RegisterResolvers();
         builder.RegisterServices();
         builder.RegisterStorages();
 
         return builder.Build();
     }
 
-    public static async Task Main(string[] args) =>
-        await ContainerRoot()
-              .Resolve<Startup>()
-              .Run();
+    public static async Task Main(string[] args) => await ContainerRoot().Resolve<Startup>().Run();
 }

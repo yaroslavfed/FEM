@@ -19,4 +19,9 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="8.0.0" />
+      <PackageReference Include="Splat.Autofac" Version="15.1.1" />
+    </ItemGroup>
+
 </Project>
