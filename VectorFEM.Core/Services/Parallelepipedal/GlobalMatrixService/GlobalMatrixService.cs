@@ -87,6 +87,14 @@ public class GlobalMatrixService : IGlobalMatrixServices
         return matrixProfile;
     }
 
+    /// <summary>
+    /// Заполняем вектор правой части
+    /// </summary>
+    /// <param name="hx">Шаг по OX</param>
+    /// <param name="hy">Шаг по OY</param>
+    /// <param name="hz">Шаг по OZ</param>
+    /// <param name="element">Конечный элемент расчётной области</param>
+    /// <returns>Вектор правой части</returns>
     private IList<double> ResolveLocalRightPart(double hx, double hy, double hz, FiniteElement element)
     {
         var localRightPart = new List<double>();

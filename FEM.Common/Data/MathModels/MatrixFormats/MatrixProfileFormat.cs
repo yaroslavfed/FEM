@@ -13,11 +13,9 @@ public record MatrixProfileFormat : IMatrixFormat
 
     public List<double> Gg { get; set; } = [];
 
-    public List<double> F { get; set; } = [];
+    public List<double> F { get; set; } = [..Enumerable.Range(0, 12).Select(item => 0)];
 
-    /// <summary>
-    /// Собираем портрет матрицы
-    /// </summary>
+    /// <inheritdoc cref="IMatrixFormat.CreateProfileArraysAsync"/>
     public Task<IMatrixFormat> CreateProfileArraysAsync(List<List<int>> positionsList)
     {
         Ig = [0, 0, ..Enumerable.Range(0, positionsList.Count - 1).Select(item => 0)];
@@ -32,9 +30,7 @@ public record MatrixProfileFormat : IMatrixFormat
         return Task.FromResult(this as IMatrixFormat);
     }
 
-    /// <summary>
-    /// Добавляем элемент в глобальную матрицу, дописывая значение на главную диагональ и в профиль
-    /// </summary>
+    /// <inheritdoc cref="IMatrixFormat.AddElementToGlobalMatrixAsync"/>
     public Task AddElementToGlobalMatrixAsync(int i, int j, double element)
     {
         if (i == j)
@@ -53,9 +49,9 @@ public record MatrixProfileFormat : IMatrixFormat
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc cref="IMatrixFormat.AddElementToRightPartAsync"/>
     public Task AddElementToRightPartAsync(int index, double coefficient)
     {
-        F = [..Enumerable.Range(0, 12).Select(item => 0)];
         F[index] += coefficient;
 
         return Task.CompletedTask;
