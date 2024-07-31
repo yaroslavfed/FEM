@@ -19,7 +19,7 @@ public static class MathExtensions
     public static TResult GetBoundsPoint<TSource, TResult>(
         this IEnumerable<TSource> elements,
         Func<TSource, TResult> selector,
-        EPosition position
+        EPositions position
     )
     {
         var coordinates = elements.Select(selector).ToList();
@@ -27,8 +27,8 @@ public static class MathExtensions
 
         return position switch
         {
-            EPosition.First => coordinates.First(),
-            EPosition.Last  => coordinates.Last(),
+            EPositions.First => coordinates.First(),
+            EPositions.Last  => coordinates.Last(),
             _               => throw new ArgumentOutOfRangeException(nameof(position), position, null)
         };
     }

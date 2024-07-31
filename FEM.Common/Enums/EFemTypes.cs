@@ -1,6 +1,6 @@
 ﻿namespace FEM.Common.Enums;
 
-public enum EFemType
+public enum EFemTypes
 {
     Vector
 }

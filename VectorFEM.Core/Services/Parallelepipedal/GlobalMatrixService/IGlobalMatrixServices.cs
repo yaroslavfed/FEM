@@ -1,5 +1,9 @@
-﻿namespace VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
+﻿using FEM.Common.Data.MathModels.MatrixFormats;
+using FEM.Common.Enums;
 
-public interface IGlobalMatrixServices<TMatrixProfile>
+namespace VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
+
+public interface IGlobalMatrixServices
 {
+    Task<IMatrixFormat> GetGlobalMatrixAsync(EMatrixFormats matrixFormat);
 }

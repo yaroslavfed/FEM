@@ -2,5 +2,7 @@
 
 public interface IMassMatrix<out TData>
 {
+    IReadOnlyList<IReadOnlyList<double>> MassMatrixBase { get; }
+    
     TData GetMassMatrix(double gamma);
 }

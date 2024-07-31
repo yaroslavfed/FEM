@@ -1,6 +1,6 @@
 ﻿namespace FEM.Common.Enums;
 
-public enum EPosition
+public enum EPositions
 {
     First,
     Last

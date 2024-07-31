@@ -1,18 +1,19 @@
-﻿using VectorFEM.Core.Data.Parallelepipedal;
+﻿using FEM.Common.Data.MathModels.MatrixFormats;
+using FEM.Common.Enums;
+using VectorFEM.Core.Data.Parallelepipedal;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
 
 /// <summary>
 /// Сервис построения профиля матрицы
 /// </summary>
-/// <typeparam name="TMesh">Тип модели хранения сетки</typeparam>
-/// <typeparam name="TMatrixFormat">Тип хранения матрицы</typeparam>
-public interface IMatrixPortraitService<TMatrixFormat>
+public interface IMatrixPortraitService
 {
     /// <summary>
     /// Получаем портрет матрицы
     /// </summary>
     /// <param name="mesh">Сетка расчётной области</param>
-    /// <returns>Получаем матрицу в заданном формате</returns>
-    Task<TMatrixFormat> ResolveMatrixPortraitAsync(Mesh mesh);
+    /// <param name="matrixFormat">Формат хранения матрицы</param>
+    /// <returns>Получаем матрицу в указанном формате</returns>
+    Task<IMatrixFormat> ResolveMatrixPortraitAsync(Mesh mesh, EMatrixFormats matrixFormat);
 }

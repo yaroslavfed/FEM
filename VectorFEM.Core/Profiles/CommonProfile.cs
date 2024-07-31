@@ -20,7 +20,7 @@ public class CommonProfile : Profile
                     src =>
                         src.Edges.SelectMany(edge => edge.Nodes)
                            .ToArray()
-                           .GetBoundsPoint(x => x.Coordinate.X, EPosition.Last)
+                           .GetBoundsPoint(x => x.Coordinate.X, EPositions.Last)
                 )
             )
             .ForPath(
@@ -29,7 +29,7 @@ public class CommonProfile : Profile
                     src =>
                         src.Edges.SelectMany(edge => edge.Nodes)
                            .ToArray()
-                           .GetBoundsPoint(x => x.Coordinate.Y, EPosition.Last)
+                           .GetBoundsPoint(x => x.Coordinate.Y, EPositions.Last)
                 )
             )
             .ForPath(
@@ -38,7 +38,7 @@ public class CommonProfile : Profile
                     src =>
                         src.Edges.SelectMany(edge => edge.Nodes)
                            .ToArray()
-                           .GetBoundsPoint(x => x.Coordinate.Z, EPosition.Last)
+                           .GetBoundsPoint(x => x.Coordinate.Z, EPositions.Last)
                 )
             )
             .ForPath(
@@ -47,7 +47,7 @@ public class CommonProfile : Profile
                     src =>
                         src.Edges.SelectMany(edge => edge.Nodes)
                            .ToArray()
-                           .GetBoundsPoint(x => x.Coordinate.X, EPosition.First)
+                           .GetBoundsPoint(x => x.Coordinate.X, EPositions.First)
                 )
             )
             .ForPath(
@@ -56,7 +56,7 @@ public class CommonProfile : Profile
                     src =>
                         src.Edges.SelectMany(edge => edge.Nodes)
                            .ToArray()
-                           .GetBoundsPoint(x => x.Coordinate.Y, EPosition.First)
+                           .GetBoundsPoint(x => x.Coordinate.Y, EPositions.First)
                 )
             )
             .ForPath(
@@ -65,7 +65,7 @@ public class CommonProfile : Profile
                     src =>
                         src.Edges.SelectMany(edge => edge.Nodes)
                            .ToArray()
-                           .GetBoundsPoint(x => x.Coordinate.Z, EPosition.First)
+                           .GetBoundsPoint(x => x.Coordinate.Z, EPositions.First)
                 )
             );
 }

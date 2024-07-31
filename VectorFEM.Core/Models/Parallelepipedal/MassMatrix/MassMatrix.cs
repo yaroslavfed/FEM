@@ -32,6 +32,8 @@ internal class MassMatrix : IMassMatrix<Matrix>
         _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
     }
 
+    public IReadOnlyList<IReadOnlyList<double>> MassMatrixBase  => _massMatrix;
+
     public Matrix GetMassMatrix(double gamma)
     {
         var matrix = new Matrix { Data = _massMatrix };

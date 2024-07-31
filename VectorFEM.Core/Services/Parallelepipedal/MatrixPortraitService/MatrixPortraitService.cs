@@ -1,14 +1,22 @@
 ﻿using FEM.Common.Data.MathModels.MatrixFormats;
+using FEM.Common.Enums;
+using FEM.Common.Resolvers.MatrixFormatResolver;
 using VectorFEM.Core.Data.Parallelepipedal;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
 
-/// <inheritdoc cref="IMatrixPortraitService{TMesh,TMatrixFormat}"/>
-public class MatrixPortraitService<TMatrixFormat> : IMatrixPortraitService<TMatrixFormat>
-    where TMatrixFormat : MatrixProfileFormat, new()
+/// <inheritdoc cref="IMatrixPortraitService{TMatrixFormat}"/>
+public class MatrixPortraitService : IMatrixPortraitService
 {
-    /// <inheritdoc cref="IMatrixPortraitService{TMesh,TMatrixFormat}.ResolveMatrixPortraitAsync"/>
-    public async Task<TMatrixFormat> ResolveMatrixPortraitAsync(Mesh mesh)
+    private readonly IMatrixFormatResolver _matrixFormatResolver;
+
+    public MatrixPortraitService(IMatrixFormatResolver matrixFormatResolver)
+    {
+        _matrixFormatResolver = matrixFormatResolver;
+    }
+
+    /// <inheritdoc cref="IMatrixPortraitService.ResolveMatrixPortraitAsync"/>
+    public async Task<IMatrixFormat> ResolveMatrixPortraitAsync(Mesh mesh, EMatrixFormats matrixFormat)
     {
         var edgesCount = mesh.Elements.SelectMany(element => element.Edges).DistinctBy(edge => edge.EdgeIndex).Count();
         var bufferList = Enumerable.Range(0, edgesCount).Select(item => new List<int>()).ToList();
@@ -39,26 +47,9 @@ public class MatrixPortraitService<TMatrixFormat> : IMatrixPortraitService<TMatr
         foreach (var item in bufferList.Where(item => !IsOrdered(item)))
             item.Sort();
 
-        return await CreateProfileArraysAsync(bufferList);
-    }
+        var matrixProfile = _matrixFormatResolver.ResolveMatrixFormat(matrixFormat);
 
-    /// <summary>
-    /// Собираем портрет матрицы
-    /// </summary>
-    private Task<TMatrixFormat> CreateProfileArraysAsync(List<List<int>> bufferList)
-    {
-        var matrix = new TMatrixFormat();
-
-        matrix.Ig = [0, 0, ..Enumerable.Range(0, bufferList.Count - 1).Select(item => 0)];
-        for (var i = 1; i < bufferList.Count; i++)
-            matrix.Ig[i + 1] = matrix.Ig[i] + bufferList[i].Count;
-
-        matrix.Jg = [..Enumerable.Range(0, matrix.Ig.Last()).Select(item => 0)];
-        for (int i = 1, j = 0; i < bufferList.Count; i++)
-            foreach (var bufferItem in bufferList[i])
-                matrix.Jg[j++] = bufferItem;
-
-        return Task.FromResult(matrix);
+        return await matrixProfile.CreateProfileArraysAsync(bufferList);
     }
 
     /// <summary>
