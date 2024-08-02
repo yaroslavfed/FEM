@@ -97,16 +97,17 @@ public class GlobalMatrixService : IGlobalMatrixServices
     /// <returns>Вектор правой части</returns>
     private IList<double> ResolveLocalRightPart(double hx, double hy, double hz, FiniteElement element)
     {
-        var localRightPart = new List<double>();
+        List<double> localRightPart = [..Enumerable.Range(0, 12).Select(item => 0)];
+        var tempLocalRightPart = new List<double>();
 
         for (int i = 0; i < localRightPart.Count; i++)
-            localRightPart.Add(RP_value(element.Edges[i]));
+            tempLocalRightPart.Add(RP_value(element.Edges[i]));
 
         double coefficient = hx * hy * hz / 36.0;
 
         for (int i = 0; i < _massMatrix.MassMatrixBase.Count; i++)
             for (int j = 0; j < _massMatrix.MassMatrixBase.Count; j++)
-                localRightPart[i] += coefficient * _massMatrix.MassMatrixBase[i][j] * localRightPart[j];
+                localRightPart[i] += coefficient * _massMatrix.MassMatrixBase[i][j] * tempLocalRightPart[j];
 
         return localRightPart;
     }
