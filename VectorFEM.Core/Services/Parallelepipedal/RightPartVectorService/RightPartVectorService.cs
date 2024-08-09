@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 
-// TODO: надо бы переделать класс, не нравится мне эта перегонка в локальные из глобальных, выглядит бесполезной
+// TODO: РЅР°РґРѕ Р±С‹ РїРµСЂРµРґРµР»Р°С‚СЊ РєР»Р°СЃСЃ, РЅРµ РЅСЂР°РІРёС‚СЃСЏ РјРЅРµ СЌС‚Р° РїРµСЂРµРіРѕРЅРєР° РІ Р»РѕРєР°Р»СЊРЅС‹Рµ РёР· РіР»РѕР±Р°Р»СЊРЅС‹С…, РІС‹РіР»СЏРґРёС‚ Р±РµСЃРїРѕР»РµР·РЅРѕР№
 /// <inheritdoc cref="IRightPartVectorService"/>
 public class RightPartVectorService : IRightPartVectorService
 {

@@ -66,7 +66,7 @@ public class GlobalMatrixService : IGlobalMatrixServices
 
             var massMatrix = await _massMatrix.GetMassMatrixAsync(testSession.Gamma);
             var stiffnessMatrix = await _stiffnessMatrix.GetStiffnessMatrixAsync(testSession.Mu);
-            var rightPartVector = await ResolveLocalRightPart(hx, hy, hz, element, mesh);
+            var rightPartVector = await ResolveLocalRightPartAsync(hx, hy, hz, element, mesh);
 
             for (var i = 0; i < element.Edges.Count; i++)
             {
@@ -99,7 +99,7 @@ public class GlobalMatrixService : IGlobalMatrixServices
     /// <param name="hz">Шаг по OZ</param>
     /// <param name="element">Конечный элемент расчётной области</param>
     /// <returns>Вектор правой части</returns>
-    private async Task<IList<double>> ResolveLocalRightPart(double hx, double hy, double hz, FiniteElement element, Mesh strata)
+    private async Task<IList<double>> ResolveLocalRightPartAsync(double hx, double hy, double hz, FiniteElement element, Mesh strata)
     {
         List<double> localRightPart = [..Enumerable.Range(0, 12).Select(item => 0)];
         var tempLocalRightPart = new List<double>();

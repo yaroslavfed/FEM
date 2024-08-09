@@ -4,12 +4,12 @@ using VectorFEM.Core.Data.Parallelepipedal;
 namespace VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 
 /// <summary>
-/// Сервис построения вектора правой части
+/// РЎРµСЂРІРёСЃ РїРѕСЃС‚СЂРѕРµРЅРёСЏ РІРµРєС‚РѕСЂР° РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё
 /// </summary>
 public interface IRightPartVectorService
 {
     /// <summary>
-    /// Расчет значений элементов вектора правой части
+    /// Р Р°СЃС‡РµС‚ Р·РЅР°С‡РµРЅРёР№ СЌР»РµРјРµРЅС‚РѕРІ РІРµРєС‚РѕСЂР° РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё
     /// </summary>
     Task<double> ResolveRightPartValueAsync(Edge edge, Mesh strata);
 }
