@@ -15,8 +15,7 @@ internal class YamlStorage : IReadableStorage
     {
         new("positioning", "Yaml/positioning.yaml"),
         new("splitting", "Yaml/splitting.yaml"),
-        new("additionalParameters", "Yaml/additional_parameters.yaml"),
-        new("testingSettings", "Yaml/testing_settings.yaml")
+        new("additionalParameters", "Yaml/additional_parameters.yaml")
     }.ToFrozenDictionary();
 
     public YamlStorage(IParser parser, IConverter converter)
@@ -33,7 +32,6 @@ internal class YamlStorage : IReadableStorage
         var splitting = await _parser.ParseEntityFromFileAsync<Splitting>(_directories["splitting"]);
         var additionalParameters
             = await _parser.ParseEntityFromFileAsync<AdditionalParameters>(_directories["additionalParameters"]);
-        var testingSettings = await _parser.ParseEntityFromFileAsync<TestingSettings>(_directories["testingSettings"]);
 
         return new()
         {
@@ -42,11 +40,7 @@ internal class YamlStorage : IReadableStorage
             Splitting =
                 await _converter.ConvertTo<Splitting, Common.Data.InputModels.Splitting>(splitting),
             AdditionalParameters =
-                await _converter.ConvertTo<AdditionalParameters, Common.Data.InputModels.AdditionalParameters>(
-                    additionalParameters
-                ),
-            TestingSettings =
-                await _converter.ConvertTo<TestingSettings, Common.Data.InputModels.TestingSettings>(testingSettings)
+                await _converter.ConvertTo<AdditionalParameters, Common.Data.InputModels.AdditionalParameters>(additionalParameters)
         };
     }
 }

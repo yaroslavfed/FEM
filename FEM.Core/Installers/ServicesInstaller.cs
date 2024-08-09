@@ -8,6 +8,7 @@ using VectorFEM.Core.Services.Parallelepipedal.MeshService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 using VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
+using VectorFEM.Core.Services.TestingService;
 
 namespace FEM.Core.Installers;
 
@@ -20,10 +21,11 @@ public static class ServicesInstaller
         builder.RegisterType<MeshService>().As<IMeshService>();
         builder.RegisterType<NodesNumberingService>().As<INodesNumberingService>();
         builder.RegisterType<EdgesNumberingService>().As<IEdgesNumberingService>();
-        builder.RegisterType<MeshDrawingService>().As<IMeshDrawingService>().SingleInstance();
-        builder.RegisterType<MatrixPortraitService>().As<IMatrixPortraitService>().SingleInstance();
+        builder.RegisterType<MatrixPortraitService>().As<IMatrixPortraitService>();
+        builder.RegisterType<TestingService>().As<ITestingService>();
 
-        builder.RegisterType<MatrixFormatResolver>().As<IMatrixFormatResolver>().SingleInstance();
+        builder.RegisterType<MatrixFormatResolver>().As<IMatrixFormatResolver>();
+        builder.RegisterType<MeshDrawingService>().As<IMeshDrawingService>().SingleInstance();
 
         Storage.Installers.ServicesInstaller.RegisterServices(builder);
     }

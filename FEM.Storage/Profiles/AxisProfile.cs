@@ -34,16 +34,5 @@ public class AxisProfile : Profile
             );
 
         CreateMap<AdditionalParameters, Common.Data.InputModels.AdditionalParameters>().ReverseMap();
-
-        CreateMap<TestingSettings, Common.Data.InputModels.TestingSettings>()
-            .ForMember(
-                dest => dest.TestFunctionNumber,
-                opt => opt.MapFrom(src => src.Function)
-            )
-            .ReverseMap()
-            .ForMember(
-                dest => dest.Function,
-                opt => opt.MapFrom(src => src.TestFunctionNumber)
-            );
     }
 }

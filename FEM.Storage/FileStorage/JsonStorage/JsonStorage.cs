@@ -13,8 +13,7 @@ public class JsonStorage : IReadableStorage
     {
         new("positioning", "Json/positioning.json"),
         new("splitting", "Json/splitting.json"),
-        new("additionalParameters", "Json/additional_parameters.json"),
-        new("testingSettings", "Json/testing_settings.json")
+        new("additionalParameters", "Json/additional_parameters.json")
     }.ToFrozenDictionary();
 
     public JsonStorage(IParser parser)
@@ -31,14 +30,12 @@ public class JsonStorage : IReadableStorage
         var splitting = await _parser.ParseEntityFromFileAsync<Splitting>(_directories["splitting"]);
         var additionalParameters
             = await _parser.ParseEntityFromFileAsync<AdditionalParameters>(_directories["additionalParameters"]);
-        var testingSettings = await _parser.ParseEntityFromFileAsync<TestingSettings>(_directories["testingSettings"]);
 
         return new()
         {
             Positioning = positioning,
             Splitting = splitting,
             AdditionalParameters = additionalParameters,
-            TestingSettings = testingSettings
         };
     }
 }

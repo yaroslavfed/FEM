@@ -21,9 +21,4 @@ public record Axis
     /// Дробление сетки
     /// </summary>
     public required Splitting Splitting { get; init; }
-
-    /// <summary>
-    /// Дополнительные настройки тестирования
-    /// </summary>
-    public required TestingSettings TestingSettings { get; init; }
 }

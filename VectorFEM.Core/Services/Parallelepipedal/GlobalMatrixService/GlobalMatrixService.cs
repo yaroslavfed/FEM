@@ -1,5 +1,6 @@
 ﻿using FEM.Common.Data.MathModels;
 using FEM.Common.Data.MathModels.MatrixFormats;
+using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
 using VectorFEM.Core.Data.Parallelepipedal;
 using VectorFEM.Core.Models.Parallelepipedal.MassMatrix;
@@ -40,11 +41,10 @@ public class GlobalMatrixService : IGlobalMatrixServices
     public async Task<IMatrixFormat> GetGlobalMatrixAsync(EMatrixFormats matrixFormat)
     {
         var testSession = await _testSessionService.CreateTestSessionAsync();
-        var mesh = await _meshService.GenerateMeshAsync();
 
-        var matrixProfile = await _portraitService.ResolveMatrixPortraitAsync(mesh, matrixFormat);
+        var matrixProfile = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, matrixFormat);
 
-        foreach (var element in mesh.Elements)
+        foreach (var element in testSession.Mesh.Elements)
         {
             var firstNode = (from edge in element.Edges
                              from node in edge.Nodes
@@ -66,7 +66,7 @@ public class GlobalMatrixService : IGlobalMatrixServices
 
             var massMatrix = await _massMatrix.GetMassMatrixAsync(testSession.Gamma);
             var stiffnessMatrix = await _stiffnessMatrix.GetStiffnessMatrixAsync(testSession.Mu);
-            var rightPartVector = await ResolveLocalRightPartAsync(hx, hy, hz, element, mesh);
+            var rightPartVector = await ResolveLocalRightPartAsync(hx, hy, hz, element, testSession);
 
             for (var i = 0; i < element.Edges.Count; i++)
             {
@@ -99,13 +99,13 @@ public class GlobalMatrixService : IGlobalMatrixServices
     /// <param name="hz">Шаг по OZ</param>
     /// <param name="element">Конечный элемент расчётной области</param>
     /// <returns>Вектор правой части</returns>
-    private async Task<IList<double>> ResolveLocalRightPartAsync(double hx, double hy, double hz, FiniteElement element, Mesh strata)
+    private async Task<IList<double>> ResolveLocalRightPartAsync(double hx, double hy, double hz, FiniteElement element, TestSession<Mesh> testSession)
     {
         List<double> localRightPart = [..Enumerable.Range(0, 12).Select(item => 0)];
         var tempLocalRightPart = new List<double>();
 
         for (int i = 0; i < localRightPart.Count; i++)
-            tempLocalRightPart.Add(await _rightPartVectorService.ResolveRightPartValueAsync(element.Edges[i], strata));
+            tempLocalRightPart.Add(await _rightPartVectorService.ResolveRightPartValueAsync(element.Edges[i], testSession));
 
         double coefficient = hx * hy * hz / 36.0;
 

@@ -3,7 +3,8 @@ using VectorFEM.Core.Data.Parallelepipedal;
 using VectorFEM.Core.Extensions;
 using FEM.Common.Data.MathModels;
 using FEM.Common.Enums;
-using System.Drawing;
+using FEM.Common.Data.TestSession;
+using VectorFEM.Core.Services.TestingService;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 
@@ -11,9 +12,17 @@ namespace VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 /// <inheritdoc cref="IRightPartVectorService"/>
 public class RightPartVectorService : IRightPartVectorService
 {
-    public async Task<double> ResolveRightPartValueAsync(Edge edge, Mesh strata){
-        int finiteElementIndex = await edge.FiniteElementIndexByEdges(strata);
-        var localFiniteElement = strata.Elements[finiteElementIndex];
+    private readonly ITestingService _testingService;
+
+    public RightPartVectorService(ITestingService testingService)
+    {
+        _testingService = testingService;
+    }
+
+    public async Task<double> ResolveRightPartValueAsync(Edge edge, TestSession<Mesh> testSession) 
+    {
+        int finiteElementIndex = await edge.FiniteElementIndexByEdges(testSession.Mesh);
+        var localFiniteElement = testSession.Mesh.Elements[finiteElementIndex];
 
         int edgeIndex = await edge.ResolveLocal(localFiniteElement);
         var firstNode = localFiniteElement.Edges[edgeIndex].Nodes[0];
@@ -50,15 +59,18 @@ public class RightPartVectorService : IRightPartVectorService
             Z = Math.Abs(localFirstNode.Coordinate.Z - localSecondNode.Coordinate.Z)
         };
 
-        if (step.X > 0) await HalvePointAsync(firstNode, secondNode, EDirections.OX);
-        else if (step.Y > 0) await HalvePointAsync(firstNode, secondNode, EDirections.OY);
-        else if (step.Z > 0) await HalvePointAsync(firstNode, secondNode, EDirections.OZ);
-        else await HalvePointAsync(firstNode, secondNode, EDirections.OX);
-
-        
+        if (step.X > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OX);
+        else if (step.Y > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OY);
+        else if (step.Z > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OZ);
+        else return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OX);
     }
 
-    private Task<Node> HalvePointAsync(Node firstNode, Node secondNode, EDirections direction)
+    private async Task<double> ResolveFunctionContribution(
+        Node firstNode,
+        Node secondNode,
+        TestSession<Mesh> testSession, 
+        EDirections direction
+    )
     {
         var result = direction switch
         {
@@ -86,6 +98,6 @@ public class RightPartVectorService : IRightPartVectorService
             _ => throw new NotImplementedException()
         };
 
-        return Task.FromResult(result);
+        return await _testingService.ResolveRightPartVector(result.Coordinate, testSession.Mu, testSession.Gamma, direction);
     }
 }
