@@ -1,8 +1,8 @@
 ﻿namespace VectorFEM.Core.Models.Parallelepipedal.MassMatrix;
 
-public interface IMassMatrix<out TData>
+public interface IMassMatrix<TData>
 {
     IReadOnlyList<IReadOnlyList<double>> MassMatrixBase { get; }
     
-    TData GetMassMatrix(double gamma);
+    Task<TData> GetMassMatrixAsync(double gamma);
 }

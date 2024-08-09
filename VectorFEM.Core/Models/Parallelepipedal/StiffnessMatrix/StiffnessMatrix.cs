@@ -41,7 +41,7 @@ internal class StiffnessMatrix : IStiffnessMatrix<Matrix>
         _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
     }
 
-    public Matrix GetStiffnessMatrix(double mu)
+    public Task<Matrix> GetStiffnessMatrixAsync(double mu)
     {
         var x0 = _feBounds.LowCoordinate.X;
         var xn = _feBounds.HighCoordinate.X;
@@ -126,6 +126,6 @@ internal class StiffnessMatrix : IStiffnessMatrix<Matrix>
 
         matrix *= 1 / mu;
 
-        return matrix;
+        return Task.FromResult(matrix);
     }
 }

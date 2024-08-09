@@ -23,8 +23,7 @@ public class TestSessionService : ITestSessionService
             {
                 Mesh = mesh,
                 Mu = testConfiguration.AdditionalParameters.Mu,
-                Gamma = testConfiguration.AdditionalParameters.Gamma,
-                TestFunctionNumber = testConfiguration.TestingSettings.TestFunctionNumber
+                Gamma = testConfiguration.AdditionalParameters.Gamma
             }
         );
     }

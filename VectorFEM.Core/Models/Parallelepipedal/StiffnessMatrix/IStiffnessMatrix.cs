@@ -1,6 +1,6 @@
 ﻿namespace VectorFEM.Core.Models.Parallelepipedal.StiffnessMatrix;
 
-public interface IStiffnessMatrix<out TData>
+public interface IStiffnessMatrix<TData>
 {
-    TData GetStiffnessMatrix(double mu);
+    Task<TData> GetStiffnessMatrixAsync(double mu);
 }

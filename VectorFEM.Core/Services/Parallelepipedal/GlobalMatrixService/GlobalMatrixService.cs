@@ -6,6 +6,7 @@ using VectorFEM.Core.Models.Parallelepipedal.MassMatrix;
 using VectorFEM.Core.Models.Parallelepipedal.StiffnessMatrix;
 using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
 using VectorFEM.Core.Services.Parallelepipedal.MeshService;
+using VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 using VectorFEM.Core.Services.TestSessionService;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
@@ -13,6 +14,7 @@ namespace VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
 public class GlobalMatrixService : IGlobalMatrixServices
 {
     private readonly IMatrixPortraitService   _portraitService;
+    private readonly IRightPartVectorService  _rightPartVectorService;
     private readonly IMeshService             _meshService;
     private readonly ITestSessionService      _testSessionService;
     private readonly IStiffnessMatrix<Matrix> _stiffnessMatrix;
@@ -20,6 +22,7 @@ public class GlobalMatrixService : IGlobalMatrixServices
 
     public GlobalMatrixService(
         IMeshService meshService,
+        IRightPartVectorService rightPartVectorService,
         IMatrixPortraitService portraitService,
         ITestSessionService testSessionService,
         IStiffnessMatrix<Matrix> stiffnessMatrix,
@@ -27,6 +30,7 @@ public class GlobalMatrixService : IGlobalMatrixServices
     )
     {
         _testSessionService = testSessionService;
+        _rightPartVectorService = rightPartVectorService;
         _stiffnessMatrix = stiffnessMatrix;
         _massMatrix = massMatrix;
         _portraitService = portraitService;
@@ -60,9 +64,9 @@ public class GlobalMatrixService : IGlobalMatrixServices
             var hy = lastNode.Y - firstNode.Y;
             var hz = lastNode.Z - firstNode.Z;
 
-            var massMatrix = _massMatrix.GetMassMatrix(testSession.Gamma);
-            var stiffnessMatrix = _stiffnessMatrix.GetStiffnessMatrix(testSession.Mu);
-            var rightPartVector = ResolveLocalRightPart(hx, hy, hz, element);
+            var massMatrix = await _massMatrix.GetMassMatrixAsync(testSession.Gamma);
+            var stiffnessMatrix = await _stiffnessMatrix.GetStiffnessMatrixAsync(testSession.Mu);
+            var rightPartVector = await ResolveLocalRightPart(hx, hy, hz, element, mesh);
 
             for (var i = 0; i < element.Edges.Count; i++)
             {
@@ -95,13 +99,13 @@ public class GlobalMatrixService : IGlobalMatrixServices
     /// <param name="hz">Шаг по OZ</param>
     /// <param name="element">Конечный элемент расчётной области</param>
     /// <returns>Вектор правой части</returns>
-    private IList<double> ResolveLocalRightPart(double hx, double hy, double hz, FiniteElement element)
+    private async Task<IList<double>> ResolveLocalRightPart(double hx, double hy, double hz, FiniteElement element, Mesh strata)
     {
         List<double> localRightPart = [..Enumerable.Range(0, 12).Select(item => 0)];
         var tempLocalRightPart = new List<double>();
 
         for (int i = 0; i < localRightPart.Count; i++)
-            tempLocalRightPart.Add(RP_value(element.Edges[i]));
+            tempLocalRightPart.Add(await _rightPartVectorService.ResolveRightPartValueAsync(element.Edges[i], strata));
 
         double coefficient = hx * hy * hz / 36.0;
 

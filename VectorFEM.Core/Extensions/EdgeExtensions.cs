@@ -15,7 +15,7 @@ public static class EdgeExtensions
         return Task.FromResult(0);
     }
 
-    public static Task<int> StrataByEdges(this Edge edge, Mesh strata)
+    public static Task<int> FiniteElementIndexByEdges(this Edge edge, Mesh strata)
     {
         for (int i = 0; i < strata.Elements.Count; i++)
         {

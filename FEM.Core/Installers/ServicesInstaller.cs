@@ -7,6 +7,7 @@ using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
 using VectorFEM.Core.Services.Parallelepipedal.MeshService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.NodesNumberingService;
+using VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 
 namespace FEM.Core.Installers;
 
@@ -15,6 +16,7 @@ public static class ServicesInstaller
     public static void RegisterServices(this ContainerBuilder builder)
     {
         builder.RegisterType<GlobalMatrixService>().As<IGlobalMatrixServices>();
+        builder.RegisterType<RightPartVectorService>().As<IRightPartVectorService>();
         builder.RegisterType<MeshService>().As<IMeshService>();
         builder.RegisterType<NodesNumberingService>().As<INodesNumberingService>();
         builder.RegisterType<EdgesNumberingService>().As<IEdgesNumberingService>();

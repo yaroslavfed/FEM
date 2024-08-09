@@ -13,9 +13,4 @@ public record TestSession<TMesh>
     public int Mu { get; init; }
 
     public int Gamma { get; init; }
-
-    /// <summary>
-    /// Порядковый номер мат.задачи передаваемой решателю
-    /// </summary>
-    public int TestFunctionNumber { get; init; }
 }

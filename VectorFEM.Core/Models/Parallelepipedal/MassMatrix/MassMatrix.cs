@@ -34,7 +34,7 @@ internal class MassMatrix : IMassMatrix<Matrix>
 
     public IReadOnlyList<IReadOnlyList<double>> MassMatrixBase  => _massMatrix;
 
-    public Matrix GetMassMatrix(double gamma)
+    public Task<Matrix> GetMassMatrixAsync(double gamma)
     {
         var matrix = new Matrix { Data = _massMatrix };
         matrix *= gamma
@@ -43,6 +43,6 @@ internal class MassMatrix : IMassMatrix<Matrix>
                   * (_feBounds.HighCoordinate.Z - _feBounds.LowCoordinate.Z)
                   / 36;
 
-        return matrix;
+        return Task.FromResult(matrix);
     }
 }
