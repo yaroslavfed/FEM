@@ -5,7 +5,7 @@ using VectorFEM.Core.Data.Parallelepipedal;
 
 namespace VectorFEM.Core.Models.Parallelepipedal.BasicFunction;
 
-internal class BasicFunction : IBasicFunction<Vector>
+public class BasicFunction : IBasicFunction<Vector>
 {
     private readonly FiniteElementBounds _feBounds;
 

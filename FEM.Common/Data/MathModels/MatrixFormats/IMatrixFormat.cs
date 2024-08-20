@@ -6,7 +6,13 @@ public interface IMatrixFormat
     /// Собираем портрет матрицы
     /// </summary>
     Task<IMatrixFormat> CreateProfileArraysAsync(List<List<int>> positionsList);
-    
+
+    /// <summary>
+    /// Инициализация базовых векторов 
+    /// </summary>
+    /// <param name="edgesCount">Количество ребер КЭ</param>
+    Task InitializeVectorsAsync(int edgesCount);
+
     /// <summary>
     /// Добавляем вклады каждого КЭ в глобальную матрицу, дописывая значение на главную диагональ и в профиль
     /// </summary>

@@ -6,7 +6,6 @@ using VectorFEM.Core.Data.Parallelepipedal;
 using VectorFEM.Core.Models.Parallelepipedal.MassMatrix;
 using VectorFEM.Core.Models.Parallelepipedal.StiffnessMatrix;
 using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
-using VectorFEM.Core.Services.Parallelepipedal.MeshService;
 using VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 using VectorFEM.Core.Services.TestSessionService;
 
@@ -16,13 +15,11 @@ public class GlobalMatrixService : IGlobalMatrixServices
 {
     private readonly IMatrixPortraitService   _portraitService;
     private readonly IRightPartVectorService  _rightPartVectorService;
-    private readonly IMeshService             _meshService;
     private readonly ITestSessionService      _testSessionService;
     private readonly IStiffnessMatrix<Matrix> _stiffnessMatrix;
     private readonly IMassMatrix<Matrix>      _massMatrix;
 
     public GlobalMatrixService(
-        IMeshService meshService,
         IRightPartVectorService rightPartVectorService,
         IMatrixPortraitService portraitService,
         ITestSessionService testSessionService,
@@ -35,7 +32,6 @@ public class GlobalMatrixService : IGlobalMatrixServices
         _stiffnessMatrix = stiffnessMatrix;
         _massMatrix = massMatrix;
         _portraitService = portraitService;
-        _meshService = meshService;
     }
 
     public async Task<IMatrixFormat> GetGlobalMatrixAsync(EMatrixFormats matrixFormat)
@@ -43,29 +39,25 @@ public class GlobalMatrixService : IGlobalMatrixServices
         var testSession = await _testSessionService.CreateTestSessionAsync();
 
         var matrixProfile = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, matrixFormat);
+        await matrixProfile.InitializeVectorsAsync(
+            testSession.Mesh.Elements
+                       .SelectMany(element => element.Edges)
+                       .DistinctBy(edge => edge.EdgeIndex)
+                       .Count()
+        );
 
         foreach (var element in testSession.Mesh.Elements)
         {
-            var firstNode = (from edge in element.Edges
-                             from node in edge.Nodes
-                             where node.NodeIndex == 0
-                             select node.Coordinate)
-                            .ToArray()
-                            .Single();
+            var nodesList = element.Edges.SelectMany(edge => edge.Nodes).Distinct().ToArray();
+            var firstNode = nodesList[0];
+            var lastNode = nodesList[7];
 
-            var lastNode = (from edge in element.Edges
-                            from node in edge.Nodes
-                            where node.NodeIndex == 7
-                            select node.Coordinate)
-                           .ToArray()
-                           .Single();
+            var hx = lastNode.Coordinate.X - firstNode.Coordinate.X;
+            var hy = lastNode.Coordinate.Y - firstNode.Coordinate.Y;
+            var hz = lastNode.Coordinate.Z - firstNode.Coordinate.Z;
 
-            var hx = lastNode.X - firstNode.X;
-            var hy = lastNode.Y - firstNode.Y;
-            var hz = lastNode.Z - firstNode.Z;
-
-            var massMatrix = await _massMatrix.GetMassMatrixAsync(testSession.Gamma);
-            var stiffnessMatrix = await _stiffnessMatrix.GetStiffnessMatrixAsync(testSession.Mu);
+            var massMatrix = await _massMatrix.GetMassMatrixAsync(testSession.Gamma, element);
+            var stiffnessMatrix = await _stiffnessMatrix.GetStiffnessMatrixAsync(testSession.Mu, element);
             var rightPartVector = await ResolveLocalRightPartAsync(hx, hy, hz, element, testSession);
 
             for (var i = 0; i < element.Edges.Count; i++)
@@ -98,19 +90,28 @@ public class GlobalMatrixService : IGlobalMatrixServices
     /// <param name="hy">Шаг по OY</param>
     /// <param name="hz">Шаг по OZ</param>
     /// <param name="element">Конечный элемент расчётной области</param>
+    /// <param name="testSession">Сессия расчёта области</param>
     /// <returns>Вектор правой части</returns>
-    private async Task<IList<double>> ResolveLocalRightPartAsync(double hx, double hy, double hz, FiniteElement element, TestSession<Mesh> testSession)
+    private async Task<IList<double>> ResolveLocalRightPartAsync(
+        double hx,
+        double hy,
+        double hz,
+        FiniteElement element,
+        TestSession<Mesh> testSession
+    )
     {
-        List<double> localRightPart = [..Enumerable.Range(0, 12).Select(item => 0)];
+        List<double> localRightPart = [..Enumerable.Range(0, 12).Select(_ => 0)];
         var tempLocalRightPart = new List<double>();
 
-        for (int i = 0; i < localRightPart.Count; i++)
-            tempLocalRightPart.Add(await _rightPartVectorService.ResolveRightPartValueAsync(element.Edges[i], testSession));
+        for (var i = 0; i < localRightPart.Count; i++)
+            tempLocalRightPart.Add(
+                await _rightPartVectorService.ResolveRightPartValueAsync(element.Edges[i], testSession)
+            );
 
-        double coefficient = hx * hy * hz / 36.0;
+        var coefficient = hx * hy * hz / 36.0;
 
-        for (int i = 0; i < _massMatrix.MassMatrixBase.Count; i++)
-            for (int j = 0; j < _massMatrix.MassMatrixBase.Count; j++)
+        for (var i = 0; i < _massMatrix.MassMatrixBase.Count; i++)
+            for (var j = 0; j < _massMatrix.MassMatrixBase.Count; j++)
                 localRightPart[i] += coefficient * _massMatrix.MassMatrixBase[i][j] * tempLocalRightPart[j];
 
         return localRightPart;

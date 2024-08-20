@@ -13,16 +13,25 @@ public record MatrixProfileFormat : IMatrixFormat
 
     public List<double> Gg { get; set; } = [];
 
-    public List<double> F { get; set; } = [..Enumerable.Range(0, 12).Select(item => 0)];
+    public List<double> F { get; set; } = [];
+
+    public Task InitializeVectorsAsync(int edgesCount)
+    {
+        Di = [..Enumerable.Range(0, edgesCount).Select(_ => 0)];
+        F = [..Enumerable.Range(0, edgesCount).Select(_ => 0)];
+
+        return Task.CompletedTask;
+    }
 
     /// <inheritdoc cref="IMatrixFormat.CreateProfileArraysAsync"/>
     public Task<IMatrixFormat> CreateProfileArraysAsync(List<List<int>> positionsList)
     {
-        Ig = [0, 0, ..Enumerable.Range(0, positionsList.Count - 1).Select(item => 0)];
+        Ig = [0, 0, ..Enumerable.Range(0, positionsList.Count - 1).Select(_ => 0)];
         for (var i = 1; i < positionsList.Count; i++)
             Ig[i + 1] = Ig[i] + positionsList[i].Count;
 
-        Jg = [..Enumerable.Range(0, Ig.Last()).Select(item => 0)];
+        Gg = [..Enumerable.Range(0, Ig.Last()).Select(_ => 0)];
+        Jg = [..Enumerable.Range(0, Ig.Last()).Select(_ => 0)];
         for (int i = 1, j = 0; i < positionsList.Count; i++)
             foreach (var bufferItem in positionsList[i])
                 Jg[j++] = bufferItem;

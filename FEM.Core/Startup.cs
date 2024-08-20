@@ -1,26 +1,21 @@
-﻿using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
-using VectorFEM.Core.Services.Parallelepipedal.MeshService;
+﻿using FEM.Common.Enums;
+using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
 
 namespace FEM.Core;
 
 public class Startup
 {
-    private readonly IMeshDrawingService _drawingService;
-    private readonly IMeshService        _meshService;
+    private readonly IGlobalMatrixServices _globalMatrixServices;
 
-    public Startup(IMeshDrawingService drawingService, IMeshService meshService)
+    public Startup(IGlobalMatrixServices globalMatrixServices)
     {
-        _drawingService = drawingService;
-        _meshService = meshService;
+        _globalMatrixServices = globalMatrixServices;
     }
 
     public async Task Run()
     {
-        var mesh = await _meshService.GenerateMeshAsync();
+        await _globalMatrixServices.GetGlobalMatrixAsync(EMatrixFormats.Profile);
 
-#if DEBUG
-        await _drawingService.StartDrawingProcess(mesh);
-#endif
         Console.ReadKey();
     }
 }

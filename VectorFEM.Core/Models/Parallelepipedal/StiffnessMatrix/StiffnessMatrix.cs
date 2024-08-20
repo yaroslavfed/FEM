@@ -5,9 +5,9 @@ using VectorFEM.Core.Data.Parallelepipedal;
 
 namespace VectorFEM.Core.Models.Parallelepipedal.StiffnessMatrix;
 
-internal class StiffnessMatrix : IStiffnessMatrix<Matrix>
+public class StiffnessMatrix : IStiffnessMatrix<Matrix>
 {
-    private readonly FiniteElementBounds _feBounds;
+    private readonly IMapper _mapper;
 
     private readonly IReadOnlyList<IReadOnlyList<double>> _stiffnessMatrix1 =
     [
@@ -33,41 +33,40 @@ internal class StiffnessMatrix : IStiffnessMatrix<Matrix>
         [1, -1, 2, -2]
     ];
 
-    public StiffnessMatrix(
-        FiniteElement finiteElement,
-        IMapper mapper
-    )
+    public StiffnessMatrix(IMapper mapper)
     {
-        _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
+        _mapper = mapper;
     }
 
-    public Task<Matrix> GetStiffnessMatrixAsync(double mu)
+    public Task<Matrix> GetStiffnessMatrixAsync(double mu, FiniteElement finiteElement)
     {
-        var x0 = _feBounds.LowCoordinate.X;
-        var xn = _feBounds.HighCoordinate.X;
+        var feBounds = _mapper.Map<FiniteElementBounds>(finiteElement);
 
-        var y0 = _feBounds.LowCoordinate.Y;
-        var yn = _feBounds.HighCoordinate.Y;
+        var x0 = feBounds.LowCoordinate.X;
+        var xn = feBounds.HighCoordinate.X;
 
-        var z0 = _feBounds.LowCoordinate.Z;
-        var zn = _feBounds.HighCoordinate.Z;
+        var y0 = feBounds.LowCoordinate.Y;
+        var yn = feBounds.HighCoordinate.Y;
+
+        var z0 = feBounds.LowCoordinate.Z;
+        var zn = feBounds.HighCoordinate.Z;
 
         var m111 = new Matrix { Data = _stiffnessMatrix1 };
-        m111 *= (xn - x0) * (yn - y0) / 6 * (zn - z0);
+        m111 *= (xn - x0) * (yn - y0) / (6 * (zn - z0));
         var m112 = new Matrix { Data = _stiffnessMatrix2 };
-        m112 *= (xn - x0) * (zn - z0) / 6 * (yn - y0);
+        m112 *= (xn - x0) * (zn - z0) / (6 * (yn - y0));
         var m11 = m111 + m112;
 
         var m221 = new Matrix { Data = _stiffnessMatrix1 };
-        m221 *= (xn - x0) * (yn - y0) / 6 * (zn - z0);
+        m221 *= (xn - x0) * (yn - y0) / (6 * (zn - z0));
         var m222 = new Matrix { Data = _stiffnessMatrix2 };
-        m222 *= (yn - y0) * (zn - z0) / 6 * (xn - x0);
+        m222 *= (yn - y0) * (zn - z0) / (6 * (xn - x0));
         var m22 = m221 + m222;
 
         var m331 = new Matrix { Data = _stiffnessMatrix1 };
-        m331 *= (xn - x0) * (zn - z0) / 6 * (yn - y0);
+        m331 *= (xn - x0) * (zn - z0) / (6 * (yn - y0));
         var m332 = new Matrix { Data = _stiffnessMatrix2 };
-        m332 *= (yn - y0) * (zn - z0) / 6 * (xn - x0);
+        m332 *= (yn - y0) * (zn - z0) / (6 * (xn - x0));
         var m33 = m331 + m332;
 
         var m121 = new Matrix { Data = _stiffnessMatrix2 };

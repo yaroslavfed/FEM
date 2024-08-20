@@ -19,22 +19,27 @@ public class RightPartVectorService : IRightPartVectorService
         _testingService = testingService;
     }
 
-    public async Task<double> ResolveRightPartValueAsync(Edge edge, TestSession<Mesh> testSession) 
+    public async Task<double> ResolveRightPartValueAsync(Edge edge, TestSession<Mesh> testSession)
     {
-        int finiteElementIndex = await edge.FiniteElementIndexByEdges(testSession.Mesh);
+        var finiteElementIndex = await edge.FiniteElementIndexByEdges(testSession.Mesh);
         var localFiniteElement = testSession.Mesh.Elements[finiteElementIndex];
 
-        int edgeIndex = await edge.ResolveLocal(localFiniteElement);
+        var edgeIndex = await edge.ResolveLocal(localFiniteElement);
         var firstNode = localFiniteElement.Edges[edgeIndex].Nodes[0];
         var secondNode = localFiniteElement.Edges[edgeIndex].Nodes[1];
 
-        int firstNodeIndex = await firstNode.ResolveLocal(localFiniteElement);
-        int secondNodeIndex = await secondNode.ResolveLocal(localFiniteElement);
+        var firstNodeIndex = await firstNode.ResolveLocal(localFiniteElement);
+        var secondNodeIndex = await secondNode.ResolveLocal(localFiniteElement);
 
-        var nodesList = localFiniteElement.Edges.SelectMany(edge => edge.Nodes).Order().ToList();
+        var nodesList = localFiniteElement
+                        .Edges
+                        .SelectMany(item => item.Nodes)
+                        .OrderBy(node => node.NodeIndex)
+                        .ToList();
+        
         var localFirstNode = new Node
         {
-            Coordinate = new Point3D
+            Coordinate = new()
             {
                 X = nodesList[firstNodeIndex].Coordinate.X,
                 Y = nodesList[firstNodeIndex].Coordinate.Y,
@@ -44,7 +49,7 @@ public class RightPartVectorService : IRightPartVectorService
 
         var localSecondNode = new Node
         {
-            Coordinate = new Point3D
+            Coordinate = new()
             {
                 X = nodesList[secondNodeIndex].Coordinate.X,
                 Y = nodesList[secondNodeIndex].Coordinate.Y,
@@ -60,15 +65,16 @@ public class RightPartVectorService : IRightPartVectorService
         };
 
         if (step.X > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OX);
-        else if (step.Y > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OY);
-        else if (step.Z > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OZ);
-        else return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OX);
+        if (step.Y > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OY);
+        if (step.Z > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OZ);
+
+        return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OX);
     }
 
     private async Task<double> ResolveFunctionContribution(
         Node firstNode,
         Node secondNode,
-        TestSession<Mesh> testSession, 
+        TestSession<Mesh> testSession,
         EDirections direction
     )
     {
@@ -98,6 +104,11 @@ public class RightPartVectorService : IRightPartVectorService
             _ => throw new NotImplementedException()
         };
 
-        return await _testingService.ResolveRightPartVector(result.Coordinate, testSession.Mu, testSession.Gamma, direction);
+        return await _testingService.ResolveRightPartVector(
+            result.Coordinate,
+            testSession.Mu,
+            testSession.Gamma,
+            direction
+        );
     }
 }

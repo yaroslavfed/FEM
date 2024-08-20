@@ -4,9 +4,9 @@ using VectorFEM.Core.Data.Parallelepipedal;
 
 namespace VectorFEM.Core.Models.Parallelepipedal.MassMatrix;
 
-internal class MassMatrix : IMassMatrix<Matrix>
+public class MassMatrix : IMassMatrix<Matrix>
 {
-    private readonly FiniteElementBounds _feBounds;
+    private readonly IMapper _mapper;
 
     private readonly IReadOnlyList<IReadOnlyList<double>> _massMatrix =
     [
@@ -24,23 +24,22 @@ internal class MassMatrix : IMassMatrix<Matrix>
         [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 4]
     ];
 
-    public MassMatrix(
-        FiniteElement finiteElement,
-        IMapper mapper
-    )
+    public MassMatrix(IMapper mapper)
     {
-        _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
+        _mapper = mapper;
     }
 
-    public IReadOnlyList<IReadOnlyList<double>> MassMatrixBase  => _massMatrix;
+    public IReadOnlyList<IReadOnlyList<double>> MassMatrixBase => _massMatrix;
 
-    public Task<Matrix> GetMassMatrixAsync(double gamma)
+    public Task<Matrix> GetMassMatrixAsync(double gamma, FiniteElement finiteElement)
     {
+        var feBounds = _mapper.Map<FiniteElementBounds>(finiteElement);
+
         var matrix = new Matrix { Data = _massMatrix };
         matrix *= gamma
-                  * (_feBounds.HighCoordinate.X - _feBounds.LowCoordinate.X)
-                  * (_feBounds.HighCoordinate.Y - _feBounds.LowCoordinate.Y)
-                  * (_feBounds.HighCoordinate.Z - _feBounds.LowCoordinate.Z)
+                  * (feBounds.HighCoordinate.X - feBounds.LowCoordinate.X)
+                  * (feBounds.HighCoordinate.Y - feBounds.LowCoordinate.Y)
+                  * (feBounds.HighCoordinate.Z - feBounds.LowCoordinate.Z)
                   / 36;
 
         return Task.FromResult(matrix);

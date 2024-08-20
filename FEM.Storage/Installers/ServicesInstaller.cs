@@ -7,7 +7,7 @@ namespace FEM.Storage.Installers;
 
 public static class ServicesInstaller
 {
-    public static void RegisterServices(ContainerBuilder builder)
+    public static void RegisterStorageServices(ContainerBuilder builder)
     {
         builder.RegisterType<YamlConverter>().As<IConverter>();
         builder.RegisterType<JsonParser>().As<IParser>();

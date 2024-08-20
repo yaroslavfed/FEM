@@ -3,6 +3,7 @@ using FEM.Common.Data.MathModels;
 using FEM.Common.Extensions;
 using FEM.Storage.FileStorage;
 using VectorFEM.Core.Data.Parallelepipedal;
+using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 
@@ -14,16 +15,19 @@ public class MeshService : IMeshService
     private readonly IReadableStorage       _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
+    private readonly IMeshDrawingService    _drawingService;
 
     public MeshService(
         IReadableStorage meshStorage,
         IEdgesNumberingService edgesNumberingService,
-        INodesNumberingService nodesNumberingService
+        INodesNumberingService nodesNumberingService,
+        IMeshDrawingService drawingService
     )
     {
         _meshStorage = meshStorage;
         _edgesNumberingService = edgesNumberingService;
         _nodesNumberingService = nodesNumberingService;
+        _drawingService = drawingService;
     }
 
     public async Task<Axis> GenerateTestConfiguration() => await _meshStorage.GetAxisAsync();
@@ -87,6 +91,10 @@ public class MeshService : IMeshService
                        )
                        .ToList()
         };
+        
+#if DEBUG
+        await _drawingService.StartDrawingProcess(mesh);
+#endif
 
         return mesh;
     }

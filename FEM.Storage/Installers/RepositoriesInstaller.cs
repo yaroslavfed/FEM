@@ -4,8 +4,8 @@ using FEM.Storage.FileStorage.JsonStorage;
 
 namespace FEM.Storage.Installers;
 
-public static class StoragesInstaller
+public static class RepositoriesInstaller
 {
-    public static void RegisterStorages(ContainerBuilder builder) =>
+    public static void RegisterStorageRepositories(ContainerBuilder builder) =>
         builder.RegisterType<JsonStorage>().As<IReadableStorage>();
 }
