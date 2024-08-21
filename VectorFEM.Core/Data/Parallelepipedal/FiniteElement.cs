@@ -3,7 +3,7 @@
 namespace VectorFEM.Core.Data.Parallelepipedal;
 
 /// <summary>
-/// Параллелепипедальный конечный элемент векторного МКЭ
+/// Параллелепипедальный КЭ векторного МКЭ
 /// </summary>
 public record FiniteElement
 {

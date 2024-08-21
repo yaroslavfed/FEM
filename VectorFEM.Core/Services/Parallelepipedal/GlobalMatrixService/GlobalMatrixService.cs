@@ -34,53 +34,83 @@ public class GlobalMatrixService : IGlobalMatrixServices
         _portraitService = portraitService;
     }
 
-    public async Task<IMatrixFormat> GetGlobalMatrixAsync(EMatrixFormats matrixFormat)
+    public async Task<IMatrixFormat> GetGlobalMatrixProfileAsync(EMatrixFormats matrixFormat)
     {
         var testSession = await _testSessionService.CreateTestSessionAsync();
 
         var matrixProfile = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, matrixFormat);
         await matrixProfile.InitializeVectorsAsync(
-            testSession.Mesh.Elements
-                       .SelectMany(element => element.Edges)
-                       .DistinctBy(edge => edge.EdgeIndex)
-                       .Count()
+            testSession.Mesh.Elements.SelectMany(element => element.Edges).DistinctBy(edge => edge.EdgeIndex).Count()
         );
 
         foreach (var element in testSession.Mesh.Elements)
         {
-            var nodesList = element.Edges.SelectMany(edge => edge.Nodes).Distinct().ToArray();
-            var firstNode = nodesList[0];
-            var lastNode = nodesList[7];
-
-            var hx = lastNode.Coordinate.X - firstNode.Coordinate.X;
-            var hy = lastNode.Coordinate.Y - firstNode.Coordinate.Y;
-            var hz = lastNode.Coordinate.Z - firstNode.Coordinate.Z;
-
-            var massMatrix = await _massMatrix.GetMassMatrixAsync(testSession.Gamma, element);
-            var stiffnessMatrix = await _stiffnessMatrix.GetStiffnessMatrixAsync(testSession.Mu, element);
-            var rightPartVector = await ResolveLocalRightPartAsync(hx, hy, hz, element, testSession);
-
-            for (var i = 0; i < element.Edges.Count; i++)
-            {
-                for (var j = 0; j < element.Edges.Count; j++)
-                {
-                    await matrixProfile.AddElementToGlobalMatrixAsync(
-                        element.Edges[i].EdgeIndex,
-                        element.Edges[j].EdgeIndex,
-                        stiffnessMatrix.Data[i][j]
-                    );
-                    await matrixProfile.AddElementToGlobalMatrixAsync(
-                        element.Edges[i].EdgeIndex,
-                        element.Edges[j].EdgeIndex,
-                        massMatrix.Data[i][j]
-                    );
-                }
-
-                await matrixProfile.AddElementToRightPartAsync(element.Edges[i].EdgeIndex, rightPartVector[i]);
-            }
+            await ResolveGlobalMatrixAsync(matrixProfile, element, testSession);
+            await ResolveRightPartVectorAsync(matrixProfile, element, testSession);
         }
 
         return matrixProfile;
+    }
+
+    /// <summary>
+    /// Собираем глобальную матрицу в заданном формате хранения
+    /// </summary>
+    /// <param name="matrixProfile">Выбранный формат хранения</param>
+    /// <param name="element">Выбранный КЭ</param>
+    /// <param name="testSession"><see cref="TestSession{TMesh}"/></param>
+    private async Task ResolveGlobalMatrixAsync(
+        IMatrixFormat matrixProfile,
+        FiniteElement element,
+        TestSession<Mesh> testSession
+    )
+    {
+        var massMatrix = await _massMatrix.GetMassMatrixAsync(testSession.Gamma, element);
+        var stiffnessMatrix = await _stiffnessMatrix.GetStiffnessMatrixAsync(testSession.Mu, element);
+
+        for (var i = 0; i < element.Edges.Count; i++)
+        {
+            for (var j = 0; j < element.Edges.Count; j++)
+            {
+                await matrixProfile.AddElementToGlobalMatrixAsync(
+                    element.Edges[i].EdgeIndex,
+                    element.Edges[j].EdgeIndex,
+                    stiffnessMatrix.Data[i][j]
+                );
+                await matrixProfile.AddElementToGlobalMatrixAsync(
+                    element.Edges[i].EdgeIndex,
+                    element.Edges[j].EdgeIndex,
+                    massMatrix.Data[i][j]
+                );
+            }
+        }
+    }
+
+    /// <summary>
+    /// Собираем вектор правой части в заданном формате хранения
+    /// </summary>
+    /// <param name="matrixProfile">Выбранный формат хранения</param>
+    /// <param name="element">Выбранный КЭ</param>
+    /// <param name="testSession"><see cref="TestSession{TMesh}"/></param>
+    private async Task ResolveRightPartVectorAsync(
+        IMatrixFormat matrixProfile,
+        FiniteElement element,
+        TestSession<Mesh> testSession
+    )
+    {
+        var nodesList = element.Edges.SelectMany(edge => edge.Nodes).Distinct().ToArray();
+        var firstNode = nodesList[0];
+        var lastNode = nodesList[7];
+
+        var hx = lastNode.Coordinate.X - firstNode.Coordinate.X;
+        var hy = lastNode.Coordinate.Y - firstNode.Coordinate.Y;
+        var hz = lastNode.Coordinate.Z - firstNode.Coordinate.Z;
+
+        var localRightPartAsync = await ResolveLocalRightPartAsync(hx, hy, hz, element, testSession);
+
+        for (var i = 0; i < element.Edges.Count; i++)
+        {
+            await matrixProfile.AddElementToRightPartAsync(element.Edges[i].EdgeIndex, localRightPartAsync[i]);
+        }
     }
 
     /// <summary>

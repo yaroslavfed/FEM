@@ -1,7 +1,7 @@
 ﻿namespace FEM.Common.Data.MathModels.MatrixFormats;
 
 /// <summary>
-/// Массивы для СЛАУ в профильном формате
+/// Профильный формат хранения матрицы
 /// </summary>
 public record MatrixProfileFormat : IMatrixFormat
 {

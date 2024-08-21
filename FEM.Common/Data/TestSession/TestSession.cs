@@ -1,7 +1,7 @@
 ﻿namespace FEM.Common.Data.TestSession;
 
 /// <summary>
-/// Структура сессии решения прямой задачи
+/// Параметры сессии решения прямой задачи
 /// </summary>
 public record TestSession<TMesh>
 {

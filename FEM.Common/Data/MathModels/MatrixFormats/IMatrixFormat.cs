@@ -1,5 +1,8 @@
 ﻿namespace FEM.Common.Data.MathModels.MatrixFormats;
 
+/// <summary>
+/// Формат хранения матрицы
+/// </summary>
 public interface IMatrixFormat
 {
     /// <summary>

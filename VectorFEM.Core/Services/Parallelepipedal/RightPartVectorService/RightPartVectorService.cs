@@ -1,7 +1,6 @@
 using FEM.Common.Data.Domain;
 using VectorFEM.Core.Data.Parallelepipedal;
 using VectorFEM.Core.Extensions;
-using FEM.Common.Data.MathModels;
 using FEM.Common.Enums;
 using FEM.Common.Data.TestSession;
 using VectorFEM.Core.Services.TestingService;
@@ -34,9 +33,10 @@ public class RightPartVectorService : IRightPartVectorService
         var nodesList = localFiniteElement
                         .Edges
                         .SelectMany(item => item.Nodes)
+                        .DistinctBy(node => node.NodeIndex)
                         .OrderBy(node => node.NodeIndex)
                         .ToList();
-        
+
         var localFirstNode = new Node
         {
             Coordinate = new()
@@ -57,58 +57,38 @@ public class RightPartVectorService : IRightPartVectorService
             }
         };
 
-        var step = new Point3D
-        {
-            X = Math.Abs(localFirstNode.Coordinate.X - localSecondNode.Coordinate.X),
-            Y = Math.Abs(localFirstNode.Coordinate.Y - localSecondNode.Coordinate.Y),
-            Z = Math.Abs(localFirstNode.Coordinate.Z - localSecondNode.Coordinate.Z)
-        };
+        var stepX = Math.Abs(localFirstNode.Coordinate.X - localSecondNode.Coordinate.X);
+        if (stepX > 0)
+            return await _testingService.ResolveVectorContributionsAsync(
+                (firstNode, secondNode),
+                testSession.Mu,
+                testSession.Gamma,
+                EDirections.OX
+            );
 
-        if (step.X > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OX);
-        if (step.Y > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OY);
-        if (step.Z > 0) return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OZ);
+        var stepY = Math.Abs(localFirstNode.Coordinate.Y - localSecondNode.Coordinate.Y);
+        if (stepY > 0)
+            return await _testingService.ResolveVectorContributionsAsync(
+                (firstNode, secondNode),
+                testSession.Mu,
+                testSession.Gamma,
+                EDirections.OY
+            );
 
-        return await ResolveFunctionContribution(firstNode, secondNode, testSession, EDirections.OX);
-    }
+        var stepZ = Math.Abs(localFirstNode.Coordinate.Z - localSecondNode.Coordinate.Z);
+        if (stepZ > 0)
+            return await _testingService.ResolveVectorContributionsAsync(
+                (firstNode, secondNode),
+                testSession.Mu,
+                testSession.Gamma,
+                EDirections.OZ
+            );
 
-    private async Task<double> ResolveFunctionContribution(
-        Node firstNode,
-        Node secondNode,
-        TestSession<Mesh> testSession,
-        EDirections direction
-    )
-    {
-        var result = direction switch
-        {
-            EDirections.OX => firstNode with
-            {
-                Coordinate = firstNode.Coordinate with
-                {
-                    X = (firstNode.Coordinate.X + secondNode.Coordinate.X) / 2
-                }
-            },
-            EDirections.OY => firstNode with
-            {
-                Coordinate = firstNode.Coordinate with
-                {
-                    Y = (firstNode.Coordinate.Y + secondNode.Coordinate.Y) / 2
-                }
-            },
-            EDirections.OZ => firstNode with
-            {
-                Coordinate = firstNode.Coordinate with
-                {
-                    Z = (firstNode.Coordinate.Z + secondNode.Coordinate.Z) / 2
-                }
-            },
-            _ => throw new NotImplementedException()
-        };
-
-        return await _testingService.ResolveRightPartVector(
-            result.Coordinate,
+        return await _testingService.ResolveVectorContributionsAsync(
+            (firstNode, secondNode),
             testSession.Mu,
             testSession.Gamma,
-            direction
+            EDirections.OX
         );
     }
 }

@@ -5,5 +5,5 @@ namespace VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
 
 public interface IGlobalMatrixServices
 {
-    Task<IMatrixFormat> GetGlobalMatrixAsync(EMatrixFormats matrixFormat);
+    Task<IMatrixFormat> GetGlobalMatrixProfileAsync(EMatrixFormats matrixFormat);
 }

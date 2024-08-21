@@ -1,9 +1,20 @@
-using FEM.Common.Data.MathModels;
+using FEM.Common.Data.Domain;
 using FEM.Common.Enums;
 
 namespace VectorFEM.Core.Services.TestingService;
 
 public interface ITestingService
 {
-    Task<double> ResolveRightPartVector(Point3D coordinate, double mu, double gamma, EDirections direction);
+    Task<double> ResolveMatrixContributions(
+        (Node firstNode, Node secondNode) nodesPair,
+        double gamma,
+        EDirections direction
+    );
+
+    Task<double> ResolveVectorContributionsAsync(
+        (Node firstNode, Node secondNode) nodesPair,
+        double mu,
+        double gamma,
+        EDirections direction
+    );
 }

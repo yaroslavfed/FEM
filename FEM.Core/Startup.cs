@@ -14,7 +14,7 @@ public class Startup
 
     public async Task Run()
     {
-        await _globalMatrixServices.GetGlobalMatrixAsync(EMatrixFormats.Profile);
+        await _globalMatrixServices.GetGlobalMatrixProfileAsync(EMatrixFormats.Profile);
 
         Console.ReadKey();
     }
