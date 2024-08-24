@@ -1,0 +1,52 @@
+﻿using FEM.Common.Data.MathModels.MatrixFormats;
+using VectorFEM.Core.Services.TestingService;
+
+namespace VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService.BoundaryConditions;
+
+public class FirstBoundaryConditionService : IBoundaryConditionService
+{
+    private ITestingService _testingService;
+
+    public FirstBoundaryConditionService(ITestingService testingService)
+    {
+        _testingService = testingService;
+    }
+
+    public Task<IMatrixFormat> AddBoundaryCondition(int nx, int ny, int nz)
+    {
+        int gr = nx * (ny - 1) + ny * (nx - 1);
+        int pop = nx * ny;
+    }
+
+    private async Task<IReadOnlyList<(int nodeIndex, double nodeValue)>> FillBoundaryConditionsList(
+        IList<(int nodeIndex, double nodeValue)> boundaryConditionsList,
+        IReadOnlyList<int> nodesCount
+    )
+    {
+        for (int i = 0; i < 4; i += 3)
+        {
+            if (!IsInBoundary(nodesCount[i], boundaryConditionsList))
+            {
+                var contributionValue = await _testingService.ResolveVectorContributionsAsync()
+                boundaryConditionsList.Add(nodesCount[i], contributionValue);
+            }
+        }
+
+        for (int i = 1; i < 3; i++)
+        {
+            if (!IsInBoundary(nodesCount[i], boundaryConditionsList))
+            {
+                boundaryConditionsList.Add(nodesCount[i], bc1_value(nodesCount[i]));
+            }
+        }
+    }
+
+    private static bool IsInBoundary(int num, IList<(int nodeIndex, double nodeValue)> boundaryConditionsList)
+    {
+        for (var i = 0; i < boundaryConditionsList.Count; i++)
+            if (boundaryConditionsList[i].nodeIndex == num)
+                return true;
+
+        return false;
+    }
+}

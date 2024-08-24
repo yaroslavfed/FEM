@@ -8,7 +8,6 @@ public class TestingService : ITestingService
 {
     public async Task<double> ResolveMatrixContributions(
         (Node firstNode, Node secondNode) nodesPair,
-        double gamma,
         EDirections direction
     )
     {
@@ -20,14 +19,13 @@ public class TestingService : ITestingService
             Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + 45 * Math.Pow(coordinate.Z, 3)
         ];
 
-        return gamma
-               * direction switch
-               {
-                   EDirections.OX => contributionsFromMatrixA[0],
-                   EDirections.OY => contributionsFromMatrixA[1],
-                   EDirections.OZ => contributionsFromMatrixA[2],
-                   _              => throw new NotImplementedException()
-               };
+        return direction switch
+        {
+            EDirections.OX => contributionsFromMatrixA[0],
+            EDirections.OY => contributionsFromMatrixA[1],
+            EDirections.OZ => contributionsFromMatrixA[2],
+            _              => throw new NotImplementedException()
+        };
     }
 
     public async Task<double> ResolveVectorContributionsAsync(
@@ -45,7 +43,7 @@ public class TestingService : ITestingService
             8 * (coordinate.X + coordinate.Y)
         ];
 
-        var contributionsFromMatrixA = await ResolveMatrixContributions(nodesPair, gamma, direction);
+        var contributionsFromMatrixA = gamma * await ResolveMatrixContributions(nodesPair, gamma, direction);
 
         return 1
                / mu

@@ -1,4 +1,6 @@
-﻿namespace FEM.Common.Data.TestSession;
+﻿using FEM.Common.Enums;
+
+namespace FEM.Common.Data.TestSession;
 
 /// <summary>
 /// Параметры сессии решения прямой задачи
@@ -13,4 +15,9 @@ public record TestSession<TMesh>
     public int Mu { get; init; }
 
     public int Gamma { get; init; }
+    
+    /// <summary>
+    /// Краевое условие
+    /// </summary>
+    public EBoundaryConditions BoundaryCondition { get; init; }
 }
