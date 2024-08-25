@@ -15,8 +15,8 @@ public class TestSessionService : ITestSessionService
 
     public async Task<TestSession<Mesh>> CreateTestSessionAsync()
     {
-        var testConfiguration = await _meshService.GenerateTestConfiguration();
         var mesh = await _meshService.GenerateMeshAsync();
+        var testConfiguration = await _meshService.GenerateTestConfiguration();
 
         return await Task.FromResult(
             new TestSession<Mesh>

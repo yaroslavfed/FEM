@@ -9,7 +9,7 @@ public class BoundaryConditionFactory
     {
         IBoundaryConditionService boundaryCondition = boundaryConditionType switch
         {
-            EBoundaryConditions.Dirichlet => new FirstBoundaryConditionService(),
+            EBoundaryConditions.Dirichlet => new FirstBoundaryConditionService(new TestingService.TestingService()),
             EBoundaryConditions.Neiman => throw new DllNotFoundException("Не реализовано"),
             EBoundaryConditions.Robin => throw new DllNotFoundException("Не реализовано"),
             _ => throw new ArgumentOutOfRangeException(nameof(boundaryConditionType), boundaryConditionType, null)

@@ -15,13 +15,13 @@ public class MeshService : IMeshService
     private readonly IReadableStorage       _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
-    private readonly IMeshDrawingService    _drawingService;
+    private readonly IVisualizerService    _drawingService;
 
     public MeshService(
         IReadableStorage meshStorage,
         IEdgesNumberingService edgesNumberingService,
         INodesNumberingService nodesNumberingService,
-        IMeshDrawingService drawingService
+        IVisualizerService drawingService
     )
     {
         _meshStorage = meshStorage;
@@ -91,10 +91,6 @@ public class MeshService : IMeshService
                        )
                        .ToList()
         };
-        
-#if DEBUG
-        await _drawingService.StartDrawingProcess(mesh);
-#endif
 
         return mesh;
     }

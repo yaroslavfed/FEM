@@ -35,7 +35,7 @@ public static class ServicesInstaller
         builder.RegisterType<TestSessionService>().As<ITestSessionService>();
 
         builder.RegisterType<MatrixFormatResolver>().As<IMatrixFormatResolver>();
-        builder.RegisterType<MeshDrawingService>().As<IMeshDrawingService>().SingleInstance();
+        builder.RegisterType<VisualizerService>().As<IVisualizerService>().SingleInstance();
 
         Storage.Installers.ServicesInstaller.RegisterStorageServices(builder);
     }

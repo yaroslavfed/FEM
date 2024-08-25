@@ -1,4 +1,5 @@
 using FEM.Common.Data.Domain;
+using FEM.Common.Data.MathModels.MatrixFormats;
 using FEM.Common.Data.TestSession;
 using VectorFEM.Core.Data.Parallelepipedal;
 
@@ -10,7 +11,9 @@ namespace VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 public interface IRightPartVectorService
 {
     /// <summary>
-    /// Расчет значений элементов вектора правой части
+    /// Получение вектора правой части
     /// </summary>
-    Task<double> ResolveRightPartValueAsync(Edge edge, TestSession<Mesh> testSession);
+    /// <param name="matrixProfile">Выбранный формат хранения</param>
+    /// <param name="testSession"><see cref="TestSession{TMesh}"/></param>
+    Task GetRightPartVectorAsync(IMatrixFormat matrixProfile, TestSession<Mesh> testSession);
 }
