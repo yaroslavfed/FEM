@@ -3,6 +3,7 @@ using FEM.Common.Data.MathModels;
 using FEM.Common.Resolvers.MatrixFormatResolver;
 using VectorFEM.Core.Models.Parallelepipedal.MassMatrix;
 using VectorFEM.Core.Models.Parallelepipedal.StiffnessMatrix;
+using VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
 using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
 using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
@@ -35,7 +36,10 @@ public static class ServicesInstaller
         builder.RegisterType<TestSessionService>().As<ITestSessionService>();
 
         builder.RegisterType<MatrixFormatResolver>().As<IMatrixFormatResolver>();
-        builder.RegisterType<VisualizerService>().As<IVisualizerService>().SingleInstance();
+
+        builder.RegisterType<BoundaryConditionFactory>().As<IBoundaryConditionFactory>();
+
+        builder.RegisterType<VisualizerService>().As<IVisualizerService>();
 
         Storage.Installers.ServicesInstaller.RegisterStorageServices(builder);
     }

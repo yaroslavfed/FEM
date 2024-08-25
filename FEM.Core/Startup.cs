@@ -1,5 +1,6 @@
 ﻿using FEM.Common.Enums;
 using FEM.Common.Resolvers.MatrixFormatResolver;
+using VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
 using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
 using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
@@ -11,18 +12,20 @@ namespace FEM.Core;
 
 public class Startup
 {
-    private readonly IGlobalMatrixServices   _globalMatrixServices;
-    private readonly ITestSessionService     _testSessionService;
-    private readonly IMatrixPortraitService  _portraitService;
-    private readonly IRightPartVectorService _rightPartVectorService;
-    private readonly IVisualizerService      _visualizerService;
+    private readonly IGlobalMatrixServices     _globalMatrixServices;
+    private readonly ITestSessionService       _testSessionService;
+    private readonly IMatrixPortraitService    _portraitService;
+    private readonly IRightPartVectorService   _rightPartVectorService;
+    private readonly IVisualizerService        _visualizerService;
+    private readonly IBoundaryConditionFactory _boundaryCondition;
 
     public Startup(
         IGlobalMatrixServices globalMatrixServices,
         ITestSessionService testSessionService,
         IMatrixPortraitService portraitService,
         IRightPartVectorService rightPartVectorService,
-        IVisualizerService visualizerService
+        IVisualizerService visualizerService,
+        IBoundaryConditionFactory boundaryCondition
     )
     {
         _globalMatrixServices = globalMatrixServices;
@@ -30,6 +33,7 @@ public class Startup
         _portraitService = portraitService;
         _rightPartVectorService = rightPartVectorService;
         _visualizerService = visualizerService;
+        _boundaryCondition = boundaryCondition;
     }
 
     public async Task Run()
@@ -44,7 +48,10 @@ public class Startup
         await _globalMatrixServices.GetGlobalMatrixAsync(matrixProfile, testSession);
         await _rightPartVectorService.GetRightPartVectorAsync(matrixProfile, testSession);
 
-#if DEBUG
+        var boundaryConditionService = await _boundaryCondition.ResolveBoundaryCondition(EBoundaryConditions.Dirichlet);
+        await boundaryConditionService.AddBoundaryCondition(testSession);
+
+#if false
         await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
         await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
 #endif

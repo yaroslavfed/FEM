@@ -15,19 +15,16 @@ public class MeshService : IMeshService
     private readonly IReadableStorage       _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
-    private readonly IVisualizerService    _drawingService;
 
     public MeshService(
         IReadableStorage meshStorage,
         IEdgesNumberingService edgesNumberingService,
-        INodesNumberingService nodesNumberingService,
-        IVisualizerService drawingService
+        INodesNumberingService nodesNumberingService
     )
     {
         _meshStorage = meshStorage;
         _edgesNumberingService = edgesNumberingService;
         _nodesNumberingService = nodesNumberingService;
-        _drawingService = drawingService;
     }
 
     public async Task<Axis> GenerateTestConfiguration() => await _meshStorage.GetAxisAsync();

@@ -35,15 +35,15 @@ public class RightPartVectorService : IRightPartVectorService
     /// </summary>
     private async Task<double> ResolveRightPartValueAsync(Edge edge, TestSession<Mesh> testSession)
     {
-        var test = await _testingService.ResolveLocalNodes(edge, testSession);
+        var localNodes = await _testingService.ResolveLocalNodes(edge, testSession);
 
         var vectorContributions = await _testingService.ResolveVectorContributionsAsync(
-            (test.firstNode, test.secondNode),
-            test.direction
+            (localNodes.firstNode, localNodes.secondNode),
+            localNodes.direction
         );
         var matrixContributions = await _testingService.ResolveMatrixContributions(
-            (test.firstNode, test.secondNode),
-            test.direction
+            (localNodes.firstNode, localNodes.secondNode),
+            localNodes.direction
         );
 
         return 1.0 / testSession.Mu * vectorContributions + testSession.Gamma * matrixContributions;
