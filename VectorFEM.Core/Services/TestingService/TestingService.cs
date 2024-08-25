@@ -1,5 +1,8 @@
 using FEM.Common.Data.Domain;
+using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
+using VectorFEM.Core.Data.Parallelepipedal;
+using VectorFEM.Core.Extensions;
 
 namespace VectorFEM.Core.Services.TestingService;
 
@@ -30,8 +33,6 @@ public class TestingService : ITestingService
 
     public async Task<double> ResolveVectorContributionsAsync(
         (Node firstNode, Node secondNode) nodesPair,
-        double mu,
-        double gamma,
         EDirections direction
     )
     {
@@ -43,18 +44,70 @@ public class TestingService : ITestingService
             8 * (coordinate.X + coordinate.Y)
         ];
 
-        var contributionsFromMatrixA = gamma * await ResolveMatrixContributions(nodesPair, gamma, direction);
+        return direction switch
+        {
+            EDirections.OX => contributionsFromVectorF[0],
+            EDirections.OY => contributionsFromVectorF[1],
+            EDirections.OZ => contributionsFromVectorF[2],
+            _              => throw new NotImplementedException()
+        };
+    }
 
-        return 1
-               / mu
-               * direction switch
-               {
-                   EDirections.OX => contributionsFromVectorF[0],
-                   EDirections.OY => contributionsFromVectorF[1],
-                   EDirections.OZ => contributionsFromVectorF[2],
-                   _              => throw new NotImplementedException()
-               }
-               + contributionsFromMatrixA;
+    public async Task<(Node firstNode, Node secondNode, EDirections direction)> ResolveLocalNodes(
+        Edge edge,
+        TestSession<Mesh> testSession
+    )
+    {
+        var finiteElementIndex = await edge.FiniteElementIndexByEdges(testSession.Mesh);
+        var localFiniteElement = testSession.Mesh.Elements[finiteElementIndex];
+
+        var edgeIndex = await edge.ResolveLocal(localFiniteElement);
+        var firstNode = localFiniteElement.Edges[edgeIndex].Nodes[0];
+        var secondNode = localFiniteElement.Edges[edgeIndex].Nodes[1];
+
+        var firstNodeIndex = await firstNode.ResolveLocal(localFiniteElement);
+        var secondNodeIndex = await secondNode.ResolveLocal(localFiniteElement);
+
+        var nodesList = localFiniteElement
+                        .Edges
+                        .SelectMany(item => item.Nodes)
+                        .DistinctBy(node => node.NodeIndex)
+                        .OrderBy(node => node.NodeIndex)
+                        .ToList();
+
+        var localFirstNode = new Node
+        {
+            Coordinate = new()
+            {
+                X = nodesList[firstNodeIndex].Coordinate.X,
+                Y = nodesList[firstNodeIndex].Coordinate.Y,
+                Z = nodesList[firstNodeIndex].Coordinate.Z
+            }
+        };
+
+        var localSecondNode = new Node
+        {
+            Coordinate = new()
+            {
+                X = nodesList[secondNodeIndex].Coordinate.X,
+                Y = nodesList[secondNodeIndex].Coordinate.Y,
+                Z = nodesList[secondNodeIndex].Coordinate.Z
+            }
+        };
+
+        var stepX = Math.Abs(localFirstNode.Coordinate.X - localSecondNode.Coordinate.X);
+        var stepY = Math.Abs(localFirstNode.Coordinate.Y - localSecondNode.Coordinate.Y);
+        var stepZ = Math.Abs(localFirstNode.Coordinate.Z - localSecondNode.Coordinate.Z);
+
+        var direction = EDirections.OX;
+        if (stepX > 0)
+            direction = EDirections.OX;
+        else if (stepY > 0)
+            direction = EDirections.OY;
+        else if (stepZ > 0)
+            direction = EDirections.OZ;
+
+        return (firstNode, secondNode, direction);
     }
 
     private static Task<Node> CalculateNodeAsync(EDirections direction, (Node firstNode, Node secondNode) nodesPair)
