@@ -35,7 +35,7 @@ public class JsonStorage : IReadableStorage
         {
             Positioning = positioning,
             Splitting = splitting,
-            AdditionalParameters = additionalParameters,
+            AdditionalParameters = additionalParameters
         };
     }
 }

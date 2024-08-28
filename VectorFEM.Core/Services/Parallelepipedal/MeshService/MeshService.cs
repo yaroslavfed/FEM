@@ -3,7 +3,6 @@ using FEM.Common.Data.MathModels;
 using FEM.Common.Extensions;
 using FEM.Storage.FileStorage;
 using VectorFEM.Core.Data.Parallelepipedal;
-using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
 using VectorFEM.Core.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 
@@ -40,7 +39,7 @@ public class MeshService : IMeshService
 
         var finiteElements = Enumerable
                              .Range(0, (nx - 1) * (ny - 1) * (nz - 1))
-                             .Select(i => new FiniteElementWithNumerics())
+                             .Select(_ => new FiniteElementWithNumerics())
                              .ToArray();
 
         await _nodesNumberingService.ConfigureGlobalNumbering(nx, ny, nz, finiteElements);
@@ -50,7 +49,7 @@ public class MeshService : IMeshService
         {
             Elements = finiteElements
                        .Select(
-                           element => new FiniteElement()
+                           element => new FiniteElement
                            {
                                Edges = element
                                        .MapNodesEdges
@@ -97,7 +96,7 @@ public class MeshService : IMeshService
     /// </summary>
     /// <param name="meshParameters">Входные параметры сетки</param>
     /// <returns>Список точек принадлежащих расчетной области</returns>
-    private Task<List<Point3D>> ConfigurePointsListAsync(Axis meshParameters)
+    private static Task<List<Point3D>> ConfigurePointsListAsync(Axis meshParameters)
     {
         var x = new List<double>()
                 .ToList()

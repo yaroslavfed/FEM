@@ -239,9 +239,9 @@ public class BasicFunction : IBasicFunction<Vector>
             _ => throw new ArgumentOutOfRangeException()
         };
 
-    private double HierarchicalFunctionsMinus(double startPoint, double endPoint, double position) =>
+    private static double HierarchicalFunctionsMinus(double startPoint, double endPoint, double position) =>
         (endPoint - position) / (endPoint - startPoint);
 
-    private double HierarchicalFunctionsPlus(double startPoint, double endPoint, double position) =>
+    private static double HierarchicalFunctionsPlus(double startPoint, double endPoint, double position) =>
         (position - startPoint) / (endPoint - startPoint);
 }

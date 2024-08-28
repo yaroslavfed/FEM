@@ -17,9 +17,9 @@ public static class EdgeExtensions
 
     public static Task<int> FiniteElementIndexByEdges(this Edge edge, Mesh strata)
     {
-        for (int i = 0; i < strata.Elements.Count; i++)
+        for (var i = 0; i < strata.Elements.Count; i++)
         {
-            for (int j = 0; j < 12; j++)
+            for (var j = 0; j < 12; j++)
             {
                 if (strata.Elements[i].Edges[j].EdgeIndex == edge.EdgeIndex)
                 {

@@ -1,5 +1,4 @@
 ﻿using FEM.Common.Data.TestSession;
-using FEM.Common.Enums;
 using VectorFEM.Core.Data.Parallelepipedal;
 using VectorFEM.Core.Services.Parallelepipedal.MeshService;
 

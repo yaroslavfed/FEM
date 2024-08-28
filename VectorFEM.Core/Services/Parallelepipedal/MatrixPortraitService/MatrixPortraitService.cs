@@ -5,7 +5,7 @@ using VectorFEM.Core.Data.Parallelepipedal;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
 
-/// <inheritdoc cref="IMatrixPortraitService{TMatrixFormat}"/>
+/// <inheritdoc cref="IMatrixPortraitService"/>
 public class MatrixPortraitService : IMatrixPortraitService
 {
     private readonly IMatrixFormatResolver _matrixFormatResolver;
@@ -19,7 +19,7 @@ public class MatrixPortraitService : IMatrixPortraitService
     public async Task<IMatrixFormat> ResolveMatrixPortraitAsync(Mesh mesh, EMatrixFormats matrixFormat)
     {
         var edgesCount = mesh.Elements.SelectMany(element => element.Edges).DistinctBy(edge => edge.EdgeIndex).Count();
-        var bufferList = Enumerable.Range(0, edgesCount).Select(item => new List<int>()).ToList();
+        var bufferList = Enumerable.Range(0, edgesCount).Select(_ => new List<int>()).ToList();
 
         foreach (var finiteElement in mesh.Elements)
         {

@@ -1,4 +1,3 @@
-using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels.MatrixFormats;
 using FEM.Common.Data.TestSession;
 using VectorFEM.Core.Data.Parallelepipedal;

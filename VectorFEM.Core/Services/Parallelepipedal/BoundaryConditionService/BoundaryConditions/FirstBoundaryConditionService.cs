@@ -8,7 +8,7 @@ namespace VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService.Boun
 
 public class FirstBoundaryConditionService : IBoundaryConditionService
 {
-    private ITestingService _testingService;
+    private readonly ITestingService _testingService;
 
     public FirstBoundaryConditionService(ITestingService testingService)
     {
@@ -88,8 +88,8 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             }
 
         // Заполняем краевые условия для правой грани КЭ
-        for (int i = 0; i < nz - 1; i++)
-            for (int j = 0; j < ny - 1; j++)
+        for (var i = 0; i < nz - 1; i++)
+            for (var j = 0; j < ny - 1; j++)
             {
                 n[0] = i * (gr + pop) + j * (2 * nx - 1) + (nx - 2) + 1 + (nx - 1);
                 n[1] = i * (gr + pop) + gr + (nx - 2) + j * nx + 1;
@@ -100,8 +100,8 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             }
 
         // Заполняем краевые условия для нижней грани КЭ
-        for (int i = 0; i < ny - 1; i++)
-            for (int j = 0; j < nx - 1; j++)
+        for (var i = 0; i < ny - 1; i++)
+            for (var j = 0; j < nx - 1; j++)
             {
                 n[0] = i * (2 * nx - 1) + j;
                 n[1] = i * (2 * nx - 1) + j + (nx - 1);
@@ -112,8 +112,8 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             }
 
         // Заполняем краевые условия для верхней грани КЭ
-        for (int i = 0; i < ny - 1; i++)
-            for (int j = 0; j < nx - 1; j++)
+        for (var i = 0; i < ny - 1; i++)
+            for (var j = 0; j < nx - 1; j++)
             {
                 n[0] = (nz - 1) * (gr + pop) + i * (2 * nx - 1) + j;
                 n[1] = (nz - 1) * (gr + pop) + i * (2 * nx - 1) + (nx - 1) + j;
@@ -124,8 +124,8 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             }
 
         // Заполняем краевые условия для передней грани КЭ
-        for (int i = 0; i < nz - 1; i++)
-            for (int j = 0; j < nx - 1; j++)
+        for (var i = 0; i < nz - 1; i++)
+            for (var j = 0; j < nx - 1; j++)
             {
                 n[0] = i * (gr + pop) + j;
                 n[1] = i * (gr + pop) + gr + j;
@@ -136,13 +136,13 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             }
 
         // Заполняем краевые условия для задней грани КЭ
-        for (int i = 0; i < nz - 1; i++)
-            for (int j = 0; j < nx - 1; j++)
+        for (var i = 0; i < nz - 1; i++)
+            for (var j = 0; j < nx - 1; j++)
             {
-                n[0] = i * (gr + pop) + ((ny - 2) + 1) * (2 * nx - 1) + j;
+                n[0] = i * (gr + pop) + (ny - 2 + 1) * (2 * nx - 1) + j;
                 n[1] = i * (gr + pop) + gr + j + (ny - 2) * nx + nx;
                 n[2] = i * (gr + pop) + gr + j + (ny - 2) * nx + nx + 1;
-                n[3] = (i + 1) * (gr + pop) + ((ny - 2) + 1) * (2 * nx - 1) + j;
+                n[3] = (i + 1) * (gr + pop) + (ny - 2 + 1) * (2 * nx - 1) + j;
 
                 await FillBoundaryConditionsList(n, boundaryConditionsList, testSession);
             }
@@ -154,7 +154,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
 
     private async Task FillBoundaryConditionsList(
         IList<int> list,
-        IList<(int nodeIndex, double nodeValue)> boundaryConditionsList,
+        List<(int nodeIndex, double nodeValue)> boundaryConditionsList,
         TestSession<Mesh> testSession
     )
     {
@@ -204,7 +204,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
         return false;
     }
 
-    private Task<Node[]> GetNodesListAsync(TestSession<Mesh> testSession)
+    private static Task<Node[]> GetNodesListAsync(TestSession<Mesh> testSession)
     {
         var localNode = testSession
                         .Mesh

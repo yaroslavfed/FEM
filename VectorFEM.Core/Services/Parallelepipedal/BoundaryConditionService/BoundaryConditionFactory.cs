@@ -3,7 +3,6 @@ using FEM.Common.Extensions;
 using Splat;
 using VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService.BoundaryConditions;
 using VectorFEM.Core.Services.TestingService;
-using VectorFEM.Core.Services.TestSessionService;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
 

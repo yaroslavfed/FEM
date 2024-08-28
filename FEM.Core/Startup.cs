@@ -1,10 +1,8 @@
 ﻿using FEM.Common.Enums;
-using FEM.Common.Resolvers.MatrixFormatResolver;
 using VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
 using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
 using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
-using VectorFEM.Core.Services.Parallelepipedal.MeshService;
 using VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
 using VectorFEM.Core.Services.TestSessionService;
 

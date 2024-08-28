@@ -9,7 +9,7 @@ public class InjectionBuilder<
 >
 {
     private readonly IReadonlyDependencyResolver         _dependencyResolver;
-    private readonly IList<(Type Type, object Instance)> _autocompleteMap = new List<(Type Type, object Instance)>();
+    private readonly List<(Type Type, object Instance)> _autocompleteMap = [];
 
     internal InjectionBuilder(IReadonlyDependencyResolver dependencyResolver)
     {

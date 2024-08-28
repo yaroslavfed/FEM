@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Common.Enums;
 using VectorFEM.Core.Data.Parallelepipedal;
 
 namespace VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
@@ -38,9 +37,9 @@ public class VisualizerService : IVisualizerService
         }
     }
 
-    private async Task WriteToFileAsync<T>(string fileName, IList<T> list)
+    private static async Task WriteToFileAsync<T>(string fileName, IList<T> list)
     {
-        await using StreamWriter streamWriter = new StreamWriter(fileName);
+        await using var streamWriter = new StreamWriter(fileName);
         foreach (var item in list)
         {
             switch (item)

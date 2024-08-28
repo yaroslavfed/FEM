@@ -107,7 +107,7 @@ public class EdgesNumberingService : IEdgesNumberingService
     /// <summary>
     /// Заполнение списка конечных элементов
     /// </summary>
-    private Task FillFiniteElementsAsync(
+    private static Task FillFiniteElementsAsync(
         IList<FiniteElementWithNumerics> finiteElements,
         int finiteElementIndex,
         int edgeIndex,

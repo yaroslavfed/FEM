@@ -24,9 +24,9 @@ public class TestingService : ITestingService
 
         return direction switch
         {
-            EDirections.OX => contributionsFromMatrixA[0],
-            EDirections.OY => contributionsFromMatrixA[1],
-            EDirections.OZ => contributionsFromMatrixA[2],
+            EDirections.Ox => contributionsFromMatrixA[0],
+            EDirections.Oy => contributionsFromMatrixA[1],
+            EDirections.Oz => contributionsFromMatrixA[2],
             _              => throw new NotImplementedException()
         };
     }
@@ -46,9 +46,9 @@ public class TestingService : ITestingService
 
         return direction switch
         {
-            EDirections.OX => contributionsFromVectorF[0],
-            EDirections.OY => contributionsFromVectorF[1],
-            EDirections.OZ => contributionsFromVectorF[2],
+            EDirections.Ox => contributionsFromVectorF[0],
+            EDirections.Oy => contributionsFromVectorF[1],
+            EDirections.Oz => contributionsFromVectorF[2],
             _              => throw new NotImplementedException()
         };
     }
@@ -99,13 +99,13 @@ public class TestingService : ITestingService
         var stepY = Math.Abs(localFirstNode.Coordinate.Y - localSecondNode.Coordinate.Y);
         var stepZ = Math.Abs(localFirstNode.Coordinate.Z - localSecondNode.Coordinate.Z);
 
-        var direction = EDirections.OX;
+        var direction = EDirections.Ox;
         if (stepX > 0)
-            direction = EDirections.OX;
+            direction = EDirections.Ox;
         else if (stepY > 0)
-            direction = EDirections.OY;
+            direction = EDirections.Oy;
         else if (stepZ > 0)
-            direction = EDirections.OZ;
+            direction = EDirections.Oz;
 
         return (firstNode, secondNode, direction);
     }
@@ -114,21 +114,21 @@ public class TestingService : ITestingService
     {
         var result = direction switch
         {
-            EDirections.OX => nodesPair.firstNode with
+            EDirections.Ox => nodesPair.firstNode with
             {
                 Coordinate = nodesPair.firstNode.Coordinate with
                 {
                     X = (nodesPair.firstNode.Coordinate.X + nodesPair.secondNode.Coordinate.X) / 2
                 }
             },
-            EDirections.OY => nodesPair.firstNode with
+            EDirections.Oy => nodesPair.firstNode with
             {
                 Coordinate = nodesPair.firstNode.Coordinate with
                 {
                     Y = (nodesPair.firstNode.Coordinate.Y + nodesPair.secondNode.Coordinate.Y) / 2
                 }
             },
-            EDirections.OZ => nodesPair.firstNode with
+            EDirections.Oz => nodesPair.firstNode with
             {
                 Coordinate = nodesPair.firstNode.Coordinate with
                 {

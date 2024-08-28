@@ -5,15 +5,15 @@
 /// </summary>
 public record MatrixProfileFormat : IMatrixFormat
 {
-    public List<int> Ig { get; set; } = [];
+    public List<int> Ig { get; private set; } = [];
 
-    public List<int> Jg { get; set; } = [];
+    public List<int> Jg { get; private set; } = [];
 
-    public List<double> Di { get; set; } = [];
+    public List<double> Di { get; private set; } = [];
 
-    public List<double> Gg { get; set; } = [];
+    public List<double> Gg { get; private set; } = [];
 
-    public List<double> F { get; set; } = [];
+    public List<double> F { get; private set; } = [];
 
     public Task InitializeVectorsAsync(int edgesCount)
     {
