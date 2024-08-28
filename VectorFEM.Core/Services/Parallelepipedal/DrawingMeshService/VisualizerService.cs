@@ -46,7 +46,7 @@ public class VisualizerService : IVisualizerService
             switch (item)
             {
                 case double:
-                    await streamWriter.WriteLineAsync($"{item:0.####E+00}");
+                    await streamWriter.WriteLineAsync($"{item:0.0000E+00}");
                     break;
                 case int:
                     await streamWriter.WriteLineAsync($"{item}");

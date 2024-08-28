@@ -6,5 +6,5 @@ namespace VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService.Boun
 
 public interface IBoundaryConditionService
 {
-    Task<IMatrixFormat> AddBoundaryCondition(TestSession<Mesh> testSession);
+    Task SetBoundaryConditionsAsync(TestSession<Mesh> testSession, IMatrixFormat matrixProfile);
 }

@@ -1,4 +1,5 @@
 ﻿using FEM.Common.Data.TestSession;
+using FEM.Common.Enums;
 using VectorFEM.Core.Data.Parallelepipedal;
 using VectorFEM.Core.Services.Parallelepipedal.MeshService;
 
@@ -24,7 +25,7 @@ public class TestSessionService : ITestSessionService
                 Mesh = mesh,
                 Mu = testConfiguration.AdditionalParameters.Mu,
                 Gamma = testConfiguration.AdditionalParameters.Gamma,
-                BoundaryCondition = testConfiguration.AdditionalParameters.BoundaryCondition
+                BoundaryCondition = testConfiguration.AdditionalParameters.BoundaryCondition - 1
             }
         );
     }

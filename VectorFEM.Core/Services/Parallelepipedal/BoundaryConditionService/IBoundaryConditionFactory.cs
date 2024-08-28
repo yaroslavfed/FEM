@@ -5,5 +5,5 @@ namespace VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
 
 public interface IBoundaryConditionFactory
 {
-    Task<IBoundaryConditionService> ResolveBoundaryCondition(EBoundaryConditions boundaryConditionType);
+    Task<IBoundaryConditionService> ResolveBoundaryConditionAsync(EBoundaryConditions boundaryConditionType);
 }

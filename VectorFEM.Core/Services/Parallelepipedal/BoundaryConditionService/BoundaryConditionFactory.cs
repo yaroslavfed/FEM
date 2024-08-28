@@ -16,7 +16,7 @@ public class BoundaryConditionFactory : IBoundaryConditionFactory
         _testingService = testingService;
     }
 
-    public Task<IBoundaryConditionService> ResolveBoundaryCondition(EBoundaryConditions boundaryConditionType)
+    public Task<IBoundaryConditionService> ResolveBoundaryConditionAsync(EBoundaryConditions boundaryConditionType)
     {
         IBoundaryConditionService boundaryCondition = boundaryConditionType switch
         {

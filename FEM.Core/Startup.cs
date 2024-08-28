@@ -48,10 +48,10 @@ public class Startup
         await _globalMatrixServices.GetGlobalMatrixAsync(matrixProfile, testSession);
         await _rightPartVectorService.GetRightPartVectorAsync(matrixProfile, testSession);
 
-        var boundaryConditionService = await _boundaryCondition.ResolveBoundaryCondition(EBoundaryConditions.Dirichlet);
-        await boundaryConditionService.AddBoundaryCondition(testSession);
+        var boundaryConditionService = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
+        await boundaryConditionService.SetBoundaryConditionsAsync(testSession, matrixProfile);
 
-#if false
+#if DEBUG
         await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
         await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
 #endif
