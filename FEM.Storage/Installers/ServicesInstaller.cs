@@ -9,7 +9,7 @@ public static class ServicesInstaller
 {
     public static void RegisterStorageServices(ContainerBuilder builder)
     {
-        builder.RegisterType<YamlConverter>().As<IConverter>();
+        builder.RegisterType<ConverterService>().As<IConverterService>();
         builder.RegisterType<JsonParser>().As<IParser>();
     }
 }

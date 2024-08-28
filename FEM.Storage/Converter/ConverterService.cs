@@ -2,11 +2,11 @@
 
 namespace FEM.Storage.Converter;
 
-public class YamlConverter : IConverter
+public class ConverterService : IConverterService
 {
     private readonly IMapper _mapper;
 
-    public YamlConverter(IMapper mapper)
+    public ConverterService(IMapper mapper)
     {
         _mapper = mapper;
     }

@@ -1,6 +1,6 @@
 ﻿namespace FEM.Storage.Converter;
 
-public interface IConverter
+public interface IConverterService
 {
     Task<TOutput> ConvertTo<TInput, TOutput>(TInput input);
 }
