@@ -3,17 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.Core", "FEM.Core\FEM.Core.csproj", "{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Core", "FEM.Core\FEM.Core.csproj", "{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.Common", "FEM.Common\FEM.Common.csproj", "{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Common", "FEM.Common\FEM.Common.csproj", "{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.Database", "FEM.Database\FEM.Database.csproj", "{A138A22C-60D9-4FB0-BBFD-3869BA793E6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Database", "FEM.Database\FEM.Database.csproj", "{A138A22C-60D9-4FB0-BBFD-3869BA793E6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.TerminalGui", "FEM.TerminalGui\FEM.TerminalGui.csproj", "{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.TerminalGui", "FEM.TerminalGui\FEM.TerminalGui.csproj", "{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.Storage", "FEM.Storage\FEM.Storage.csproj", "{FEA8D4B2-49AD-4AB4-BA7C-7992D129C954}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Storage", "FEM.Storage\FEM.Storage.csproj", "{FEA8D4B2-49AD-4AB4-BA7C-7992D129C954}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorFEM.Core", "VectorFEM.Core\VectorFEM.Core.csproj", "{70004A8B-777E-4B72-B166-6D4657306B8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VectorFEM.Core", "VectorFEM.Core\VectorFEM.Core.csproj", "{70004A8B-777E-4B72-B166-6D4657306B8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FEM.Solvers", "FEM.Solvers\FEM.Solvers.csproj", "{88E9D046-8E39-49EE-A2C3-EC489AA0D22F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D2D464DE-C194-45E5-A84F-AB7FBEA2F612} = {D2D464DE-C194-45E5-A84F-AB7FBEA2F612}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,13 +50,15 @@ Global
 		{70004A8B-777E-4B72-B166-6D4657306B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70004A8B-777E-4B72-B166-6D4657306B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70004A8B-777E-4B72-B166-6D4657306B8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88E9D046-8E39-49EE-A2C3-EC489AA0D22F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88E9D046-8E39-49EE-A2C3-EC489AA0D22F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88E9D046-8E39-49EE-A2C3-EC489AA0D22F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88E9D046-8E39-49EE-A2C3-EC489AA0D22F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1A165BD-7520-4F6A-91E6-85AE62EE901F}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal
