@@ -1,4 +1,5 @@
 ﻿using FEM.Common.Enums;
+
 using VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
 using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
 using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
@@ -10,11 +11,11 @@ namespace FEM.Core;
 
 public class Startup
 {
-    private readonly IGlobalMatrixServices     _globalMatrixServices;
-    private readonly ITestSessionService       _testSessionService;
-    private readonly IMatrixPortraitService    _portraitService;
-    private readonly IRightPartVectorService   _rightPartVectorService;
-    private readonly IVisualizerService        _visualizerService;
+    private readonly IGlobalMatrixServices _globalMatrixServices;
+    private readonly ITestSessionService _testSessionService;
+    private readonly IMatrixPortraitService _portraitService;
+    private readonly IRightPartVectorService _rightPartVectorService;
+    private readonly IVisualizerService _visualizerService;
     private readonly IBoundaryConditionFactory _boundaryCondition;
 
     public Startup(
@@ -48,6 +49,9 @@ public class Startup
 
         var boundaryConditionService = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
         await boundaryConditionService.SetBoundaryConditionsAsync(testSession, matrixProfile);
+
+
+
 
 #if DEBUG
         await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
