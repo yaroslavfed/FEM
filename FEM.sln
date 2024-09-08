@@ -16,9 +16,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VectorFEM.Core", "VectorFEM.Core\VectorFEM.Core.csproj", "{70004A8B-777E-4B72-B166-6D4657306B8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Solvers", "FEM.Solvers\FEM.Solvers.csproj", "{88E9D046-8E39-49EE-A2C3-EC489AA0D22F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D2D464DE-C194-45E5-A84F-AB7FBEA2F612} = {D2D464DE-C194-45E5-A84F-AB7FBEA2F612}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{B7148648-4449-4AD2-A6EE-DB1CB09E68F4}"
 EndProject
