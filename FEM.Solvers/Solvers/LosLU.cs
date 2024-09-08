@@ -16,7 +16,7 @@ namespace SlaeSolver.Implementations.Solvers
             this.eps = eps;
         }
 
-        public Vector Solve(MatrixProfileFormat slae)
+        public (Vector Solve, double discrepancy, int IterCount) Solve(MatrixProfileFormat slae)
         {
             var vectors = ILUsqModi(slae);
             var D = vectors.Item1;
@@ -26,7 +26,7 @@ namespace SlaeSolver.Implementations.Solvers
         }
 
 
-        private Vector LOSLU(MatrixProfileFormat slae, Vector D, Vector L, Vector U)
+        private (Vector Solve, double discrepancy, int IterCount) LOSLU(MatrixProfileFormat slae, Vector D, Vector L, Vector U)
         {
             var size = slae.Size;
             double a, b;
@@ -57,8 +57,8 @@ namespace SlaeSolver.Implementations.Solvers
                 p = LAUr + (b * p);
 
             } while (r * r > eps && k <= maxItCount);
-            Console.WriteLine($"Solver iterations count - {k}");
-            return solve;
+
+            return (solve, r * r, k);
         }
 
         private double GetCoefficent(Vector a1, Vector b1, Vector a2, Vector b2) => a1 * b1 / (a2 * b2);
