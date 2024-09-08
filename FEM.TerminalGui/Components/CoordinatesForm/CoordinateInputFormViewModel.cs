@@ -41,7 +41,7 @@ public class CoordinateInputFormViewModel : ViewModelBase
     public ustring ZStepToBounds { get; set; } = ustring.Empty;
 
     [Reactive]
-    public MeshBounds MeshBounds { get; } = new();
+    public MeshBounds MeshBounds { get; set; } = new();
 
     #endregion
 }
