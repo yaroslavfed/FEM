@@ -4,7 +4,7 @@
         <OutputType>Exe</OutputType>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -17,6 +17,10 @@
         <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
         <PackageReference Include="System.Text.Json" Version="8.0.4" />
         <PackageReference Include="Terminal.Gui" Version="1.17.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Client.Shared\Client.Shared.csproj" />
     </ItemGroup>
 
 </Project>

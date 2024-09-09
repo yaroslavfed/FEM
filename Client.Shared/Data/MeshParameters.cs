@@ -1,5 +1,5 @@
-﻿namespace FEM.TerminalGui.Data;
-public record Mesh
+﻿namespace Client.Shared.Data;
+public record MeshParameters
 {
     public double XCenterCoordinate { get; set; }
 
