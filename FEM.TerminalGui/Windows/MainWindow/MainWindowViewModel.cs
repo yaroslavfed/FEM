@@ -1,6 +1,8 @@
 ﻿using System.Reactive;
 using System.Runtime.Serialization;
+using FEM.TerminalGui.Components.AdditionalParamsForm;
 using FEM.TerminalGui.Components.CoordinatesForm;
+using FEM.TerminalGui.Components.SplittingForm;
 using FEM.TerminalGui.Data;
 using NStack;
 using ReactiveUI;
@@ -33,6 +35,10 @@ public class MainWindowViewModel : ViewModelBase
 
     public CoordinateInputFormViewModel CoordinateInputFormViewModel { get; set; } = new();
 
+    public SplittingInputFormViewModel SplittingInputFormViewModel { get; set; } = new();
+
+    public AdditionalParamsFormViewModel AdditionalParamsFormViewModel { get; set; } = new();
+
     #endregion
 
     #region Commands
@@ -59,12 +65,12 @@ public class MainWindowViewModel : ViewModelBase
 
     public Task ClearFieldsAsync()
     {
-        CoordinateInputFormViewModel.XCenterCoordinate = ustring.Empty;
-        CoordinateInputFormViewModel.YCenterCoordinate = ustring.Empty;
-        CoordinateInputFormViewModel.ZCenterCoordinate = ustring.Empty;
-        CoordinateInputFormViewModel.XStepToBounds = ustring.Empty;
-        CoordinateInputFormViewModel.YStepToBounds = ustring.Empty;
-        CoordinateInputFormViewModel.ZStepToBounds = ustring.Empty;
+        CoordinateInputFormViewModel.XCenterCoordinate = "0";
+        CoordinateInputFormViewModel.YCenterCoordinate = "0";
+        CoordinateInputFormViewModel.ZCenterCoordinate = "0";
+        CoordinateInputFormViewModel.XStepToBounds = "0";
+        CoordinateInputFormViewModel.YStepToBounds = "0";
+        CoordinateInputFormViewModel.ZStepToBounds = "0";
 
         return Task.CompletedTask;
     }

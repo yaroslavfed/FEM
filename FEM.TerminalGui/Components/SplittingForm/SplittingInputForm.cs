@@ -4,37 +4,37 @@ using ReactiveMarbles.ObservableEvents;
 using ReactiveUI;
 using Terminal.Gui;
 
-namespace FEM.TerminalGui.Components.CoordinatesForm;
+namespace FEM.TerminalGui.Components.SplittingForm;
 
-public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
+public class SplittingInputForm : ViewBase<SplittingInputFormViewModel>
 {
     #region Fields
 
-    private const string TITLE = "Координаты";
+    private const string TITLE = "Дробление";
 
     #endregion
 
     #region LifeCycle
 
-    public CoordinateInputForm(CoordinateInputFormViewModel viewModel) : base(viewModel, TITLE)
+    public SplittingInputForm(SplittingInputFormViewModel viewModel) : base(viewModel, TITLE)
     {
         ViewModel = viewModel;
 
-        var centerCoordinatesLabel = CenterCoordinatesLabel();
-        var stepToBoundsLabel = StepToBoundsLabel(centerCoordinatesLabel);
+        var centerCoordinatesLabel = SplittingCoefficientLabel();
+        var stepToBoundsLabel = MultiplyCoefficientLabel(centerCoordinatesLabel);
 
         var xCoordinatesLabel = XCoordinatesLabel(centerCoordinatesLabel);
         var yCoordinatesLabel = YCoordinatesLabel(xCoordinatesLabel);
         var zCoordinatesLabel = ZCoordinatesLabel(yCoordinatesLabel);
 
-        var xCenterInput = XCenterInput(xCoordinatesLabel, centerCoordinatesLabel);
-        var yCenterInput = YCenterInput(yCoordinatesLabel, centerCoordinatesLabel);
-        var zCenterInput = ZCenterInput(zCoordinatesLabel, centerCoordinatesLabel);
+        var xCenterInput = XSplittingCoefficient(xCoordinatesLabel, centerCoordinatesLabel);
+        var yCenterInput = YSplittingCoefficient(yCoordinatesLabel, centerCoordinatesLabel);
+        var zCenterInput = ZSplittingCoefficient(zCoordinatesLabel, centerCoordinatesLabel);
 
 
-        var xStepToBoundsInput = XStepToBoundsInput(xCoordinatesLabel, stepToBoundsLabel);
-        var yStepToBoundsInput = YStepToBoundsInput(yCoordinatesLabel, stepToBoundsLabel);
-        var zStepToBoundsInput = ZStepToBoundsInput(zCoordinatesLabel, stepToBoundsLabel);
+        var xStepToBoundsInput = XMultiplyCoefficient(xCoordinatesLabel, stepToBoundsLabel);
+        var yStepToBoundsInput = YMultiplyCoefficient(yCoordinatesLabel, stepToBoundsLabel);
+        var zStepToBoundsInput = ZMultiplyCoefficient(zCoordinatesLabel, stepToBoundsLabel);
     }
 
     #endregion
@@ -43,9 +43,9 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
 
     #region HeaderLabels
 
-    private Label CenterCoordinatesLabel()
+    private Label SplittingCoefficientLabel()
     {
-        var label = new Label(ViewModel?.CenterCoordinatesLabel)
+        var label = new Label(ViewModel?.SplittingCoefficientLabel)
         {
             X = 5,
             TextAlignment = TextAlignment.Left,
@@ -55,9 +55,9 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
         return label;
     }
 
-    private Label StepToBoundsLabel(View previous)
+    private Label MultiplyCoefficientLabel(View previous)
     {
-        var label = new Label(ViewModel?.StepToBoundsLabel)
+        var label = new Label(ViewModel?.MultiplyCoefficientLabel)
         {
             X = Pos.Right(previous) + 3,
             Y = Pos.Top(previous),
@@ -111,9 +111,9 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
 
     #region CenterCoordinates
 
-    private TextField XCenterInput(View previousVertical, View previousHorizontal)
+    private TextField XSplittingCoefficient(View previousVertical, View previousHorizontal)
     {
-        var fieldValue = new TextField(ViewModel?.XCenterCoordinate)
+        var fieldValue = new TextField(ViewModel?.XSplittingCoefficient)
         {
             X = Pos.Left(previousHorizontal),
             Y = Pos.Top(previousVertical),
@@ -121,7 +121,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
         };
 
         ViewModel
-            .WhenAnyValue(x => x.XCenterCoordinate)
+            .WhenAnyValue(x => x.XSplittingCoefficient)
             .BindTo(fieldValue, x => x.Text)
             .DisposeWith(_disposable);
 
@@ -130,16 +130,16 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
             .TextChanged
             .Select(old => fieldValue.Text)
             .DistinctUntilChanged()
-            .BindTo(ViewModel, x => x.XCenterCoordinate);
+            .BindTo(ViewModel, x => x.XSplittingCoefficient);
 
 
         Add(fieldValue);
         return fieldValue;
     }
 
-    private TextField YCenterInput(View previousVertical, View previousHorizontal)
+    private TextField YSplittingCoefficient(View previousVertical, View previousHorizontal)
     {
-        var fieldValue = new TextField(ViewModel?.YCenterCoordinate)
+        var fieldValue = new TextField(ViewModel?.YSplittingCoefficient)
         {
             X = Pos.Left(previousHorizontal),
             Y = Pos.Top(previousVertical),
@@ -147,7 +147,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
         };
 
         ViewModel
-            .WhenAnyValue(x => x.YCenterCoordinate)
+            .WhenAnyValue(x => x.YSplittingCoefficient)
             .BindTo(fieldValue, x => x.Text)
             .DisposeWith(_disposable);
 
@@ -156,16 +156,16 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
             .TextChanged
             .Select(old => fieldValue.Text)
             .DistinctUntilChanged()
-            .BindTo(ViewModel, x => x.YCenterCoordinate);
+            .BindTo(ViewModel, x => x.YSplittingCoefficient);
 
 
         Add(fieldValue);
         return fieldValue;
     }
 
-    private TextField ZCenterInput(View previousVertical, View previousHorizontal)
+    private TextField ZSplittingCoefficient(View previousVertical, View previousHorizontal)
     {
-        var fieldValue = new TextField(ViewModel?.ZCenterCoordinate)
+        var fieldValue = new TextField(ViewModel?.ZSplittingCoefficient)
         {
             X = Pos.Left(previousHorizontal),
             Y = Pos.Top(previousVertical),
@@ -173,7 +173,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
         };
 
         ViewModel
-            .WhenAnyValue(x => x.ZCenterCoordinate)
+            .WhenAnyValue(x => x.ZSplittingCoefficient)
             .BindTo(fieldValue, x => x.Text)
             .DisposeWith(_disposable);
 
@@ -182,7 +182,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
             .TextChanged
             .Select(old => fieldValue.Text)
             .DistinctUntilChanged()
-            .BindTo(ViewModel, x => x.ZCenterCoordinate);
+            .BindTo(ViewModel, x => x.ZSplittingCoefficient);
 
 
         Add(fieldValue);
@@ -193,9 +193,9 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
 
     #region StepToBoundsCoordinates
 
-    private TextField XStepToBoundsInput(View previousVertical, View previousHorizontal)
+    private TextField XMultiplyCoefficient(View previousVertical, View previousHorizontal)
     {
-        var fieldValue = new TextField(ViewModel?.XStepToBounds)
+        var fieldValue = new TextField(ViewModel?.XMultiplyCoefficient)
         {
             X = Pos.Left(previousHorizontal),
             Y = Pos.Top(previousVertical),
@@ -203,7 +203,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
         };
 
         ViewModel
-            .WhenAnyValue(x => x.XStepToBounds)
+            .WhenAnyValue(x => x.XMultiplyCoefficient)
             .BindTo(fieldValue, x => x.Text)
             .DisposeWith(_disposable);
 
@@ -212,16 +212,16 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
             .TextChanged
             .Select(old => fieldValue.Text)
             .DistinctUntilChanged()
-            .BindTo(ViewModel, x => x.XStepToBounds);
+            .BindTo(ViewModel, x => x.XMultiplyCoefficient);
 
 
         Add(fieldValue);
         return fieldValue;
     }
 
-    private TextField YStepToBoundsInput(View previousVertical, View previousHorizontal)
+    private TextField YMultiplyCoefficient(View previousVertical, View previousHorizontal)
     {
-        var fieldValue = new TextField(ViewModel?.YStepToBounds)
+        var fieldValue = new TextField(ViewModel?.YMultiplyCoefficient)
         {
             X = Pos.Left(previousHorizontal),
             Y = Pos.Top(previousVertical),
@@ -229,7 +229,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
         };
 
         ViewModel
-            .WhenAnyValue(x => x.YStepToBounds)
+            .WhenAnyValue(x => x.YMultiplyCoefficient)
             .BindTo(fieldValue, x => x.Text)
             .DisposeWith(_disposable);
 
@@ -238,16 +238,16 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
             .TextChanged
             .Select(old => fieldValue.Text)
             .DistinctUntilChanged()
-            .BindTo(ViewModel, x => x.YStepToBounds);
+            .BindTo(ViewModel, x => x.YMultiplyCoefficient);
 
 
         Add(fieldValue);
         return fieldValue;
     }
 
-    private TextField ZStepToBoundsInput(View previousVertical, View previousHorizontal)
+    private TextField ZMultiplyCoefficient(View previousVertical, View previousHorizontal)
     {
-        var fieldValue = new TextField(ViewModel?.ZStepToBounds)
+        var fieldValue = new TextField(ViewModel?.ZMultiplyCoefficient)
         {
             X = Pos.Left(previousHorizontal),
             Y = Pos.Top(previousVertical),
@@ -255,7 +255,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
         };
 
         ViewModel
-            .WhenAnyValue(x => x.ZStepToBounds)
+            .WhenAnyValue(x => x.ZMultiplyCoefficient)
             .BindTo(fieldValue, x => x.Text)
             .DisposeWith(_disposable);
 
@@ -264,7 +264,7 @@ public class CoordinateInputForm : ViewBase<CoordinateInputFormViewModel>
             .TextChanged
             .Select(old => fieldValue.Text)
             .DistinctUntilChanged()
-            .BindTo(ViewModel, x => x.ZStepToBounds);
+            .BindTo(ViewModel, x => x.ZMultiplyCoefficient);
 
 
         Add(fieldValue);

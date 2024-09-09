@@ -19,8 +19,4 @@
         <PackageReference Include="Terminal.Gui" Version="1.17.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Components\SplittingFrom\" />
-    </ItemGroup>
-
 </Project>

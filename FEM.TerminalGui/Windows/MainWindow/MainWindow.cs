@@ -1,4 +1,6 @@
-﻿using FEM.TerminalGui.Components.CoordinatesForm;
+﻿using FEM.TerminalGui.Components.AdditionalParamsForm;
+using FEM.TerminalGui.Components.CoordinatesForm;
+using FEM.TerminalGui.Components.SplittingForm;
 using Terminal.Gui;
 using Attribute = Terminal.Gui.Attribute;
 
@@ -19,7 +21,9 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
         ViewModel = viewModel;
 
         var coordinatesForm = CoordinatesPanel();
-        var submitButton = SubmitButton(coordinatesForm);
+        var splittingForm = SplittingPanel(coordinatesForm);
+        var additionalParamsForm = AdditionalParamsFormPanel(coordinatesForm);
+        var submitButton = SubmitButton(additionalParamsForm);
         var clearButton = ClearButton(submitButton);
     }
 
@@ -32,7 +36,8 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
         var coordinatesForm = new CoordinateInputForm(ViewModel?.CoordinateInputFormViewModel!)
         {
             AutoSize = true,
-            Height = 12,
+            Height = 10,
+            Width = 59,
             ViewModel = ViewModel?.CoordinateInputFormViewModel
         };
 
@@ -40,13 +45,44 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
         return coordinatesForm;
     }
 
+    private SplittingInputForm SplittingPanel(View previous)
+    {
+        var splittingForm = new SplittingInputForm(ViewModel?.SplittingInputFormViewModel!)
+        {
+            X = Pos.Right(previous),
+            Y = Pos.Top(previous),
+            AutoSize = true,
+            Height = 10,
+            Width = 59,
+            ViewModel = ViewModel?.SplittingInputFormViewModel
+        };
+
+        Add(splittingForm);
+        return splittingForm;
+    }
+
+    private AdditionalParamsForm AdditionalParamsFormPanel(View previous)
+    {
+        var splittingForm = new AdditionalParamsForm(ViewModel?.AdditionalParamsFormViewModel!)
+        {
+            X = Pos.Left(previous),
+            Y = Pos.Bottom(previous),
+            Height = 10,
+            Width = 118,
+            ViewModel = ViewModel?.AdditionalParamsFormViewModel
+        };
+
+        Add(splittingForm);
+        return splittingForm;
+    }
+
     private Button SubmitButton(View previous)
     {
         var submitButton = new Button(ViewModel?.SubmitButtonLabel)
         {
-            X = Pos.Left(previous) + 1,
-            Y = Pos.Bottom(previous),
-            Width = 12
+            X = Pos.Left(previous),
+            Y = Pos.Bottom(previous) + 10,
+            Width = 10
         };
 
         submitButton.Clicked += () =>
@@ -62,7 +98,7 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
         {
             X = Pos.Right(previous),
             Y = Pos.Top(previous),
-            Width = 12
+            Width = 10
         };
 
         clearButton.Clicked += () =>

@@ -1,8 +1,5 @@
-﻿using System.Reactive.Linq;
-using System.Runtime.Serialization;
-using FEM.TerminalGui.Data;
+﻿using System.Runtime.Serialization;
 using NStack;
-using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace FEM.TerminalGui.Components.CoordinatesForm;
@@ -19,29 +16,23 @@ public class CoordinateInputFormViewModel : ViewModelBase
 
     #region Properties
 
-    [Reactive]
-    public Mesh Mesh { get; set; } = new();
+    [Reactive, DataMember]
+    public ustring XCenterCoordinate { get; set; } = "0";
 
     [Reactive, DataMember]
-    public ustring XCenterCoordinate { get; set; } = ustring.Empty;
+    public ustring YCenterCoordinate { get; set; } = "0";
 
     [Reactive, DataMember]
-    public ustring YCenterCoordinate { get; set; } = ustring.Empty;
+    public ustring ZCenterCoordinate { get; set; } = "0";
 
     [Reactive, DataMember]
-    public ustring ZCenterCoordinate { get; set; } = ustring.Empty;
+    public ustring XStepToBounds { get; set; } = "0";
 
     [Reactive, DataMember]
-    public ustring XStepToBounds { get; set; } = ustring.Empty;
+    public ustring YStepToBounds { get; set; } = "0";
 
     [Reactive, DataMember]
-    public ustring YStepToBounds { get; set; } = ustring.Empty;
-
-    [Reactive, DataMember]
-    public ustring ZStepToBounds { get; set; } = ustring.Empty;
-
-    [Reactive]
-    public MeshBounds MeshBounds { get; set; } = new();
+    public ustring ZStepToBounds { get; set; } = "0";
 
     #endregion
 }
