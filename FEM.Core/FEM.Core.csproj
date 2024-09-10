@@ -16,6 +16,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Controllers\**" />
+      <EmbeddedResource Remove="Controllers\**" />
+      <None Remove="Controllers\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Autofac" Version="8.0.0" />
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="pythonnet" Version="3.0.3" />
@@ -26,10 +32,6 @@
         <ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
         <ProjectReference Include="..\FEM.Solvers\FEM.Solvers.csproj" />
         <ProjectReference Include="..\FEM.Storage\FEM.Storage.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controllers\" />
     </ItemGroup>
 
 </Project>
