@@ -19,28 +19,27 @@ namespace FEM.Server.Installers;
 
 public static class ServicesInstaller
 {
-    public static void RegisterServices(this ContainerBuilder builder)
+    public static void AddServices(this IServiceCollection builder)
     {
-        builder.RegisterType<GlobalMatrixService>().As<IGlobalMatrixServices>();
-        builder.RegisterType<RightPartVectorService>().As<IRightPartVectorService>();
+        builder.AddScoped<IGlobalMatrixServices, GlobalMatrixService>();
+        builder.AddScoped<IRightPartVectorService, RightPartVectorService>();
 
-        builder.RegisterType<StiffnessMatrix>().As<IStiffnessMatrix<Matrix>>();
-        builder.RegisterType<MassMatrix>().As<IMassMatrix<Matrix>>();
+        builder.AddScoped<IStiffnessMatrix<Matrix>, StiffnessMatrix>();
+        builder.AddScoped<IMassMatrix<Matrix>, MassMatrix>();
 
-        builder.RegisterType<MeshService>().As<IMeshService>();
-        builder.RegisterType<MatrixPortraitService>().As<IMatrixPortraitService>();
+        builder.AddScoped<IMeshService, MeshService>();
+        builder.AddScoped<IMatrixPortraitService, MatrixPortraitService>();
 
-        builder.RegisterType<NodesNumberingService>().As<INodesNumberingService>();
-        builder.RegisterType<EdgesNumberingService>().As<IEdgesNumberingService>();
+        builder.AddScoped<INodesNumberingService, NodesNumberingService>();
+        builder.AddScoped<IEdgesNumberingService, EdgesNumberingService>();
 
-        builder.RegisterType<TestingService>().As<ITestingService>();
-        builder.RegisterType<TestSessionService>().As<ITestSessionService>();
+        builder.AddScoped<ITestingService, TestingService>();
+        builder.AddScoped<ITestSessionService, TestSessionService>();
 
-        builder.RegisterType<MatrixFormatResolver>().As<IMatrixFormatResolver>();
-        builder.RegisterType<BoundaryConditionFactory>().As<IBoundaryConditionFactory>();
-        
-        builder.RegisterType<VisualizerService>().As<IVisualizerService>();
-        builder.RegisterType<ConverterService>().As<IConverterService>();
-        
+        builder.AddScoped<IMatrixFormatResolver, MatrixFormatResolver>();
+        builder.AddScoped<IBoundaryConditionFactory, BoundaryConditionFactory>();
+
+        builder.AddScoped<IVisualizerService, VisualizerService>();
+        builder.AddScoped<IConverterService, ConverterService>();
     }
 }

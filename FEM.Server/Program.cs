@@ -1,33 +1,61 @@
-namespace FEM.Server;
+using System.Text.Json.Serialization;
+using FEM.Server.Installers;
+using NLog;
+using NLog.Web;
 
-internal class Program
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+
+// Early init of NLog to allow startup and exception logging, before host is built
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("init fem server application");
+
+services.AddCors();
+services.AddControllers().AddJsonOptions(e =>
 {
-    private static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+    // Serialize enums as strings in api responses (e.g. Role)
+    e.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    // Ignore omitted parameters on models to enable optional params (e.g. User update)
+    e.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
 
-        // Add services to the container.
+// Configure DI for application
+services.AddServices();
+services.AddStorages();
 
-        builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+// Configure AutoMapper
+services.AddAutoMapper();
 
-        var app = builder.Build();
+// Setup Swagger/OpenAPI
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+// NLog: Setup NLog for Dependency injection
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 
-        app.UseHttpsRedirection();
+var app = builder.Build();
 
-        app.UseAuthorization();
-
-        app.MapControllers();
-
-        app.Run();
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+else
+    app.UseHttpsRedirection();
+
+app.UseRouting();
+
+// Global cors policy
+app.UseCors(policyBuilder => policyBuilder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

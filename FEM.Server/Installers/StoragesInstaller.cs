@@ -7,9 +7,9 @@ namespace FEM.Server.Installers;
 
 public static class StoragesInstaller
 {
-    public static void RegisterStorages(this ContainerBuilder builder)
+    public static void AddStorages(this IServiceCollection builder)
     {
-        builder.RegisterType<JsonParser>().As<IParser>();
-        builder.RegisterType<JsonStorage>().As<IReadableStorage>();
+        builder.AddScoped<IParser, JsonParser>();
+        builder.AddScoped<IReadableStorage, JsonStorage>();
     }
 }

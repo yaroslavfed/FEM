@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Core", "FEM.Core\FEM.Core.csproj", "{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Common", "FEM.Common\FEM.Common.csproj", "{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FEM.Database", "FEM.Database\FEM.Database.csproj", "{A138A22C-60D9-4FB0-BBFD-3869BA793E6C}"
@@ -29,10 +27,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2D464DE-C194-45E5-A84F-AB7FBEA2F612}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -66,7 +60,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{1B2FA5D3-295A-4681-BBA1-A05464EE4EBF} = {B7148648-4449-4AD2-A6EE-DB1CB09E68F4}
 		{D2D464DE-C194-45E5-A84F-AB7FBEA2F612} = {B7148648-4449-4AD2-A6EE-DB1CB09E68F4}
 		{A138A22C-60D9-4FB0-BBFD-3869BA793E6C} = {B7148648-4449-4AD2-A6EE-DB1CB09E68F4}
 		{4C4C3871-40A2-4642-9B70-7BFF4C6AAC4D} = {6AA42A06-3620-4F03-A7C6-A5F91BFE590F}

@@ -1,20 +1,11 @@
-﻿using Autofac;
-using AutoMapper;
+﻿using System.Reflection;
 
 namespace FEM.Server.Installers;
 
 public static class AutomapperInstaller
 {
-    public static void RegisterAutoMapper(this ContainerBuilder builder) =>
-        builder.Register(
-                   c =>
-                   {
-                       var context = c.Resolve<IComponentContext>();
-                       var config = context.Resolve<MapperConfiguration>();
-
-                       return config.CreateMapper(context.Resolve);
-                   }
-               )
-               .As<IMapper>()
-               .InstancePerLifetimeScope();
+    public static void AddAutoMapper(this IServiceCollection source)
+    {
+        source.AddAutoMapper(Assembly.GetExecutingAssembly());
+    }
 }
