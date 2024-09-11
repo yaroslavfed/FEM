@@ -4,13 +4,13 @@ using Terminal.Gui;
 
 namespace FEM.TerminalGui;
 
-public abstract class ViewBase<TViewModel> : Window, IViewFor<TViewModel> where TViewModel : ViewModelBase, new()
+public abstract class ViewBase<TViewModel> : Window, IViewFor<TViewModel> where TViewModel : ViewModelBase
 {
     protected readonly CompositeDisposable _disposable = new();
 
     protected ViewBase(TViewModel viewModel, string? title = null)
     {
-        ViewModel = new TViewModel();
+        ViewModel = viewModel;
         Title = title;
     }
 

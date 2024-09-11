@@ -1,22 +1,30 @@
 ﻿using System.Reactive;
 using System.Runtime.Serialization;
+using Client.Shared.Data;
+using Client.Shared.Services.TestingService;
 using FEM.TerminalGui.Components.AdditionalParamsForm;
 using FEM.TerminalGui.Components.CoordinatesForm;
 using FEM.TerminalGui.Components.SplittingForm;
-using FEM.TerminalGui.Data;
 using NStack;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
 namespace FEM.TerminalGui.Windows.MainWindow;
 
 [DataContract]
 public class MainWindowViewModel : ViewModelBase
 {
+    #region Fields
+
+    private readonly ITestingService _testingService;
+
+    #endregion
+
     #region LifeCycle
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(ITestingService testingService)
     {
+        _testingService = testingService;
+        
         SubmitCommand = ReactiveCommand.CreateFromTask(SubmitFieldsAsync);
         ClearCommand = ReactiveCommand.CreateFromTask(ClearFieldsAsync);
     }
@@ -52,7 +60,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public async Task SubmitFieldsAsync()
     {
-        var mesh = new Mesh
+        var mesh = new MeshParameters()
         {
             XCenterCoordinate = await UStringToDouble(CoordinateInputFormViewModel.XCenterCoordinate),
             YCenterCoordinate = await UStringToDouble(CoordinateInputFormViewModel.YCenterCoordinate),
@@ -61,6 +69,33 @@ public class MainWindowViewModel : ViewModelBase
             YStepToBounds = await UStringToDouble(CoordinateInputFormViewModel.YStepToBounds),
             ZStepToBounds = await UStringToDouble(CoordinateInputFormViewModel.ZStepToBounds)
         };
+
+        var ad = new AdditionParameters()
+        {
+            MuCoefficient = await UStringToDouble(AdditionalParamsFormViewModel.MuCoefficient),
+            GammaCoefficient = await UStringToDouble(AdditionalParamsFormViewModel.GammaCoefficient),
+            BoundaryCondition = AdditionalParamsFormViewModel.BoundaryCondition
+        };
+
+        var sp = new SplittingParameters()
+        {
+            XSplittingCoefficient = await UStringToDouble(SplittingInputFormViewModel.XSplittingCoefficient),
+            YSplittingCoefficient = await UStringToDouble(SplittingInputFormViewModel.YSplittingCoefficient),
+            ZSplittingCoefficient = await UStringToDouble(SplittingInputFormViewModel.ZSplittingCoefficient),
+            XMultiplyCoefficient = await UStringToDouble(SplittingInputFormViewModel.XMultiplyCoefficient),
+            YMultiplyCoefficient = await UStringToDouble(SplittingInputFormViewModel.YMultiplyCoefficient),
+            ZMultiplyCoefficient = await UStringToDouble(SplittingInputFormViewModel.ZMultiplyCoefficient)
+        };
+
+        var testSession = new TestSession()
+        {
+            Id = Guid.NewGuid(),
+            MeshParameters = mesh,
+            SplittingParameters = sp,
+            AdditionParameters = ad
+        };
+
+        await _testingService.CreateSessionAsync(testSession);
     }
 
     public Task ClearFieldsAsync()

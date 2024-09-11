@@ -1,5 +1,4 @@
-﻿using Autofac;
-using FEM.Common.Data.MathModels;
+﻿using FEM.Common.Data.MathModels;
 using FEM.Common.Resolvers.MatrixFormatResolver;
 using FEM.Server.Models.Parallelepipedal.MassMatrix;
 using FEM.Server.Models.Parallelepipedal.StiffnessMatrix;
@@ -11,6 +10,7 @@ using FEM.Server.Services.Parallelepipedal.MeshService;
 using FEM.Server.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
 using FEM.Server.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
+using FEM.Server.Services.SolverService;
 using FEM.Server.Services.TestingService;
 using FEM.Server.Services.TestSessionService;
 using FEM.Storage.Converter;
@@ -23,6 +23,7 @@ public static class ServicesInstaller
     {
         builder.AddScoped<IGlobalMatrixServices, GlobalMatrixService>();
         builder.AddScoped<IRightPartVectorService, RightPartVectorService>();
+        builder.AddScoped<ISolverService, SolverService>();
 
         builder.AddScoped<IStiffnessMatrix<Matrix>, StiffnessMatrix>();
         builder.AddScoped<IMassMatrix<Matrix>, MassMatrix>();
