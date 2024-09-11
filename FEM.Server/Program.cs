@@ -3,12 +3,11 @@ using FEM.Server.Installers;
 using NLog;
 using NLog.Web;
 
-var builder = WebApplication.CreateBuilder(args);
-
 // Early init of NLog to allow startup and exception logging, before host is built
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init fem server application");
 
+var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
 services.AddCors();
@@ -46,7 +45,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
 
 // Global cors policy

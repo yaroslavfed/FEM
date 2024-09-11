@@ -4,7 +4,6 @@ using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
 using FEM.Server.Services.Parallelepipedal.DrawingMeshService;
 using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
 using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
-using FEM.Server.Services.Parallelepipedal.MeshService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
 using FEM.Server.Services.TestSessionService;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FEM.Server.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/Vector")]
 public class FemController : ControllerBase
 {
     private readonly ILogger _logger;
