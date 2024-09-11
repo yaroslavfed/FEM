@@ -1,4 +1,5 @@
 ﻿using FEM.Common.Data.TestSession;
+using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Services.Parallelepipedal.MeshService;
 
@@ -15,8 +16,8 @@ public class TestSessionService : ITestSessionService
 
     public async Task<TestSession<Mesh>> CreateTestSessionAsync()
     {
-        var mesh = await _meshService.GenerateMeshAsync();
         var testConfiguration = await _meshService.GenerateTestConfiguration();
+        var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
 
         return await Task.FromResult(
             new TestSession<Mesh>
@@ -25,6 +26,22 @@ public class TestSessionService : ITestSessionService
                 Mu = testConfiguration.AdditionalParameters.Mu,
                 Gamma = testConfiguration.AdditionalParameters.Gamma,
                 BoundaryCondition = testConfiguration.AdditionalParameters.BoundaryCondition - 1
+            }
+        );
+    }
+
+    public async Task<TestSession<Mesh>> CreateTestSessionAsync(TestSession testSession)
+    {
+        var testConfiguration = await _meshService.GenerateTestConfiguration(testSession);
+        var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
+
+        return await Task.FromResult(
+            new TestSession<Mesh>
+            {
+                Mesh = mesh,
+                Mu = testConfiguration.AdditionalParameters.Mu,
+                Gamma = testConfiguration.AdditionalParameters.Gamma,
+                BoundaryCondition = testConfiguration.AdditionalParameters.BoundaryCondition
             }
         );
     }

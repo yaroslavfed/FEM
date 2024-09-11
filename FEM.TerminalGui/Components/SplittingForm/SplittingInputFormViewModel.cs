@@ -17,13 +17,13 @@ public class SplittingInputFormViewModel : ViewModelBase
     #region Properties
 
     [Reactive, DataMember]
-    public ustring XSplittingCoefficient { get; set; } = "0";
+    public ustring XSplittingCoefficient { get; set; } = "1";
 
     [Reactive, DataMember]
-    public ustring YSplittingCoefficient { get; set; } = "0";
+    public ustring YSplittingCoefficient { get; set; } = "1";
 
     [Reactive, DataMember]
-    public ustring ZSplittingCoefficient { get; set; } = "0";
+    public ustring ZSplittingCoefficient { get; set; } = "1";
 
     [Reactive, DataMember]
     public ustring XMultiplyCoefficient { get; set; } = "0";

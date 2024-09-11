@@ -4,11 +4,12 @@ using NLog;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services;
 
 // Early init of NLog to allow startup and exception logging, before host is built
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init fem server application");
+
+var services = builder.Services;
 
 services.AddCors();
 services.AddControllers().AddJsonOptions(e =>
@@ -34,6 +35,7 @@ services.AddSwaggerGen();
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 
+// Building application
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,8 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-    app.UseHttpsRedirection();
+
+app.UseHttpsRedirection();
 
 app.UseRouting();
 
