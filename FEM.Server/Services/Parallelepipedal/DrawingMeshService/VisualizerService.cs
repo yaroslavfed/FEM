@@ -12,15 +12,15 @@ public class VisualizerService : IVisualizerService
 
     public async Task DrawMeshPlotAsync(Mesh mesh)
     {
-        await DeleteOutputPlotsAsync();
+        DeleteOutputPlots();
 
-        var isScriptFileExist = await CheckFilesToAvailabilityAsync(_scriptPath);
+        var isScriptFileExist = CheckFilesToAvailabilityAsync(_scriptPath);
         if (!isScriptFileExist)
             throw new FileNotFoundException($"Script file was not found from path {_scriptPath}");
 
         await ResolveDataToDrawAsync(mesh);
 
-        var isDataFileExist = await CheckFilesToAvailabilityAsync(_dataFileName);
+        var isDataFileExist = CheckFilesToAvailabilityAsync(_dataFileName);
         if (!isDataFileExist)
             throw new FileNotFoundException($"Data file was not found from path {_dataFileName}");
 
@@ -29,7 +29,7 @@ public class VisualizerService : IVisualizerService
 
     public async Task WriteMatrixToFileAsync(IMatrixFormat matrixProfile)
     {
-        await DeleteOutputFilesAsync();
+        DeleteOutputFiles();
 
         if (matrixProfile is MatrixProfileFormat source)
         {
@@ -115,29 +115,29 @@ public class VisualizerService : IVisualizerService
         sw.Close();
     }
 
-    private static Task<bool> CheckFilesToAvailabilityAsync(string pathToFile) =>
-        Task.FromResult(File.Exists(pathToFile));
+    private static bool CheckFilesToAvailabilityAsync(string pathToFile) =>
+        File.Exists(pathToFile);
 
-    private static Task<bool> CheckDirectoriesToAvailabilityAsync(string pathToFile) =>
-        Task.FromResult(Directory.Exists(pathToFile));
+    private static bool CheckDirectoriesToAvailabilityAsync(string pathToFile) =>
+        Directory.Exists(pathToFile);
 
-    private async Task DeleteOutputPlotsAsync()
+    private void DeleteOutputPlots()
     {
         var outputFilesPath = Path.Combine(_rootPath, "OutputProfile");
 
-        if (await CheckFilesToAvailabilityAsync(outputFilesPath))
+        if (CheckFilesToAvailabilityAsync(outputFilesPath))
             File.Delete(outputFilesPath);
     }
 
-    private async Task DeleteOutputFilesAsync()
+    private void DeleteOutputFiles()
     {
         var outputPlotsContentPath = Path.Combine(_rootPath, "output.txt");
         var outputPlotsPath = Path.Combine(_rootPath, "OutputPlots");
 
-        if (await CheckDirectoriesToAvailabilityAsync(outputPlotsContentPath))
+        if (CheckDirectoriesToAvailabilityAsync(outputPlotsContentPath))
             Directory.Delete(outputPlotsContentPath, true);
 
-        if (await CheckDirectoriesToAvailabilityAsync(outputPlotsPath))
+        if (CheckDirectoriesToAvailabilityAsync(outputPlotsPath))
             Directory.Delete(outputPlotsPath, true);
     }
 }

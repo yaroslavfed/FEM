@@ -1,12 +1,19 @@
 ﻿using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Runtime.Serialization;
-using Client.Shared.Data;
+using Client.Shared.HttpClientContext;
 using Client.Shared.Services.TestingService;
 using FEM.TerminalGui.Components.AdditionalParamsForm;
 using FEM.TerminalGui.Components.CoordinatesForm;
 using FEM.TerminalGui.Components.SplittingForm;
 using NStack;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using AdditionParameters = Client.Shared.Data.AdditionParameters;
+using MeshParameters = Client.Shared.Data.MeshParameters;
+using SplittingParameters = Client.Shared.Data.SplittingParameters;
+using TestSession = Client.Shared.Data.TestSession;
 
 namespace FEM.TerminalGui.Windows.MainWindow;
 
@@ -17,6 +24,8 @@ public class MainWindowViewModel : ViewModelBase
 
     private readonly ITestingService _testingService;
 
+    private readonly BehaviorSubject<FemResponse?> _response = new(null);
+
     #endregion
 
     #region LifeCycle
@@ -24,9 +33,11 @@ public class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(ITestingService testingService)
     {
         _testingService = testingService;
-        
+
         SubmitCommand = ReactiveCommand.CreateFromTask(SubmitFieldsAsync);
         ClearCommand = ReactiveCommand.CreateFromTask(ClearFieldsAsync);
+
+        _response.Subscribe(response => FemResponse = response);
     }
 
     #endregion
@@ -47,6 +58,9 @@ public class MainWindowViewModel : ViewModelBase
 
     public AdditionalParamsFormViewModel AdditionalParamsFormViewModel { get; set; } = new();
 
+    [Reactive, DataMember]
+    public FemResponse? FemResponse { get; set; }
+
     #endregion
 
     #region Commands
@@ -60,7 +74,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public async Task SubmitFieldsAsync()
     {
-        var mesh = new MeshParameters()
+        var meshParameters = new MeshParameters()
         {
             XCenterCoordinate = await UStringToDouble(CoordinateInputFormViewModel.XCenterCoordinate),
             YCenterCoordinate = await UStringToDouble(CoordinateInputFormViewModel.YCenterCoordinate),
@@ -70,14 +84,14 @@ public class MainWindowViewModel : ViewModelBase
             ZStepToBounds = await UStringToDouble(CoordinateInputFormViewModel.ZStepToBounds)
         };
 
-        var ad = new AdditionParameters()
+        var additionParameters = new AdditionParameters()
         {
             MuCoefficient = await UStringToDouble(AdditionalParamsFormViewModel.MuCoefficient),
             GammaCoefficient = await UStringToDouble(AdditionalParamsFormViewModel.GammaCoefficient),
             BoundaryCondition = AdditionalParamsFormViewModel.BoundaryCondition
         };
 
-        var sp = new SplittingParameters()
+        var splittingParameters = new SplittingParameters()
         {
             XSplittingCoefficient = await UStringToDouble(SplittingInputFormViewModel.XSplittingCoefficient),
             YSplittingCoefficient = await UStringToDouble(SplittingInputFormViewModel.YSplittingCoefficient),
@@ -87,25 +101,39 @@ public class MainWindowViewModel : ViewModelBase
             ZMultiplyCoefficient = await UStringToDouble(SplittingInputFormViewModel.ZMultiplyCoefficient)
         };
 
-        var testSession = new TestSession()
+        var session = new TestSession()
         {
             Id = Guid.NewGuid(),
-            MeshParameters = mesh,
-            SplittingParameters = sp,
-            AdditionParameters = ad
+            MeshParameters = meshParameters,
+            SplittingParameters = splittingParameters,
+            AdditionParameters = additionParameters
         };
 
-        await _testingService.CreateSessionAsync(testSession);
+        var result = await _testingService.CreateSessionAsync(session);
+        _response.OnNext(result);
     }
 
     public Task ClearFieldsAsync()
     {
+        _response.OnNext(null);
+
         CoordinateInputFormViewModel.XCenterCoordinate = "0";
         CoordinateInputFormViewModel.YCenterCoordinate = "0";
         CoordinateInputFormViewModel.ZCenterCoordinate = "0";
-        CoordinateInputFormViewModel.XStepToBounds = "0";
-        CoordinateInputFormViewModel.YStepToBounds = "0";
-        CoordinateInputFormViewModel.ZStepToBounds = "0";
+        CoordinateInputFormViewModel.XStepToBounds = "1";
+        CoordinateInputFormViewModel.YStepToBounds = "1";
+        CoordinateInputFormViewModel.ZStepToBounds = "1";
+
+        SplittingInputFormViewModel.XSplittingCoefficient = "1";
+        SplittingInputFormViewModel.YSplittingCoefficient = "1";
+        SplittingInputFormViewModel.ZSplittingCoefficient = "1";
+        SplittingInputFormViewModel.XMultiplyCoefficient = "0";
+        SplittingInputFormViewModel.YMultiplyCoefficient = "0";
+        SplittingInputFormViewModel.ZMultiplyCoefficient = "0";
+
+        AdditionalParamsFormViewModel.MuCoefficient = "1";
+        AdditionalParamsFormViewModel.GammaCoefficient = "1";
+        AdditionalParamsFormViewModel.BoundaryCondition = 0;
 
         return Task.CompletedTask;
     }

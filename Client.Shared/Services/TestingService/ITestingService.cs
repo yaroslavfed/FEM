@@ -1,8 +1,8 @@
-﻿using Client.Shared.Data;
+﻿using Client.Shared.HttpClientContext;
 
 namespace Client.Shared.Services.TestingService;
 
 public interface ITestingService
 {
-    Task CreateSessionAsync(TestSession testSession);
+    Task<FemResponse> CreateSessionAsync(Data.TestSession testSession);
 }

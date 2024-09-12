@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using AutoMapper;
 using Client.Shared.API;
+using Client.Shared.HttpClientContext;
 
 namespace Client.Shared.Services.TestingService;
 
@@ -15,15 +16,16 @@ public class TestingService : ITestingService
         _client = client;
     }
 
-    public async Task CreateSessionAsync(Data.TestSession testSession)
+    public async Task<FemResponse> CreateSessionAsync(Data.TestSession testSession)
     {
         try
         {
-            var response = await _client.CalculateSolutionVector(testSession);
+            return await _client.CalculateSolutionVector(testSession);
         }
         catch (Exception e)
         {
             Debug.Fail(e.Message);
+            throw;
         }
     }
 }

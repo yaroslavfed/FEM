@@ -1,8 +1,11 @@
-﻿using FEM.TerminalGui.Components.AdditionalParamsForm;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using FEM.TerminalGui.Components.AdditionalParamsForm;
 using FEM.TerminalGui.Components.CoordinatesForm;
 using FEM.TerminalGui.Components.SplittingForm;
+using NStack;
+using ReactiveUI;
 using Terminal.Gui;
-using Attribute = Terminal.Gui.Attribute;
 
 namespace FEM.TerminalGui.Windows.MainWindow;
 
@@ -25,6 +28,7 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
         var additionalParamsForm = AdditionalParamsFormPanel(coordinatesForm);
         var submitButton = SubmitButton(additionalParamsForm);
         var clearButton = ClearButton(submitButton);
+        var resultFieldLabel = ResultFieldLabel(submitButton);
     }
 
     #endregion
@@ -106,6 +110,26 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
 
         Add(clearButton);
         return clearButton;
+    }
+
+    private Label ResultFieldLabel(View previous)
+    {
+        var resultField = new Label("THE RESULT IS FOUND")
+        {
+            X = Pos.Left(previous),
+            Y = Pos.Bottom(previous) + 1,
+            Width = 20,
+            Visible = false
+        };
+
+        ViewModel?
+            .WhenAnyValue(model => model.FemResponse)
+            .Select(response => response is not null)
+            .BindTo(resultField, label => label.Visible)
+            .DisposeWith(_disposable);
+
+        Add(resultField);
+        return resultField;
     }
 
     #endregion
