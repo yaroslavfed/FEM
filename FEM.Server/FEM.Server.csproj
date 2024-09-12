@@ -27,4 +27,10 @@
 		<Folder Include="Services\SolverService\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Scripts\draw_mesh_script.py">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

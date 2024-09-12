@@ -378,3 +378,5 @@ FodyWeavers.xsd
 /dataSources.local.xml
 
 /FEM.Server/OutputProfile
+/FEM.Server/OutputPlots
+/FEM.Server/output.txt

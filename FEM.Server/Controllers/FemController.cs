@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FEM.Server.Controllers;
 
+/// <summary>
+/// Контроллер для решения векторного МКЭ
+/// </summary>
 [ApiController]
 [Route("api/[controller]/Vector")]
 public class FemController : ControllerBase
@@ -120,7 +123,7 @@ public class FemController : ControllerBase
             _logger.LogInformation($"[{nameof(FemController)}] calculate slae");
             var solutionVector = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
 
-#if false
+#if true
             await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
             await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
 #endif

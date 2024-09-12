@@ -6,11 +6,14 @@ namespace FEM.Server.Services.Parallelepipedal.DrawingMeshService;
 
 public class VisualizerService : IVisualizerService
 {
+    private readonly string _rootPath = Directory.GetCurrentDirectory();
     private readonly string _dataFileName = Path.Combine(Directory.GetCurrentDirectory(), "output.txt");
     private readonly string _scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\draw_mesh_script.py");
 
     public async Task DrawMeshPlotAsync(Mesh mesh)
     {
+        await DeleteOutputPlotsAsync();
+
         var isScriptFileExist = await CheckFilesToAvailabilityAsync(_scriptPath);
         if (!isScriptFileExist)
             throw new FileNotFoundException($"Script file was not found from path {_scriptPath}");
@@ -26,6 +29,8 @@ public class VisualizerService : IVisualizerService
 
     public async Task WriteMatrixToFileAsync(IMatrixFormat matrixProfile)
     {
+        await DeleteOutputFilesAsync();
+
         if (matrixProfile is MatrixProfileFormat source)
         {
             Directory.CreateDirectory("OutputProfile");
@@ -75,28 +80,28 @@ public class VisualizerService : IVisualizerService
         foreach (var fe in mesh.Elements)
         {
             var pointsX = fe
-                          .Edges
-                          .SelectMany(edge => edge.Nodes)
-                          .Select(node => node.Coordinate.X)
-                          .Distinct()
-                          .Order()
-                          .ToList();
+                .Edges
+                .SelectMany(edge => edge.Nodes)
+                .Select(node => node.Coordinate.X)
+                .Distinct()
+                .Order()
+                .ToList();
 
             var pointsY = fe
-                          .Edges
-                          .SelectMany(edge => edge.Nodes)
-                          .Select(node => node.Coordinate.Y)
-                          .Distinct()
-                          .Order()
-                          .ToList();
+                .Edges
+                .SelectMany(edge => edge.Nodes)
+                .Select(node => node.Coordinate.Y)
+                .Distinct()
+                .Order()
+                .ToList();
 
             var pointsZ = fe
-                          .Edges
-                          .SelectMany(edge => edge.Nodes)
-                          .Select(node => node.Coordinate.Z)
-                          .Distinct()
-                          .Order()
-                          .ToList();
+                .Edges
+                .SelectMany(edge => edge.Nodes)
+                .Select(node => node.Coordinate.Z)
+                .Distinct()
+                .Order()
+                .ToList();
 
             await sw.WriteAsync(pointsX[0] + " ");
             await sw.WriteAsync(pointsX[1] + " ");
@@ -112,4 +117,27 @@ public class VisualizerService : IVisualizerService
 
     private static Task<bool> CheckFilesToAvailabilityAsync(string pathToFile) =>
         Task.FromResult(File.Exists(pathToFile));
+
+    private static Task<bool> CheckDirectoriesToAvailabilityAsync(string pathToFile) =>
+        Task.FromResult(Directory.Exists(pathToFile));
+
+    private async Task DeleteOutputPlotsAsync()
+    {
+        var outputFilesPath = Path.Combine(_rootPath, "OutputProfile");
+
+        if (await CheckFilesToAvailabilityAsync(outputFilesPath))
+            File.Delete(outputFilesPath);
+    }
+
+    private async Task DeleteOutputFilesAsync()
+    {
+        var outputPlotsContentPath = Path.Combine(_rootPath, "output.txt");
+        var outputPlotsPath = Path.Combine(_rootPath, "OutputPlots");
+
+        if (await CheckDirectoriesToAvailabilityAsync(outputPlotsContentPath))
+            Directory.Delete(outputPlotsContentPath, true);
+
+        if (await CheckDirectoriesToAvailabilityAsync(outputPlotsPath))
+            Directory.Delete(outputPlotsPath, true);
+    }
 }
