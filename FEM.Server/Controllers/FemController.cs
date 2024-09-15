@@ -176,9 +176,9 @@ public class FemController : ControllerBase
     /// <response code="500">На сервере что-то пошло не так</response>
     /// <returns>Полная модель решения уравнения</returns>
     [HttpGet("{id:guid}", Name = "additional-info")]
-    [ProducesResponseType(typeof(TestResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAdditionalResultInfo(Guid id)
+    public async Task<IActionResult> GetTestResult(Guid id)
     {
         try
         {

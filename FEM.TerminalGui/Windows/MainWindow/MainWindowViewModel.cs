@@ -1,4 +1,5 @@
-﻿using System.Reactive;
+﻿using System.Globalization;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.Serialization;
@@ -20,11 +21,13 @@ namespace FEM.TerminalGui.Windows.MainWindow;
 [DataContract]
 public class MainWindowViewModel : ViewModelBase
 {
+
     #region Fields
 
     private readonly ITestingService _testingService;
 
     private readonly BehaviorSubject<FemResponse?> _response = new(null);
+    private readonly IObservable<FemResponse?>     _femResponse;
 
     #endregion
 
@@ -36,17 +39,22 @@ public class MainWindowViewModel : ViewModelBase
 
         SubmitCommand = ReactiveCommand.CreateFromTask(SubmitFieldsAsync);
         ClearCommand = ReactiveCommand.CreateFromTask(ClearFieldsAsync);
+        GetResultCommand = ReactiveCommand.CreateFromTask(GetResultAsync);
 
-        _response.Subscribe(response => FemResponse = response);
+        _femResponse = _response.Distinct(response => response?.Id);
+
+        _femResponse.Subscribe(response => Id = response?.Id);
     }
 
     #endregion
 
     #region Labels
 
-    public string SubmitButtonLabel => "Submit";
+    public string SubmitButtonLabel => "Посчитать";
 
-    public string ClearButtonLabel => "Clear";
+    public string ClearButtonLabel => "Отчистить";
+
+    public string ResultButtonLabel => "Получить результат";
 
     #endregion
 
@@ -59,20 +67,26 @@ public class MainWindowViewModel : ViewModelBase
     public AdditionalParamsFormViewModel AdditionalParamsFormViewModel { get; set; } = new();
 
     [Reactive, DataMember]
-    public FemResponse? FemResponse { get; set; }
+    public Guid? Id { get; set; }
+
+    [Reactive, DataMember]
+    public ustring Discrepancy { get; set; } = "";
 
     #endregion
 
     #region Commands
 
     public ReactiveCommand<Unit, Unit> SubmitCommand { get; }
+
     public ReactiveCommand<Unit, Unit> ClearCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> GetResultCommand { get; }
 
     #endregion
 
     #region Methods
 
-    public async Task SubmitFieldsAsync()
+    private async Task SubmitFieldsAsync()
     {
         var meshParameters = new MeshParameters()
         {
@@ -113,9 +127,9 @@ public class MainWindowViewModel : ViewModelBase
         _response.OnNext(result);
     }
 
-    public Task ClearFieldsAsync()
+    private Task ClearFieldsAsync()
     {
-        _response.OnNext(null);
+        Id = null;
 
         CoordinateInputFormViewModel.XCenterCoordinate = "0";
         CoordinateInputFormViewModel.YCenterCoordinate = "0";
@@ -138,6 +152,14 @@ public class MainWindowViewModel : ViewModelBase
         return Task.CompletedTask;
     }
 
+    private async Task GetResultAsync()
+    {
+        if (Id is null)
+            return;
+
+        await _testingService.GetSessionResultAsync((Guid)Id);
+    }
+
     private Task<double> UStringToDouble(ustring nonFormatedLine)
     {
         var line = nonFormatedLine.ToString();
@@ -149,4 +171,5 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     #endregion
+
 }

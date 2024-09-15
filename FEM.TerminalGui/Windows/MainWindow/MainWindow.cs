@@ -10,6 +10,7 @@ namespace FEM.TerminalGui.Windows.MainWindow;
 
 public sealed class MainWindow : ViewBase<MainWindowViewModel>
 {
+
     #region Fields
 
     private const string TITLE = "Vector FEM (Ctrl+Q to quit)";
@@ -28,6 +29,7 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
         var submitButton = SubmitButton(additionalParamsForm);
         var clearButton = ClearButton(submitButton);
         var resultFieldLabel = ResultFieldLabel(submitButton);
+        var resultButton = ResultButton(resultFieldLabel);
     }
 
     #endregion
@@ -38,10 +40,7 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
     {
         var coordinatesForm = new CoordinateInputForm(ViewModel?.CoordinateInputFormViewModel!)
         {
-            AutoSize = true,
-            Height = 10,
-            Width = 59,
-            ViewModel = ViewModel?.CoordinateInputFormViewModel
+            AutoSize = true, Height = 10, Width = 59, ViewModel = ViewModel?.CoordinateInputFormViewModel
         };
 
         Add(coordinatesForm);
@@ -83,13 +82,10 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
     {
         var submitButton = new Button(ViewModel?.SubmitButtonLabel)
         {
-            X = Pos.Left(previous),
-            Y = Pos.Bottom(previous) + 10,
-            Width = 10
+            X = Pos.Left(previous), Y = Pos.Bottom(previous) + 10, Width = 10
         };
 
-        submitButton.Clicked += () =>
-            ViewModel?.SubmitCommand.Execute();
+        submitButton.Clicked += () => ViewModel?.SubmitCommand.Execute();
 
         Add(submitButton);
         return submitButton;
@@ -99,13 +95,10 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
     {
         var clearButton = new Button(ViewModel?.ClearButtonLabel)
         {
-            X = Pos.Right(previous),
-            Y = Pos.Top(previous),
-            Width = 10
+            X = Pos.Right(previous), Y = Pos.Top(previous), Width = 10
         };
 
-        clearButton.Clicked += () =>
-            ViewModel?.ClearCommand.Execute();
+        clearButton.Clicked += () => ViewModel?.ClearCommand.Execute();
 
         Add(clearButton);
         return clearButton;
@@ -115,15 +108,12 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
     {
         var resultField = new Label("THE RESULT IS FOUND")
         {
-            X = Pos.Left(previous),
-            Y = Pos.Bottom(previous) + 1,
-            Width = 20,
-            Visible = false
+            X = Pos.Left(previous), Y = Pos.Bottom(previous) + 1, Width = 20, Visible = false
         };
 
-        ViewModel?
-            .WhenAnyValue(model => model.FemResponse)
-            .Select(response => response is not null)
+        ViewModel
+            .WhenAnyValue(model => model.Id)
+            .Select(response => response is { })
             .BindTo(resultField, label => label.Visible)
             .DisposeWith(_disposable);
 
@@ -131,5 +121,25 @@ public sealed class MainWindow : ViewBase<MainWindowViewModel>
         return resultField;
     }
 
+    private Button ResultButton(View previous)
+    {
+        var resultButton = new Button(ViewModel?.ResultButtonLabel)
+        {
+            X = Pos.Left(previous), Y = Pos.Bottom(previous), Width = 10
+        };
+
+        ViewModel
+            .WhenAnyValue(model => model.Id)
+            .Select(response => response is { })
+            .BindTo(resultButton, label => label.Visible)
+            .DisposeWith(_disposable);
+        
+        resultButton.Clicked += () => ViewModel?.GetResultCommand.Execute();
+
+        Add(resultButton);
+        return resultButton;
+    }
+
     #endregion
+
 }

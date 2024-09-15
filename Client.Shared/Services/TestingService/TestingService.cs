@@ -1,19 +1,21 @@
 ﻿using System.Diagnostics;
-using AutoMapper;
+using System.Text.Json;
 using Client.Shared.API;
+using Client.Shared.Data;
 using Client.Shared.HttpClientContext;
+using Client.Shared.Services.ReportService;
 
 namespace Client.Shared.Services.TestingService;
 
 public class TestingService : ITestingService
 {
-    private readonly IMapper _mapper;
     private readonly ITestingServiceClient _client;
+    private readonly IReportService        _reportService;
 
-    public TestingService(IMapper mapper, ITestingServiceClient client)
+    public TestingService(ITestingServiceClient client, IReportService reportService)
     {
-        _mapper = mapper;
         _client = client;
+        _reportService = reportService;
     }
 
     public async Task<FemResponse> CreateSessionAsync(Data.TestSession testSession)
@@ -21,8 +23,35 @@ public class TestingService : ITestingService
         try
         {
             return await _client.CalculateSolutionVector(testSession);
+        } catch (Exception e)
+        {
+            Debug.Fail(e.Message);
+            throw;
         }
-        catch (Exception e)
+    }
+
+    public async Task GetSessionResultAsync(Guid id)
+    {
+        try
+        {
+            var response = await _client.GetSessionResult(id);
+            var testResult = JsonSerializer.Deserialize<TestResult>(response);
+
+            if (testResult is null)
+                return;
+
+            if (Directory.Exists("Plots/"))
+                Directory.Delete("Plots/", true);
+
+            Directory.CreateDirectory("Plots/");
+            foreach (var plot in testResult.Plots.Select((value, index) => new { index, value }))
+            {
+                var bytes = Convert.FromBase64String(plot.value);
+                await File.WriteAllBytesAsync($"Plots/plot{plot.index}.png", bytes);
+            }
+
+            await _reportService.GenerateReportAsync(testResult);
+        } catch (Exception e)
         {
             Debug.Fail(e.Message);
             throw;
