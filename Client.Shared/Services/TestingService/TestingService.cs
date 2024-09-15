@@ -40,14 +40,11 @@ public class TestingService : ITestingService
             if (testResult is null)
                 return;
 
-            if (Directory.Exists("Plots/"))
-                Directory.Delete("Plots/", true);
-
-            Directory.CreateDirectory("Plots/");
+            Directory.CreateDirectory($"Plots_{id}/");
             foreach (var plot in testResult.Plots.Select((value, index) => new { index, value }))
             {
                 var bytes = Convert.FromBase64String(plot.value);
-                await File.WriteAllBytesAsync($"Plots/plot{plot.index}.png", bytes);
+                await File.WriteAllBytesAsync($"Plots_{id}/plot{plot.index}.png", bytes);
             }
 
             await _reportService.GenerateReportAsync(testResult);

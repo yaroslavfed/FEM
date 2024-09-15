@@ -7,17 +7,17 @@ namespace Client.Shared.Services.ReportService;
 
 public class PdfReportService : IReportService
 {
-    public async Task GenerateReportAsync(TestResult testResult)
+    public Task GenerateReportAsync(TestResult testResult)
     {
         var document = new Document();
         var page = document.Pages.Add();
 
-        var path = Directory.Exists("Plots/");
+        var path = Directory.Exists($"Plots_{testResult.Id}/");
 
         if (!path)
             throw new DirectoryNotFoundException("Directory with results doesn`t exist");
 
-        var dir = new DirectoryInfo("Plots/");
+        var dir = new DirectoryInfo($"Plots_{testResult.Id}/");
         var filesList = dir.GetFiles();
         var files = filesList.Where(info => info.FullName.Contains(".png")).ToArray();
 
@@ -73,5 +73,7 @@ public class PdfReportService : IReportService
         document.Save($"document_{testResult.Id}.pdf");
 
         Process.Start(new ProcessStartInfo { FileName = $"document_{testResult.Id}.pdf", UseShellExecute = true });
+        
+        return Task.CompletedTask;
     }
 }

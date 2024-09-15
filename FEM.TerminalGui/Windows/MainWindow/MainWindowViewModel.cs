@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Reactive;
+﻿using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.Serialization;
@@ -27,7 +26,6 @@ public class MainWindowViewModel : ViewModelBase
     private readonly ITestingService _testingService;
 
     private readonly BehaviorSubject<FemResponse?> _response = new(null);
-    private readonly IObservable<FemResponse?>     _femResponse;
 
     #endregion
 
@@ -41,9 +39,9 @@ public class MainWindowViewModel : ViewModelBase
         ClearCommand = ReactiveCommand.CreateFromTask(ClearFieldsAsync);
         GetResultCommand = ReactiveCommand.CreateFromTask(GetResultAsync);
 
-        _femResponse = _response.Distinct(response => response?.Id);
+        var femResponse = _response.Distinct(response => response?.Id);
 
-        _femResponse.Subscribe(response => Id = response?.Id);
+        femResponse.Subscribe(response => Id = response?.Id);
     }
 
     #endregion
@@ -88,6 +86,8 @@ public class MainWindowViewModel : ViewModelBase
 
     private async Task SubmitFieldsAsync()
     {
+        Id = null;
+        
         var meshParameters = new MeshParameters()
         {
             XCenterCoordinate = await UStringToDouble(CoordinateInputFormViewModel.XCenterCoordinate),
