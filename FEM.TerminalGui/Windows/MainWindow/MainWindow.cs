@@ -3,7 +3,6 @@ using System.Reactive.Linq;
 using FEM.TerminalGui.Components.AdditionalParamsForm;
 using FEM.TerminalGui.Components.CoordinatesForm;
 using FEM.TerminalGui.Components.SplittingForm;
-using NStack;
 using ReactiveUI;
 using Terminal.Gui;
 

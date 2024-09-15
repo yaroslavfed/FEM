@@ -3,15 +3,17 @@ using FEM.Common.Resolvers.MatrixFormatResolver;
 using FEM.Server.Models.Parallelepipedal.MassMatrix;
 using FEM.Server.Models.Parallelepipedal.StiffnessMatrix;
 using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
-using FEM.Server.Services.Parallelepipedal.DrawingMeshService;
 using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
 using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
 using FEM.Server.Services.Parallelepipedal.MeshService;
 using FEM.Server.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
 using FEM.Server.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
+using FEM.Server.Services.Parallelepipedal.VisualizerService;
+using FEM.Server.Services.SaverService;
 using FEM.Server.Services.SolverService;
 using FEM.Server.Services.TestingService;
+using FEM.Server.Services.TestResultService;
 using FEM.Server.Services.TestSessionService;
 using FEM.Storage.Converter;
 
@@ -42,5 +44,8 @@ public static class ServicesInstaller
 
         builder.AddScoped<IVisualizerService, VisualizerService>();
         builder.AddScoped<IConverterService, ConverterService>();
+
+        builder.AddScoped<ITestResultService, TestResultService>();
+        builder.AddScoped<ISaverService, SaverService>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FEM.Common.Data.MathModels;
 using FEM.Common.Data.MathModels.MatrixFormats;
+using FEM.Server.Data;
 using FEM.Solvers.Solvers;
 
 namespace FEM.Server.Services.SolverService;
@@ -8,13 +9,14 @@ namespace FEM.Server.Services.SolverService;
 public class SolverService : ISolverService
 {
     // TODO: Это нужно переделать, пока просто костыль (возможно навсегда)
-    public Task<(Vector solve, double discrepancy, int iterCount)> GetSolutionVectorAsync(
-        IMatrixFormat matrixFormat, int maxIterationsCount, double eps)
+    public Task<SolutionResult> GetSolutionVectorAsync(IMatrixFormat matrixFormat, int maxIterationsCount, double eps)
     {
         if (matrixFormat is MatrixProfileFormat matrixProfile)
         {
             ISolver solver = new LosLUSolver(maxIterationsCount, eps);
-            var result = solver.Solve(matrixProfile);
+            var solveTuple = solver.Solve(matrixProfile);
+
+            var result = new SolutionResult(solveTuple.solve, solveTuple.discrepancy, solveTuple.iterCount);
 
             return Task.FromResult(result);
         }

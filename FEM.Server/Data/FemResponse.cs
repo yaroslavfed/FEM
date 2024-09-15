@@ -1,22 +1,22 @@
 ﻿namespace FEM.Server.Data;
 
 /// <summary>
-/// Модель решения задачи
+/// Модель результата решения задачи
 /// </summary>
 public class FemResponse
 {
     /// <summary>
-    /// Вектор q
+    /// Идентификатор полученного результата
     /// </summary>
-    public required IReadOnlyList<double> SolutionVector { get; set; }
-
+    public required Guid Id { get; init; }
+    
     /// <summary>
-    /// Точность решения
+    /// Невязка решения
     /// </summary>
-    public required double Accuracy { get; set; }
+    public required double Discrepancy { get; init; }
 
     /// <summary>
     /// Количество итераций
     /// </summary>
-    public required int IterationsCount { get; set; }
+    public required int IterationsCount { get; init; }
 }

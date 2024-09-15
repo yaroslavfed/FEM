@@ -1,12 +1,15 @@
-﻿using FEM.Common.Enums;
+﻿using FEM.Common.Data.TestSession;
+using FEM.Common.Enums;
 using FEM.Server.Data;
 using FEM.Server.Data.Domain;
 using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
-using FEM.Server.Services.Parallelepipedal.DrawingMeshService;
 using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
 using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
+using FEM.Server.Services.Parallelepipedal.VisualizerService;
+using FEM.Server.Services.SaverService;
 using FEM.Server.Services.SolverService;
+using FEM.Server.Services.TestResultService;
 using FEM.Server.Services.TestSessionService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,14 +22,15 @@ namespace FEM.Server.Controllers;
 [Route("api/[controller]/Vector")]
 public class FemController : ControllerBase
 {
-    private readonly ILogger _logger;
-    private readonly IGlobalMatrixServices _globalMatrixServices;
-    private readonly ITestSessionService _testSessionService;
-    private readonly IMatrixPortraitService _portraitService;
-    private readonly IRightPartVectorService _rightPartVectorService;
-    private readonly IVisualizerService _visualizerService;
+    private readonly ILogger                   _logger;
+    private readonly IGlobalMatrixServices     _globalMatrixServices;
+    private readonly ITestSessionService       _testSessionService;
+    private readonly IMatrixPortraitService    _portraitService;
+    private readonly IRightPartVectorService   _rightPartVectorService;
+    private readonly IVisualizerService        _visualizerService;
     private readonly IBoundaryConditionFactory _boundaryCondition;
-    private readonly ISolverService _solverService;
+    private readonly ISolverService            _solverService;
+    private readonly ITestResultService        _testResultService;
 
     public FemController(
         ILogger<FemController> logger,
@@ -36,7 +40,9 @@ public class FemController : ControllerBase
         IRightPartVectorService rightPartVectorService,
         IVisualizerService visualizerService,
         IBoundaryConditionFactory boundaryCondition,
-        ISolverService solverService)
+        ISolverService solverService,
+        ITestResultService testResultService
+    )
     {
         _logger = logger;
         _globalMatrixServices = globalMatrixServices;
@@ -46,6 +52,7 @@ public class FemController : ControllerBase
         _visualizerService = visualizerService;
         _boundaryCondition = boundaryCondition;
         _solverService = solverService;
+        _testResultService = testResultService;
     }
 
     /// <summary>
@@ -55,7 +62,7 @@ public class FemController : ControllerBase
     /// /// <remarks>
     /// Sample request:
     ///
-    ///     POST /Todo
+    ///     POST
     ///     {
     ///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     ///        "meshParameters": {
@@ -82,12 +89,12 @@ public class FemController : ControllerBase
     ///     }
     ///
     /// </remarks>
-    /// <response code="200">Возвращает вектор решения, точность решения и количество итераций</response>
+    /// <response code="200">Возвращает id результата, невязку и количество итераций</response>
     /// <response code="500">На сервере что-то пошло не так</response>
     /// <returns>Решение уравнения</returns>
-    [HttpPost(Name = "vector-fem")]
+    [HttpPost(Name = "vector-fem-solver")]
     [ProducesResponseType(typeof(FemResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateCalculation([FromBody] TestSession testSessionParameters)
     {
         Console.WriteLine($"[Started session] Id: {testSessionParameters.Id}");
@@ -100,10 +107,14 @@ public class FemController : ControllerBase
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
 
             _logger.LogInformation($"[{nameof(FemController)}] resolve matrix portrait");
-            var matrixProfile =
-                await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, EMatrixFormats.Profile);
+            var matrixProfile
+                = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, EMatrixFormats.Profile);
             await matrixProfile.InitializeVectorsAsync(
-                testSession.Mesh.Elements.SelectMany(element => element.Edges).DistinctBy(edge => edge.EdgeIndex)
+                testSession
+                    .Mesh
+                    .Elements
+                    .SelectMany(element => element.Edges)
+                    .DistinctBy(edge => edge.EdgeIndex)
                     .Count()
             );
 
@@ -114,36 +125,70 @@ public class FemController : ControllerBase
             await _rightPartVectorService.GetRightPartVectorAsync(matrixProfile, testSession);
 
             _logger.LogInformation($"[{nameof(FemController)}] resolve boundary conditions");
-            var boundaryConditionService =
-                await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
+            var boundaryConditionService
+                = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
 
             _logger.LogInformation($"[{nameof(FemController)}] set boundary conditions");
             await boundaryConditionService.SetBoundaryConditionsAsync(testSession, matrixProfile);
 
-            _logger.LogInformation($"[{nameof(FemController)}] calculate slae");
-            var solutionVector = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
-
-#if true
+            _logger.LogInformation($"[{nameof(FemController)}] save matrix profile to files");
             await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
-            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
-#endif
 
-            var result = new FemResponse
+            _logger.LogInformation($"[{nameof(FemController)}] save plots to images");
+            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
+
+            _logger.LogInformation($"[{nameof(FemController)}] calculate slae start");
+            var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
+
+            _logger.LogInformation($"[{nameof(FemController)}] saving test result");
+            var resultId = await _testResultService.AddTestResultAsync(solutionParameters);
+
+            var femResponse = new FemResponse
             {
-                SolutionVector = solutionVector.solve.Data,
-                Accuracy = solutionVector.discrepancy,
-                IterationsCount = solutionVector.iterCount
+                Id = resultId,
+                Discrepancy = solutionParameters.Discrepancy,
+                IterationsCount = solutionParameters.ItersCount
             };
 
-            return Ok(result);
-        }
-        catch (Exception exception)
+            return Ok(femResponse);
+        } catch (Exception exception)
         {
-            return BadRequest($"{StatusCodes.Status500InternalServerError.ToString()}, {exception}");
-        }
-        finally
+            return BadRequest(
+                $"Something went wrong. Status code: {StatusCodes.Status500InternalServerError}, {exception.Message}"
+            );
+        } finally
         {
             Console.WriteLine($"[Ended session] Id: {testSessionParameters.Id}");
+        }
+    }
+
+    /// <summary>
+    /// Получает результат сессии из хранилища
+    /// </summary>
+    /// <param name="id">Идентификатор проведенной расчётной сессии</param>
+    /// /// <remarks>
+    /// Sample request:
+    ///
+    ///     Get
+    ///     3fa85f64-5717-4562-b3fc-2c963f66afa6
+    /// </remarks>
+    /// <response code="200">Полную информацию о проведенной сессии</response>
+    /// <response code="500">На сервере что-то пошло не так</response>
+    /// <returns>Полная модель решения уравнения</returns>
+    [HttpGet("{id:guid}", Name = "additional-info")]
+    [ProducesResponseType(typeof(TestResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetAdditionalResultInfo(Guid id)
+    {
+        try
+        {
+            var result = await _testResultService.GetTestResultAsync(id);
+            return Ok(result);
+        } catch (Exception exception)
+        {
+            return BadRequest(
+                $"Something went wrong. Status code: {StatusCodes.Status500InternalServerError}, {exception.Message}"
+            );
         }
     }
 }

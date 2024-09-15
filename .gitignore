@@ -379,4 +379,5 @@ FodyWeavers.xsd
 
 /FEM.Server/OutputProfile
 /FEM.Server/OutputPlots
+/FEM.Server/TestResults
 /FEM.Server/output.txt

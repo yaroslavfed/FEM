@@ -14,12 +14,12 @@ namespace FEM.Server.Services.Parallelepipedal.MeshService;
 /// <inheritdoc cref="IMeshService"/>
 public class MeshService : IMeshService
 {
-    private readonly IReadableStorage _meshStorage;
+    private readonly IJsonStorage _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
 
     public MeshService(
-        IReadableStorage meshStorage,
+        IJsonStorage meshStorage,
         IEdgesNumberingService edgesNumberingService,
         INodesNumberingService nodesNumberingService
     )

@@ -1,7 +1,7 @@
 ﻿using FEM.Common.Data.MathModels.MatrixFormats;
 using FEM.Server.Data.Parallelepipedal;
 
-namespace FEM.Server.Services.Parallelepipedal.DrawingMeshService;
+namespace FEM.Server.Services.Parallelepipedal.VisualizerService;
 
 public interface IVisualizerService
 {
