@@ -62,10 +62,11 @@ public class PdfReportService : IReportService
         page.Paragraphs.Add(new TextFragment("\n"));
         page.Paragraphs.Add(new TextFragment("\n"));
         page.Paragraphs.Add(new TextFragment("\n"));
-        page.Paragraphs.Add(new TextFragment($"Точность решения: {testResult.Inaccuracy}"));
+        page.Paragraphs.Add(new TextFragment($"Точность решения: {testResult.SolutionInfo!.Discrepancy:E}"));
         page.Paragraphs.Add(new TextFragment($"Кол-во итераций: {testResult.ItersCount}"));
         page.Paragraphs.Add(new TextFragment("Вектор решения:"));
-        foreach (var point in testResult.SolutionVector)
+        page.Paragraphs.Add(new TextFragment("\n"));
+        foreach (var point in testResult.SolutionInfo!.EdgeVectorValue)
         {
             page.Paragraphs.Add(new TextFragment($"{point}"));
         }
@@ -73,7 +74,7 @@ public class PdfReportService : IReportService
         document.Save($"document_{testResult.Id}.pdf");
 
         Process.Start(new ProcessStartInfo { FileName = $"document_{testResult.Id}.pdf", UseShellExecute = true });
-        
+
         return Task.CompletedTask;
     }
 }

@@ -17,9 +17,9 @@ public class TestingService : ITestingService
         var coordinate = (await CalculateNodeAsync(direction, nodesPair)).Coordinate;
         List<double> contributionsFromMatrixA =
         [
-            35 * Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
-            Math.Pow(coordinate.X, 3) + 25 * Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
-            Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + 45 * Math.Pow(coordinate.Z, 3)
+            35.0 * Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
+            Math.Pow(coordinate.X, 3) + 25.0 * Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
+            Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + 45.0 * Math.Pow(coordinate.Z, 3)
         ];
 
         return direction switch
@@ -39,9 +39,9 @@ public class TestingService : ITestingService
         var coordinate = (await CalculateNodeAsync(direction, nodesPair)).Coordinate;
         List<double> contributionsFromVectorF =
         [
-            8 * (coordinate.Y + coordinate.Z),
-            8 * (coordinate.X + coordinate.Z),
-            8 * (coordinate.X + coordinate.Y)
+            8.0 * (coordinate.Y + coordinate.Z),
+            8.0 * (coordinate.X + coordinate.Z),
+            8.0 * (coordinate.X + coordinate.Y)
         ];
 
         return direction switch
@@ -118,21 +118,21 @@ public class TestingService : ITestingService
             {
                 Coordinate = nodesPair.firstNode.Coordinate with
                 {
-                    X = (nodesPair.firstNode.Coordinate.X + nodesPair.secondNode.Coordinate.X) / 2
+                    X = (nodesPair.firstNode.Coordinate.X + nodesPair.secondNode.Coordinate.X) / 2.0
                 }
             },
             EDirections.Oy => nodesPair.firstNode with
             {
                 Coordinate = nodesPair.firstNode.Coordinate with
                 {
-                    Y = (nodesPair.firstNode.Coordinate.Y + nodesPair.secondNode.Coordinate.Y) / 2
+                    Y = (nodesPair.firstNode.Coordinate.Y + nodesPair.secondNode.Coordinate.Y) / 2.0
                 }
             },
             EDirections.Oz => nodesPair.firstNode with
             {
                 Coordinate = nodesPair.firstNode.Coordinate with
                 {
-                    Z = (nodesPair.firstNode.Coordinate.Z + nodesPair.secondNode.Coordinate.Z) / 2
+                    Z = (nodesPair.firstNode.Coordinate.Z + nodesPair.secondNode.Coordinate.Z) / 2.0
                 }
             },
             _ => throw new NotImplementedException()

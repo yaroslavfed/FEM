@@ -8,7 +8,5 @@ public record TestResult
 
     public int ItersCount { get; set; }
 
-    public double Inaccuracy { get; set; } = 0;
-
-    public IEnumerable<double> SolutionVector { get; set; } = [];
+    public SolutionAdditionalInfo? SolutionInfo { get; set; }
 }

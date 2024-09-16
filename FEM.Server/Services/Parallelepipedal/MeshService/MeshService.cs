@@ -14,7 +14,7 @@ namespace FEM.Server.Services.Parallelepipedal.MeshService;
 /// <inheritdoc cref="IMeshService"/>
 public class MeshService : IMeshService
 {
-    private readonly IJsonStorage _meshStorage;
+    private readonly IJsonStorage           _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
 
@@ -31,41 +31,44 @@ public class MeshService : IMeshService
 
     public async Task<Axis> GenerateTestConfiguration() => await _meshStorage.GetAxisAsync();
 
-    public async Task<Axis> GenerateTestConfiguration(TestSession testSession)
+    public Task<Axis> GenerateTestConfiguration(TestSession testSession)
     {
-        var axis = new Axis()
+        var axis = new Axis
         {
-            Positioning = new Positioning()
-            {
-                Coordinate = new Point3D()
+            Positioning
+                = new()
                 {
-                    X = testSession.MeshParameters.XCenterCoordinate,
-                    Y = testSession.MeshParameters.YCenterCoordinate,
-                    Z = testSession.MeshParameters.ZCenterCoordinate
+                    Coordinate = new()
+                    {
+                        X = testSession.MeshParameters.XCenterCoordinate,
+                        Y = testSession.MeshParameters.YCenterCoordinate,
+                        Z = testSession.MeshParameters.ZCenterCoordinate
+                    },
+                    BoundsDistance
+                        = new()
+                        {
+                            X = testSession.MeshParameters.XStepToBounds,
+                            Y = testSession.MeshParameters.YStepToBounds,
+                            Z = testSession.MeshParameters.ZStepToBounds
+                        }
                 },
-                BoundsDistance = new Point3D()
-                {
-                    X = testSession.MeshParameters.XStepToBounds,
-                    Y = testSession.MeshParameters.YStepToBounds,
-                    Z = testSession.MeshParameters.ZStepToBounds
-                }
-            },
-            Splitting = new Splitting()
+            Splitting = new()
             {
-                SplittingCoefficient = new Point3D()
+                SplittingCoefficient = new()
                 {
                     X = testSession.SplittingParameters.XSplittingCoefficient,
                     Y = testSession.SplittingParameters.YSplittingCoefficient,
                     Z = testSession.SplittingParameters.ZSplittingCoefficient
                 },
-                MultiplyCoefficient = new Point3D()
-                {
-                    X = testSession.SplittingParameters.XMultiplyCoefficient,
-                    Y = testSession.SplittingParameters.YMultiplyCoefficient,
-                    Z = testSession.SplittingParameters.ZMultiplyCoefficient
-                }
+                MultiplyCoefficient
+                    = new()
+                    {
+                        X = testSession.SplittingParameters.XMultiplyCoefficient,
+                        Y = testSession.SplittingParameters.YMultiplyCoefficient,
+                        Z = testSession.SplittingParameters.ZMultiplyCoefficient
+                    }
             },
-            AdditionalParameters = new AdditionalParameters()
+            AdditionalParameters = new()
             {
                 Mu = testSession.AdditionParameters.MuCoefficient,
                 Gamma = testSession.AdditionParameters.GammaCoefficient,
@@ -73,7 +76,7 @@ public class MeshService : IMeshService
             }
         };
 
-        return axis;
+        return Task.FromResult(axis);
     }
 
     public async Task<Mesh> GenerateMeshAsync(Axis meshModel)
@@ -85,9 +88,9 @@ public class MeshService : IMeshService
         var nz = pointsList.Select(points => points.Z).Distinct().ToArray().Length;
 
         var finiteElements = Enumerable
-            .Range(0, (nx - 1) * (ny - 1) * (nz - 1))
-            .Select(_ => new FiniteElementWithNumerics())
-            .ToArray();
+                             .Range(0, (nx - 1) * (ny - 1) * (nz - 1))
+                             .Select(_ => new FiniteElementWithNumerics())
+                             .ToArray();
 
         await _nodesNumberingService.ConfigureGlobalNumbering(nx, ny, nz, finiteElements);
         await _edgesNumberingService.ConfigureGlobalNumbering(nx, ny, nz, finiteElements);
@@ -95,44 +98,44 @@ public class MeshService : IMeshService
         var mesh = new Mesh
         {
             Elements = finiteElements
-                .Select(
-                    element => new FiniteElement
-                    {
-                        Edges = element
-                            .MapNodesEdges
-                            .Select(
-                                (associationPoints, edgeIndex) => new Edge
-                                {
-                                    EdgeIndex = element.Edges[edgeIndex],
-                                    Nodes =
-                                    [
-                                        new()
-                                        {
-                                            NodeIndex = associationPoints.First,
-                                            Coordinate = new()
-                                            {
-                                                X = pointsList[associationPoints.First].X,
-                                                Y = pointsList[associationPoints.First].Y,
-                                                Z = pointsList[associationPoints.First].Z
-                                            }
-                                        },
-                                        new()
-                                        {
-                                            NodeIndex = associationPoints.Second,
-                                            Coordinate = new()
-                                            {
-                                                X = pointsList[associationPoints.Second].X,
-                                                Y = pointsList[associationPoints.Second].Y,
-                                                Z = pointsList[associationPoints.Second].Z
-                                            }
-                                        }
-                                    ]
-                                }
-                            )
-                            .ToList()
-                    }
-                )
-                .ToList()
+                       .Select(
+                           element => new FiniteElement
+                           {
+                               Edges = element
+                                       .MapNodesEdges
+                                       .Select(
+                                           (associationPoints, edgeIndex) => new Edge
+                                           {
+                                               EdgeIndex = element.Edges[edgeIndex],
+                                               Nodes =
+                                               [
+                                                   new()
+                                                   {
+                                                       NodeIndex = associationPoints.First,
+                                                       Coordinate = new()
+                                                       {
+                                                           X = pointsList[associationPoints.First].X,
+                                                           Y = pointsList[associationPoints.First].Y,
+                                                           Z = pointsList[associationPoints.First].Z
+                                                       }
+                                                   },
+                                                   new()
+                                                   {
+                                                       NodeIndex = associationPoints.Second,
+                                                       Coordinate = new()
+                                                       {
+                                                           X = pointsList[associationPoints.Second].X,
+                                                           Y = pointsList[associationPoints.Second].Y,
+                                                           Z = pointsList[associationPoints.Second].Z
+                                                       }
+                                                   }
+                                               ]
+                                           }
+                                       )
+                                       .ToList()
+                           }
+                       )
+                       .ToList()
         };
 
         return mesh;
@@ -146,31 +149,31 @@ public class MeshService : IMeshService
     private static Task<List<Point3D>> ConfigurePointsListAsync(Axis meshParameters)
     {
         var x = new List<double>()
-            .ToList()
-            .SplitAxis(
-                meshParameters.Splitting.MultiplyCoefficient.X,
-                (int)meshParameters.Splitting.SplittingCoefficient.X,
-                meshParameters.Positioning.GetHighPoint3D().X,
-                meshParameters.Positioning.GetLowPoint3D().X
-            );
+                .ToList()
+                .SplitAxis(
+                    meshParameters.Splitting.MultiplyCoefficient.X,
+                    (int)meshParameters.Splitting.SplittingCoefficient.X,
+                    meshParameters.Positioning.GetHighPoint3D().X,
+                    meshParameters.Positioning.GetLowPoint3D().X
+                );
 
         var y = new List<double>()
-            .ToList()
-            .SplitAxis(
-                meshParameters.Splitting.MultiplyCoefficient.Y,
-                (int)meshParameters.Splitting.SplittingCoefficient.Y,
-                meshParameters.Positioning.GetHighPoint3D().Y,
-                meshParameters.Positioning.GetLowPoint3D().Y
-            );
+                .ToList()
+                .SplitAxis(
+                    meshParameters.Splitting.MultiplyCoefficient.Y,
+                    (int)meshParameters.Splitting.SplittingCoefficient.Y,
+                    meshParameters.Positioning.GetHighPoint3D().Y,
+                    meshParameters.Positioning.GetLowPoint3D().Y
+                );
 
         var z = new List<double>()
-            .ToList()
-            .SplitAxis(
-                meshParameters.Splitting.MultiplyCoefficient.Z,
-                (int)meshParameters.Splitting.SplittingCoefficient.Z,
-                meshParameters.Positioning.GetHighPoint3D().Z,
-                meshParameters.Positioning.GetLowPoint3D().Z
-            );
+                .ToList()
+                .SplitAxis(
+                    meshParameters.Splitting.MultiplyCoefficient.Z,
+                    (int)meshParameters.Splitting.SplittingCoefficient.Z,
+                    meshParameters.Positioning.GetHighPoint3D().Z,
+                    meshParameters.Positioning.GetLowPoint3D().Z
+                );
 
         var strataMesh
             = (from itemZ in z from itemY in y from itemX in x select new Point3D { X = itemX, Y = itemY, Z = itemZ })

@@ -2,6 +2,7 @@
 using FEM.Common.Resolvers.MatrixFormatResolver;
 using FEM.Server.Models.Parallelepipedal.MassMatrix;
 using FEM.Server.Models.Parallelepipedal.StiffnessMatrix;
+using FEM.Server.Services.InaccuracyService;
 using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
 using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
 using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
@@ -47,5 +48,7 @@ public static class ServicesInstaller
 
         builder.AddScoped<ITestResultService, TestResultService>();
         builder.AddScoped<ISaverService, SaverService>();
+
+        builder.AddScoped<IInaccuracyService, InaccuracyService>();
     }
 }

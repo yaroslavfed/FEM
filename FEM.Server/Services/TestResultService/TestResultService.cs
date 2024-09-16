@@ -33,8 +33,7 @@ public class TestResultService : ITestResultService
         var result = new TestResult
         {
             Id = Guid.NewGuid(),
-            SolutionVector = solutionParameters.Solve.Data,
-            Inaccuracy = solutionParameters.Discrepancy, // TODO: заменить на получение погрешности решения задачи
+            SolutionInfo = solutionParameters.SolutionInfo,
             ItersCount = solutionParameters.ItersCount,
             Plots = plotsRawList
         };

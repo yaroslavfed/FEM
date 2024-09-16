@@ -1,13 +1,12 @@
-﻿using FEM.Common.Data.TestSession;
-using FEM.Common.Enums;
+﻿using FEM.Common.Enums;
 using FEM.Server.Data;
 using FEM.Server.Data.Domain;
+using FEM.Server.Services.InaccuracyService;
 using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
 using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
 using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
 using FEM.Server.Services.Parallelepipedal.VisualizerService;
-using FEM.Server.Services.SaverService;
 using FEM.Server.Services.SolverService;
 using FEM.Server.Services.TestResultService;
 using FEM.Server.Services.TestSessionService;
@@ -31,6 +30,7 @@ public class FemController : ControllerBase
     private readonly IBoundaryConditionFactory _boundaryCondition;
     private readonly ISolverService            _solverService;
     private readonly ITestResultService        _testResultService;
+    private readonly IInaccuracyService        _inaccuracyService;
 
     public FemController(
         ILogger<FemController> logger,
@@ -41,7 +41,8 @@ public class FemController : ControllerBase
         IVisualizerService visualizerService,
         IBoundaryConditionFactory boundaryCondition,
         ISolverService solverService,
-        ITestResultService testResultService
+        ITestResultService testResultService,
+        IInaccuracyService inaccuracyService
     )
     {
         _logger = logger;
@@ -53,6 +54,7 @@ public class FemController : ControllerBase
         _boundaryCondition = boundaryCondition;
         _solverService = solverService;
         _testResultService = testResultService;
+        _inaccuracyService = inaccuracyService;
     }
 
     /// <summary>
@@ -140,13 +142,15 @@ public class FemController : ControllerBase
             _logger.LogInformation($"[{nameof(FemController)}] calculate slae start");
             var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
 
+            await _inaccuracyService.GetSolutionVectorInaccuracy(testSession, solutionParameters);
+
             _logger.LogInformation($"[{nameof(FemController)}] saving test result");
             var resultId = await _testResultService.AddTestResultAsync(solutionParameters);
 
             var femResponse = new FemResponse
             {
                 Id = resultId,
-                Discrepancy = solutionParameters.Discrepancy,
+                Discrepancy = solutionParameters.SolutionInfo!.Discrepancy,
                 IterationsCount = solutionParameters.ItersCount
             };
 

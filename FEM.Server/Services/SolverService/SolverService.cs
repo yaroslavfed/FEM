@@ -1,5 +1,4 @@
-﻿using FEM.Common.Data.MathModels;
-using FEM.Common.Data.MathModels.MatrixFormats;
+﻿using FEM.Common.Data.MathModels.MatrixFormats;
 using FEM.Server.Data;
 using FEM.Solvers.Solvers;
 
@@ -16,7 +15,10 @@ public class SolverService : ISolverService
             ISolver solver = new LosLUSolver(maxIterationsCount, eps);
             var solveTuple = solver.Solve(matrixProfile);
 
-            var result = new SolutionResult(solveTuple.solve, solveTuple.discrepancy, solveTuple.iterCount);
+            var result = new SolutionResult
+            {
+                Solve = solveTuple.solve, SolutionInfo = null, ItersCount = solveTuple.iterCount
+            };
 
             return Task.FromResult(result);
         }
