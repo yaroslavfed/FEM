@@ -1,0 +1,6 @@
+@FEM.Server_HostAddress = http://localhost:5027
+
+GET {{FEM.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

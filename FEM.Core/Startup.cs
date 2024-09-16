@@ -1,11 +1,10 @@
 ﻿using FEM.Common.Enums;
-
-using VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
-using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
-using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
-using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
-using VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
-using VectorFEM.Core.Services.TestSessionService;
+using FEM.Core.Services.Parallelepipedal.BoundaryConditionService;
+using FEM.Core.Services.Parallelepipedal.DrawingMeshService;
+using FEM.Core.Services.Parallelepipedal.GlobalMatrixService;
+using FEM.Core.Services.Parallelepipedal.MatrixPortraitService;
+using FEM.Core.Services.Parallelepipedal.RightPartVectorService;
+using FEM.Core.Services.TestSessionService;
 
 namespace FEM.Core;
 
@@ -47,10 +46,9 @@ public class Startup
         await _globalMatrixServices.GetGlobalMatrixAsync(matrixProfile, testSession);
         await _rightPartVectorService.GetRightPartVectorAsync(matrixProfile, testSession);
 
-        var boundaryConditionService = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
+        var boundaryConditionService =
+            await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
         await boundaryConditionService.SetBoundaryConditionsAsync(testSession, matrixProfile);
-
-
 
 
 #if DEBUG
@@ -58,6 +56,6 @@ public class Startup
         await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
 #endif
 
-        // Console.ReadKey();
+        Console.ReadKey();
     }
 }

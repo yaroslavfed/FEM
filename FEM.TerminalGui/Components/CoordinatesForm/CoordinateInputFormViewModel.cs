@@ -26,13 +26,13 @@ public class CoordinateInputFormViewModel : ViewModelBase
     public ustring ZCenterCoordinate { get; set; } = "0";
 
     [Reactive, DataMember]
-    public ustring XStepToBounds { get; set; } = "0";
+    public ustring XStepToBounds { get; set; } = "1";
 
     [Reactive, DataMember]
-    public ustring YStepToBounds { get; set; } = "0";
+    public ustring YStepToBounds { get; set; } = "1";
 
     [Reactive, DataMember]
-    public ustring ZStepToBounds { get; set; } = "0";
+    public ustring ZStepToBounds { get; set; } = "1";
 
     #endregion
 }

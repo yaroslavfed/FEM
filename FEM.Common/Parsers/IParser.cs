@@ -12,7 +12,7 @@ public interface IParser
     /// <typeparam name="TEntity">Тип модели для десериалицаии</typeparam>
     /// <typeparam name="TData">Тип упаковки сырой строки</typeparam>
     /// <returns>Возвращается модель со свойствами сырой модели</returns>
-    Task<TEntity> DeserializeOutputAsync<TEntity, TData>(TData context);
+    Task<TEntity> DeserializeAsync<TEntity, TData>(TData context);
 
     /// <summary>
     /// Десериализация моделей из файла
@@ -27,6 +27,8 @@ public interface IParser
     /// </summary>
     /// <param name="object">Модель для сериализации</param>
     /// <typeparam name="TEntity">Тип модели для сериализации</typeparam>
-    /// <returns>Возвращается сыроая строка</returns>
-    Task<string> SerializeInputAsync<TEntity>(TEntity @object);
+    /// <returns>Возвращается сырая строка</returns>
+    Task<string> SerializeAsync<TEntity>(TEntity @object);
+
+    Task ParseEntityToFileAsync<TEntity>(TEntity context, string fileName);
 }

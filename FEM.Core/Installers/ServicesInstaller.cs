@@ -1,18 +1,19 @@
 ﻿using Autofac;
 using FEM.Common.Data.MathModels;
 using FEM.Common.Resolvers.MatrixFormatResolver;
-using VectorFEM.Core.Models.Parallelepipedal.MassMatrix;
-using VectorFEM.Core.Models.Parallelepipedal.StiffnessMatrix;
-using VectorFEM.Core.Services.Parallelepipedal.BoundaryConditionService;
-using VectorFEM.Core.Services.Parallelepipedal.DrawingMeshService;
-using VectorFEM.Core.Services.Parallelepipedal.GlobalMatrixService;
-using VectorFEM.Core.Services.Parallelepipedal.MatrixPortraitService;
-using VectorFEM.Core.Services.Parallelepipedal.MeshService;
-using VectorFEM.Core.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
-using VectorFEM.Core.Services.Parallelepipedal.NumberingService.NodesNumberingService;
-using VectorFEM.Core.Services.Parallelepipedal.RightPartVectorService;
-using VectorFEM.Core.Services.TestingService;
-using VectorFEM.Core.Services.TestSessionService;
+using FEM.Core.Models.Parallelepipedal.MassMatrix;
+using FEM.Core.Models.Parallelepipedal.StiffnessMatrix;
+using FEM.Core.Services.Parallelepipedal.BoundaryConditionService;
+using FEM.Core.Services.Parallelepipedal.DrawingMeshService;
+using FEM.Core.Services.Parallelepipedal.GlobalMatrixService;
+using FEM.Core.Services.Parallelepipedal.MatrixPortraitService;
+using FEM.Core.Services.Parallelepipedal.MeshService;
+using FEM.Core.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
+using FEM.Core.Services.Parallelepipedal.NumberingService.NodesNumberingService;
+using FEM.Core.Services.Parallelepipedal.RightPartVectorService;
+using FEM.Core.Services.TestingService;
+using FEM.Core.Services.TestSessionService;
+using FEM.Storage.Converter;
 
 namespace FEM.Core.Installers;
 
@@ -36,11 +37,10 @@ public static class ServicesInstaller
         builder.RegisterType<TestSessionService>().As<ITestSessionService>();
 
         builder.RegisterType<MatrixFormatResolver>().As<IMatrixFormatResolver>();
-
         builder.RegisterType<BoundaryConditionFactory>().As<IBoundaryConditionFactory>();
-
+        
         builder.RegisterType<VisualizerService>().As<IVisualizerService>();
-
-        Storage.Installers.ServicesInstaller.RegisterStorageServices(builder);
+        builder.RegisterType<ConverterService>().As<IConverterService>();
+        
     }
 }

@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Solvers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
   </ItemGroup>
 

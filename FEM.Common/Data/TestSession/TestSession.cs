@@ -12,9 +12,9 @@ public record TestSession<TMesh>
     /// </summary>
     public required TMesh Mesh { get; init; }
 
-    public int Mu { get; init; }
+    public double Mu { get; init; }
 
-    public int Gamma { get; init; }
+    public double Gamma { get; init; }
     
     /// <summary>
     /// Краевое условие

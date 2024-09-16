@@ -7,9 +7,9 @@ namespace FEM.Common.Data.InputModels;
 /// </summary>
 public record AdditionalParameters
 {
-    public int Mu { get; init; }
+    public double Mu { get; init; }
 
-    public int Gamma { get; init; }
+    public double Gamma { get; init; }
 
     /// <summary>
     /// Номер краевого условия

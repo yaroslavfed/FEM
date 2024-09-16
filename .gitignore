@@ -376,3 +376,8 @@ FodyWeavers.xsd
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+/FEM.Server/OutputProfile
+/FEM.Server/OutputPlots
+/FEM.Server/TestResults
+/FEM.Server/output.txt

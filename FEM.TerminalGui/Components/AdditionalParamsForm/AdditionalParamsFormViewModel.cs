@@ -10,13 +10,13 @@ public class AdditionalParamsFormViewModel : ViewModelBase
     #region Properties
 
     [Reactive, DataMember]
-    public ustring MuCoefficient { get; set; } = "0";
+    public ustring MuCoefficient { get; set; } = "1";
 
     [Reactive, DataMember]
-    public ustring GammaCoefficient { get; set; } = "0";
+    public ustring GammaCoefficient { get; set; } = "1";
 
     [Reactive]
-    public int BoundaryCondition { get; set; }
+    public int BoundaryCondition { get; set; } = 0;
 
     #endregion
 }

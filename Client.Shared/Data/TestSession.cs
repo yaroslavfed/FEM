@@ -8,11 +8,11 @@ namespace Client.Shared.Data;
 
 public class TestSession
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 
-    public MeshParameters MeshParameters { get; set; }
+    public required MeshParameters MeshParameters { get; set; }
 
-    public SplittingParameters SplittingParameters { get; set; }
+    public required SplittingParameters SplittingParameters { get; set; }
 
-    public AdditionParameters AdditionParameters { get; set; }
+    public required AdditionParameters AdditionParameters { get; set; }
 }
