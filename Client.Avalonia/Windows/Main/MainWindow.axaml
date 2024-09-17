@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:main="clr-namespace:Client.Avalonia.Windows.Main"
+        xmlns:coordinatesParametersTab="clr-namespace:Client.Avalonia.Pages.CoordinatesParametersTab"
+        xmlns:splittingParametersTab="clr-namespace:Client.Avalonia.Pages.SplittingParametersTab"
+        xmlns:additionalParametersTab="clr-namespace:Client.Avalonia.Pages.AdditionalParametersTab"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Client.Avalonia.Windows.Main.MainWindow"
+        x:DataType="main:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Client.Avalonia">
+
+    <Design.DataContext>
+        <main:MainWindowViewModel />
+    </Design.DataContext>
+
+    <StackPanel>
+        <coordinatesParametersTab:CoordinatesParametersTab
+            DataContext="{Binding CoordinatesParametersTabViewModel}" />
+        <splittingParametersTab:SplittingParametersTab
+            DataContext="{Binding SplittingParametersTabViewModel}" />
+        <additionalParametersTab:AdditionalParametersTab
+            DataContext="{Binding AdditionalParametersTabViewModel}" />
+    </StackPanel>
+
+</Window>

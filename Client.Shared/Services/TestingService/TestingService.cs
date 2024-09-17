@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using Client.Shared.API;
+using Client.Shared.API.TestingServiceClient;
 using Client.Shared.Data;
 using Client.Shared.HttpClientContext;
 using Client.Shared.Services.ReportService;
