@@ -5,7 +5,7 @@ using FEM.Server.Data.Parallelepipedal;
 
 namespace FEM.Server.Services.TestingService;
 
-public interface ITestingService
+public interface IProblemService
 {
     Task<double> ResolveMatrixContributions((Node firstNode, Node secondNode) nodesPair, EDirections direction);
 

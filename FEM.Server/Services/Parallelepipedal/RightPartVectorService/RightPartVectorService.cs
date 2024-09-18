@@ -12,12 +12,12 @@ namespace FEM.Server.Services.Parallelepipedal.RightPartVectorService;
 /// <inheritdoc cref="IRightPartVectorService"/>
 public class RightPartVectorService : IRightPartVectorService
 {
-    private readonly ITestingService     _testingService;
+    private readonly IProblemService     _problemService;
     private readonly IMassMatrix<Matrix> _massMatrix;
 
-    public RightPartVectorService(ITestingService testingService, IMassMatrix<Matrix> massMatrix)
+    public RightPartVectorService(IProblemService problemService, IMassMatrix<Matrix> massMatrix)
     {
-        _testingService = testingService;
+        _problemService = problemService;
         _massMatrix = massMatrix;
     }
     
@@ -35,13 +35,13 @@ public class RightPartVectorService : IRightPartVectorService
     /// </summary>
     private async Task<double> ResolveRightPartValueAsync(Edge edge, TestSession<Mesh> testSession)
     {
-        var localNodes = await _testingService.ResolveLocalNodes(edge, testSession);
+        var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
 
-        var vectorContributions = await _testingService.ResolveVectorContributionsAsync(
+        var vectorContributions = await _problemService.ResolveVectorContributionsAsync(
             (localNodes.firstNode, localNodes.secondNode),
             localNodes.direction
         );
-        var matrixContributions = await _testingService.ResolveMatrixContributions(
+        var matrixContributions = await _problemService.ResolveMatrixContributions(
             (localNodes.firstNode, localNodes.secondNode),
             localNodes.direction
         );

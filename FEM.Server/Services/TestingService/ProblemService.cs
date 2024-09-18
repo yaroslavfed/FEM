@@ -6,8 +6,8 @@ using FEM.Server.Extensions;
 
 namespace FEM.Server.Services.TestingService;
 
-/// <inheritdoc cref="ITestingService"/>
-public class TestingService : ITestingService
+/// <inheritdoc cref="IProblemService"/>
+public class ProblemService : IProblemService
 {
     public async Task<double> ResolveMatrixContributions(
         (Node firstNode, Node secondNode) nodesPair,
@@ -15,7 +15,7 @@ public class TestingService : ITestingService
     )
     {
         var coordinate = (await CalculateNodeAsync(direction, nodesPair)).Coordinate;
-        List<double> contributionsFromMatrixA =
+        List<double> contributionsFromVectorA =
         [
             35.0 * Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
             Math.Pow(coordinate.X, 3) + 25.0 * Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
@@ -24,9 +24,9 @@ public class TestingService : ITestingService
 
         return direction switch
         {
-            EDirections.Ox => contributionsFromMatrixA[0],
-            EDirections.Oy => contributionsFromMatrixA[1],
-            EDirections.Oz => contributionsFromMatrixA[2],
+            EDirections.Ox => contributionsFromVectorA[0],
+            EDirections.Oy => contributionsFromVectorA[1],
+            EDirections.Oz => contributionsFromVectorA[2],
             _              => throw new NotImplementedException()
         };
     }

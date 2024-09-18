@@ -37,7 +37,7 @@ public static class ServicesInstaller
         builder.AddScoped<INodesNumberingService, NodesNumberingService>();
         builder.AddScoped<IEdgesNumberingService, EdgesNumberingService>();
 
-        builder.AddScoped<ITestingService, TestingService>();
+        builder.AddScoped<IProblemService, ProblemService>();
         builder.AddScoped<ITestSessionService, TestSessionService>();
 
         builder.AddScoped<IMatrixFormatResolver, MatrixFormatResolver>();

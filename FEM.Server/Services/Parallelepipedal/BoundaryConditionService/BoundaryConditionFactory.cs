@@ -8,18 +8,18 @@ namespace FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
 
 public class BoundaryConditionFactory : IBoundaryConditionFactory
 {
-    private readonly ITestingService _testingService;
+    private readonly IProblemService _problemService;
 
-    public BoundaryConditionFactory(ITestingService testingService)
+    public BoundaryConditionFactory(IProblemService problemService)
     {
-        _testingService = testingService;
+        _problemService = problemService;
     }
 
     public Task<IBoundaryConditionService> ResolveBoundaryConditionAsync(EBoundaryConditions boundaryConditionType)
     {
         IBoundaryConditionService boundaryCondition = boundaryConditionType switch
         {
-            EBoundaryConditions.Dirichlet => new FirstBoundaryConditionService(_testingService),
+            EBoundaryConditions.Dirichlet => new FirstBoundaryConditionService(_problemService),
             EBoundaryConditions.Neiman => throw new NotImplementedException("Не реализовано"),
             EBoundaryConditions.Robin => throw new NotImplementedException("Не реализовано"),
             _ => throw new ArgumentOutOfRangeException(nameof(boundaryConditionType), boundaryConditionType, null)

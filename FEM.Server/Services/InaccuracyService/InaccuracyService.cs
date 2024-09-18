@@ -7,11 +7,11 @@ namespace FEM.Server.Services.InaccuracyService;
 
 public class InaccuracyService : IInaccuracyService
 {
-    private readonly ITestingService _testingService;
+    private readonly IProblemService _problemService;
 
-    public InaccuracyService(ITestingService testingService)
+    public InaccuracyService(IProblemService problemService)
     {
-        _testingService = testingService;
+        _problemService = problemService;
     }
 
     public async Task GetSolutionVectorInaccuracy(TestSession<Mesh> testSession, SolutionResult solutionResult)
@@ -28,8 +28,8 @@ public class InaccuracyService : IInaccuracyService
 
         foreach (var edge in edgesList)
         {
-            var localNodes = await _testingService.ResolveLocalNodes(edge, testSession);
-            var matrixContributions = await _testingService.ResolveMatrixContributions(
+            var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
+            var matrixContributions = await _problemService.ResolveMatrixContributions(
                 (localNodes.firstNode, localNodes.secondNode),
                 localNodes.direction
             );
