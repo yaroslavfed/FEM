@@ -4,5 +4,5 @@ namespace Client.Shared.Services.ReportService;
 
 public interface IReportService
 {
-    Task GenerateReportAsync(TestResult testResult);
+    void GenerateReportAsync(TestResult testResult);
 }

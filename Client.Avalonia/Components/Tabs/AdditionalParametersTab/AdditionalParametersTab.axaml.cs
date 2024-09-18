@@ -1,6 +1,6 @@
 ﻿using Avalonia.ReactiveUI;
 
-namespace Client.Avalonia.Pages.AdditionalParametersTab;
+namespace Client.Avalonia.Components.Tabs.AdditionalParametersTab;
 
 public partial class AdditionalParametersTab : ReactiveUserControl<AdditionalParametersTabViewModel>
 {

@@ -1,6 +1,6 @@
 ﻿using Avalonia.ReactiveUI;
 
-namespace Client.Avalonia.Pages.CoordinatesParametersTab;
+namespace Client.Avalonia.Components.Tabs.CoordinatesParametersTab;
 
 public partial class CoordinatesParametersTab : ReactiveUserControl<CoordinatesParametersTabViewModel>
 {

@@ -1,13 +1,13 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.ReactiveUI;
+using System;
 using ReactiveUI;
 using Splat;
 using Splat.ModeDetection;
 
 namespace Client.Avalonia;
 
-internal sealed class Program
+sealed class Program
 {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
@@ -23,10 +23,10 @@ internal sealed class Program
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
-                     .UsePlatformDetect()
-                     .WithInterFont()
-                     .LogToTrace()
-                     .UseReactiveUI();
+    public static AppBuilder BuildAvaloniaApp() =>
+        AppBuilder.Configure<App>()
+                  .UsePlatformDetect()
+                  .WithInterFont()
+                  .LogToTrace()
+                  .UseReactiveUI();
 }

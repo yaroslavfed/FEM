@@ -7,7 +7,7 @@ namespace Client.Shared.Services.ReportService;
 
 public class PdfReportService : IReportService
 {
-    public Task GenerateReportAsync(TestResult testResult)
+    public void GenerateReportAsync(TestResult testResult)
     {
         var document = new Document();
         var page = document.Pages.Add();
@@ -74,7 +74,5 @@ public class PdfReportService : IReportService
         document.Save($"document_{testResult.Id}.pdf");
 
         Process.Start(new ProcessStartInfo { FileName = $"document_{testResult.Id}.pdf", UseShellExecute = true });
-
-        return Task.CompletedTask;
     }
 }

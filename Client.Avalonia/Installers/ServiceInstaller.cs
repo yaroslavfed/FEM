@@ -1,12 +1,16 @@
 ﻿using Autofac;
+using Client.Shared.API.TestingServiceClient;
 using Client.Shared.Services.ReportService;
+using Client.Shared.Services.TestingService;
 
 namespace Client.Avalonia.Installers;
 
-internal static class ServiceInstaller
+static internal class ServiceInstaller
 {
     public static void RegisterServices(this ContainerBuilder builder)
     {
         builder.RegisterType<PdfReportService>().As<IReportService>();
+        builder.RegisterType<TestingService>().As<ITestingService>();
+        builder.RegisterType<TestingServiceClient>().As<ITestingServiceClient>();
     }
 }

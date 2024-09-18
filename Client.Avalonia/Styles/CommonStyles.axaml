@@ -1,9 +1,19 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style Selector="TextBlock.title">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+
     <Style Selector="Border.card">
-        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="BoxShadow" Value="1 1 6 0 DarkGray" />
-        <Setter Property="Margin" Value="2" />
+        <Setter Property="Margin" Value="4" />
         <Setter Property="Padding" Value="8 4" />
     </Style>
 
@@ -113,8 +123,20 @@
         <Setter Property="Margin" Value="0 0 8 0" />
     </Style>
 
+    <Style Selector=":is(TextBlock).p-2">
+        <Setter Property="Padding" Value="8" />
+    </Style>
+    
     <Style Selector=":is(TextBlock).pr-2">
         <Setter Property="Padding" Value="0 0 8 0" />
+    </Style>
+
+    <Style Selector=":is(TextBlock).text-center">
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+    
+    <Style Selector=":is(TextBlock).text-wrap">
+        <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style Selector=":is(Button).hca-center">

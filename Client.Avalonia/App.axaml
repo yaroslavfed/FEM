@@ -2,8 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Client.Avalonia.App"
              RequestedThemeVariant="Light">
-
     <Application.Styles>
+        <FluentTheme />
         <StyleInclude Source="Styles/CommonStyles.axaml" />
+        <StyleInclude Source="Styles/TabControlStyles.axaml" />
     </Application.Styles>
 </Application>

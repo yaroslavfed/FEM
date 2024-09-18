@@ -1,0 +1,46 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:splittingParametersTab="clr-namespace:Client.Avalonia.Components.Tabs.SplittingParametersTab"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Client.Avalonia.Components.Tabs.SplittingParametersTab.SplittingParametersTab"
+             x:DataType="splittingParametersTab:SplittingParametersTabViewModel">
+
+    <Design.DataContext>
+        <splittingParametersTab:SplittingParametersTabViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="* * * *" ColumnDefinitions="Auto * *" Classes="va-top m-2">
+        <TextBlock Grid.Row="0" Grid.Column="1"
+                   Classes="text-wrap text-center mb-1"
+                   Text="{Binding SplittingParamsLabel}" />
+        <TextBlock Grid.Row="0" Grid.Column="2"
+                   Classes="text-wrap text-center mb-1"
+                   Text="{Binding MultyParamsLabel}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Classes="va-center" Text="OX:" />
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding XSplittingCoefficient}" />
+        <TextBox Grid.Row="1" Grid.Column="2"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding XMultiplyCoefficient}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Classes="va-center" Text="OY:" />
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding YSplittingCoefficient}" />
+        <TextBox Grid.Row="2" Grid.Column="2"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding YMultiplyCoefficient}" />
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Classes="va-center" Text="OZ:" />
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding ZSplittingCoefficient}" />
+        <TextBox Grid.Row="3" Grid.Column="2"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding ZMultiplyCoefficient}" />
+    </Grid>
+</UserControl>

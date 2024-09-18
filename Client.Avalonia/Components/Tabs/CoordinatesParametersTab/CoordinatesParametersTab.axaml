@@ -1,0 +1,46 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:coordinatesParametersTab="clr-namespace:Client.Avalonia.Components.Tabs.CoordinatesParametersTab"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Client.Avalonia.Components.Tabs.CoordinatesParametersTab.CoordinatesParametersTab"
+             x:DataType="coordinatesParametersTab:CoordinatesParametersTabViewModel">
+
+    <Design.DataContext>
+        <coordinatesParametersTab:CoordinatesParametersTabViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="* * * *" ColumnDefinitions="Auto * *" Classes="va-top m-2">
+        <TextBlock Grid.Row="0" Grid.Column="1"
+                   Classes="text-wrap text-center mb-1"
+                   Text="{Binding ElementCenterLabel}" />
+        <TextBlock Grid.Row="0" Grid.Column="2"
+                   Classes="text-wrap text-center mb-1"
+                   Text="{Binding ElementBoundsLabel}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Classes="va-center" Text="OX:" />
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding XCenterCoordinate}" />
+        <TextBox Grid.Row="1" Grid.Column="2"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding XStepToBounds}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Classes="va-center" Text="OY:" />
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding YCenterCoordinate}" />
+        <TextBox Grid.Row="2" Grid.Column="2"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding YStepToBounds}" />
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Classes="va-center" Text="OZ:" />
+        <TextBox Grid.Row="3" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding ZCenterCoordinate}" />
+        <TextBox Grid.Row="3" Grid.Column="2"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding ZStepToBounds}" />
+    </Grid>
+</UserControl>

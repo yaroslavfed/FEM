@@ -31,7 +31,7 @@ public class TestingService : ITestingService
         }
     }
 
-    public async Task GetSessionResultAsync(Guid id)
+    public async Task<TestResult?> GetSessionResultAsync(Guid id)
     {
         try
         {
@@ -39,7 +39,7 @@ public class TestingService : ITestingService
             var testResult = JsonSerializer.Deserialize<TestResult>(response);
 
             if (testResult is null)
-                return;
+                return null;
 
             Directory.CreateDirectory($"Plots_{id}/");
             foreach (var plot in testResult.Plots.Select((value, index) => new { index, value }))
@@ -48,7 +48,7 @@ public class TestingService : ITestingService
                 await File.WriteAllBytesAsync($"Plots_{id}/plot{plot.index}.png", bytes);
             }
 
-            await _reportService.GenerateReportAsync(testResult);
+            return testResult;
         } catch (Exception e)
         {
             Debug.Fail(e.Message);

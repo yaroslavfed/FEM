@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Client.Avalonia.Pages.AdditionalParametersTab;
-using Client.Avalonia.Pages.CoordinatesParametersTab;
-using Client.Avalonia.Pages.SplittingParametersTab;
+using Client.Avalonia.Components.Tabs.AdditionalParametersTab;
+using Client.Avalonia.Components.Tabs.CoordinatesParametersTab;
+using Client.Avalonia.Components.Tabs.SplittingParametersTab;
 using Client.Avalonia.Windows.Main;
 using ReactiveUI;
 

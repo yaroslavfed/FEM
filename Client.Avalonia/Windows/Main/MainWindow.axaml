@@ -3,9 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:main="clr-namespace:Client.Avalonia.Windows.Main"
-        xmlns:coordinatesParametersTab="clr-namespace:Client.Avalonia.Pages.CoordinatesParametersTab"
-        xmlns:splittingParametersTab="clr-namespace:Client.Avalonia.Pages.SplittingParametersTab"
-        xmlns:additionalParametersTab="clr-namespace:Client.Avalonia.Pages.AdditionalParametersTab"
+        xmlns:coordinatesParametersTab="clr-namespace:Client.Avalonia.Components.Tabs.CoordinatesParametersTab"
+        xmlns:splittingParametersTab="clr-namespace:Client.Avalonia.Components.Tabs.SplittingParametersTab"
+        xmlns:additionalParametersTab="clr-namespace:Client.Avalonia.Components.Tabs.AdditionalParametersTab"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Client.Avalonia.Windows.Main.MainWindow"
         x:DataType="main:MainWindowViewModel"
@@ -16,13 +16,125 @@
         <main:MainWindowViewModel />
     </Design.DataContext>
 
-    <StackPanel>
-        <coordinatesParametersTab:CoordinatesParametersTab
-            DataContext="{Binding CoordinatesParametersTabViewModel}" />
-        <splittingParametersTab:SplittingParametersTab
-            DataContext="{Binding SplittingParametersTabViewModel}" />
-        <additionalParametersTab:AdditionalParametersTab
-            DataContext="{Binding AdditionalParametersTabViewModel}" />
-    </StackPanel>
+    <Window.Styles>
+        <StyleInclude Source="MainWindowStyles.axaml" />
+    </Window.Styles>
 
+    <Grid ColumnDefinitions="* * *" RowDefinitions="* Auto">
+        <!-- задание входных данных -->
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <Border Classes="card m-3 va-top">
+                <TabControl>
+                    <TabItem Header="{Binding CoordinatesParametersTabLabel}">
+                        <coordinatesParametersTab:CoordinatesParametersTab
+                            DataContext="{Binding CoordinatesParametersTabViewModel}" />
+                    </TabItem>
+                    <TabItem Header="{Binding SplittingParametersTabLabel}">
+                        <splittingParametersTab:SplittingParametersTab
+                            DataContext="{Binding SplittingParametersTabViewModel}" />
+                    </TabItem>
+                    <TabItem Header="{Binding AdditionalParametersTabLabel}">
+                        <additionalParametersTab:AdditionalParametersTab
+                            DataContext="{Binding AdditionalParametersTabViewModel}" />
+                    </TabItem>
+                </TabControl>
+            </Border>
+            <StackPanel Classes="ha-center va-top" Orientation="Horizontal">
+                <Button Content="Посчитать" Classes="mr-1 hca-center"
+                        Command="{Binding SubmitCommand}" />
+                <Button Content="Очистить" Classes="ml-1"
+                        Command="{Binding ClearCommand}" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- просмотр результата -->
+        <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                Classes="card m-3 va-top"
+                Padding="16">
+            <ScrollViewer>
+                <StackPanel>
+                    <Grid ColumnDefinitions="Auto Auto Auto Auto Auto" Classes="ha-stretch">
+                        <!-- номера ребер -->
+                        <StackPanel Grid.Column="0">
+                            <Border Classes="cell">
+                                <TextBlock Text="№" />
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding Result^.SolutionInfo.EdgeNumber}"
+                                          IsVisible="{Binding IsResultReceived^}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="cell">
+                                            <TextBlock Text="{Binding .}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        <!-- значения на ребрах -->
+                        <StackPanel Grid.Column="1">
+                            <Border Classes="cell">
+                                <TextBlock Text="q" />
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding Result^.SolutionInfo.EdgeVectorValue}"
+                                          IsVisible="{Binding IsResultReceived^}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="cell">
+                                            <TextBlock Text="{Binding .}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        <!-- истиные значения -->
+                        <StackPanel Grid.Column="2">
+                            <Border Classes="cell">
+                                <TextBlock Text="q*" />
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding Result^.SolutionInfo.EdgeVectorTruthValue}"
+                                          IsVisible="{Binding IsResultReceived^}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="cell">
+                                            <TextBlock Text="{Binding .}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        <!-- абсолютная погрешность -->
+                        <StackPanel Grid.Column="3">
+                            <Border Classes="cell">
+                                <TextBlock Text="|| q - q* ||" />
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding Result^.SolutionInfo.Inaccuracy}"
+                                          IsVisible="{Binding IsResultReceived^}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="cell">
+                                            <TextBlock Text="{Binding .}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        <!-- относительная погрешность -->
+                        <StackPanel Grid.Column="4">
+                            <Border Classes="cell">
+                                <TextBlock Classes="cell" Text="|| q - q* || / || q* ||" />
+                            </Border>
+                            <Border Classes="cell" IsVisible="{Binding IsResultReceived^}">
+                                <TextBlock Classes="cell" Text="{Binding Result^.SolutionInfo.Discrepancy}" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+        <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                Classes="ha-center va-top m-3"
+                Content="Скачать отчёт"
+                Command="{Binding DownloadResultCommand}"
+                IsVisible="{Binding IsResultReceived^}" />
+    </Grid>
 </Window>

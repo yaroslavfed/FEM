@@ -1,13 +1,14 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Client.Avalonia;
 using Client.Avalonia.Windows.Main;
 using ReactiveUI;
 using Splat;
 
 namespace Client.Avalonia;
 
-internal class App : Application
+public partial class App : Application
 {
     public override void Initialize()
     {
