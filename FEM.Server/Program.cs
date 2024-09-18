@@ -4,7 +4,6 @@ using NLog;
 using NLog.Web;
 using NSwag;
 
-// Early init of NLog to allow startup and exception logging, before host is built
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init fem server application");
 
@@ -12,37 +11,33 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
 services.AddCors();
-services.AddControllers().AddJsonOptions(e =>
-{
-    // Serialize enums as strings in api responses (e.g. Role)
-    e.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    // Ignore omitted parameters on models to enable optional params (e.g. User update)
-    e.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-});
-
-services.AddOpenApiDocument(options =>
-{
-    options.PostProcess = document =>
-    {
-        document.Info = new OpenApiInfo
+services
+    .AddControllers()
+    .AddJsonOptions(
+        e =>
         {
-            Version = "v1.0.0",
-            Title = "FEM API",
-            Description = "Vector FEM solver",
-            TermsOfService = "https://example.com/terms",
-            Contact = new OpenApiContact
+            e.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            e.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        }
+    );
+
+services.AddOpenApiDocument(
+    options =>
+    {
+        options.PostProcess = document =>
+        {
+            document.Info = new()
             {
-                Name = "Example Contact",
-                Url = "https://example.com/contact"
-            },
-            License = new OpenApiLicense
-            {
-                Name = "Example License",
-                Url = "https://example.com/license"
-            }
+                Version = "v1.0.0",
+                Title = "FEM API",
+                Description = "Vector FEM solver",
+                TermsOfService = "https://example.com/terms",
+                Contact = new OpenApiContact { Name = "Example Contact", Url = "https://example.com/contact" },
+                License = new OpenApiLicense { Name = "Example License", Url = "https://example.com/license" }
+            };
         };
-    };
-});
+    }
+);
 
 // Configure DI for application
 services.AddServices();
@@ -75,10 +70,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 // Global cors policy
-app.UseCors(policyBuilder => policyBuilder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();

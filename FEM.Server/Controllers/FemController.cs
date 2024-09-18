@@ -108,6 +108,9 @@ public class FemController : ControllerBase
             _logger.LogInformation($"[{nameof(FemController)}] create test session");
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
 
+            _logger.LogInformation($"[{nameof(FemController)}] save plots to images");
+            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
+            
             _logger.LogInformation($"[{nameof(FemController)}] resolve matrix portrait");
             var matrixProfile
                 = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, EMatrixFormats.Profile);
@@ -135,9 +138,6 @@ public class FemController : ControllerBase
 
             _logger.LogInformation($"[{nameof(FemController)}] save matrix profile to files");
             await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
-
-            _logger.LogInformation($"[{nameof(FemController)}] save plots to images");
-            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
 
             _logger.LogInformation($"[{nameof(FemController)}] calculate slae start");
             var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);

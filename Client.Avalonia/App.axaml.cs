@@ -1,8 +1,9 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Client.Avalonia;
+using Client.Avalonia.Extensions;
 using Client.Avalonia.Windows.Main;
+using Client.Shared.Services;
 using ReactiveUI;
 using Splat;
 
@@ -18,6 +19,9 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         SetupMainWindow();
+
+        // Поднимаем сервер вместе с фронтом 
+        StartBackend();
         base.OnFrameworkInitializationCompleted();
     }
 
@@ -35,5 +39,25 @@ public partial class App : Application
 
         window.Show();
         desktop.MainWindow = window;
+        desktop.Exit += DesktopOnExit;
+        desktop.ShutdownRequested += DesktopOnExit;
     }
+
+
+    private static void StartBackend()
+    {
+        var serverInitializer = Locator.Current.GetService<ServerInitializer>();
+        serverInitializer!.Start();
+    }
+
+    private static void DesktopOnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        Locator.Current.GetRequiredService<ServerInitializer>().Kill();
+    }
+
+    private void DesktopOnExit(object? sender, ShutdownRequestedEventArgs e)
+    {
+        Locator.Current.GetRequiredService<ServerInitializer>().Kill();
+    }
+
 }
