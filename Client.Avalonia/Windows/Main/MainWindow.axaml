@@ -53,7 +53,7 @@
                 Padding="16">
             <ScrollViewer>
                 <StackPanel>
-                    <Grid ColumnDefinitions="Auto Auto Auto Auto Auto" Classes="ha-stretch">
+                    <Grid ColumnDefinitions="Auto Auto Auto Auto Auto" Classes="ha-center">
                         <!-- номера ребер -->
                         <StackPanel Grid.Column="0">
                             <Border Classes="cell">
@@ -80,7 +80,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Classes="cell">
-                                            <TextBlock Text="{Binding .}" />
+                                            <TextBlock Text="{Binding ., StringFormat='{}{0:0.######E+00}'}" />
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -96,7 +96,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Classes="cell">
-                                            <TextBlock Text="{Binding .}" />
+                                            <TextBlock Text="{Binding ., StringFormat='{}{0:0.######E+00}'}" />
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -124,7 +124,8 @@
                                 <TextBlock Classes="cell" Text="|| q - q* || / || q* ||" />
                             </Border>
                             <Border Classes="cell" IsVisible="{Binding IsResultReceived^}">
-                                <TextBlock Classes="cell" Text="{Binding Result^.SolutionInfo.Discrepancy}" />
+                                <TextBlock Classes="cell"
+                                           Text="{Binding Result^.SolutionInfo.Discrepancy, StringFormat='{}{0:0.######e+00}'}" />
                             </Border>
                         </StackPanel>
                     </Grid>

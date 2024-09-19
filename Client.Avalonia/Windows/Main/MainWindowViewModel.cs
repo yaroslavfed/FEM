@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Client.Avalonia.Components.Tabs.AdditionalParametersTab;
 using Client.Avalonia.Components.Tabs.CoordinatesParametersTab;
 using Client.Avalonia.Components.Tabs.SplittingParametersTab;
+using Client.Avalonia.Extensions;
 using Client.Avalonia.ViewModels;
 using Client.Shared.Data;
 using Client.Shared.HttpClientContext;
@@ -171,14 +172,12 @@ public class MainWindowViewModel : ViewModelBase, IScreen
         return Task.CompletedTask;
     }
 
-    private Task DownloadResultAsync()
+    private async Task DownloadResultAsync()
     {
         if (_response.Value is null)
-            return Task.CompletedTask;
+            return;
 
-        // TODO: добавить вывод документа
-
-        return Task.CompletedTask;
+        _reportService.GenerateReportAsync(await Result.Value());
     }
 
     #endregion
