@@ -1,13 +1,13 @@
 using System.Diagnostics;
 
-namespace Client.Shared.Services;
+namespace Client.Shared.Services.BackendLifeTimeManager;
 
-public class ServerInitializer
+public class ServerInitializer : IServerInitializer
 {
 
     #region Fields
 
-    private const           string   PROCESS_NAME    = "FEM.Server.exe";
+    private const           string   PROCESS_NAME    = "FEM.Server";
     private static readonly string   s_fileDirectory = Environment.CurrentDirectory;
     private                 Process? _process;
 
@@ -17,7 +17,7 @@ public class ServerInitializer
 
     public void Start()
     {
-        var pathToExecutable = Path.Combine(s_fileDirectory, PROCESS_NAME);
+        var pathToExecutable = GetExecutablePath();
 
         try
         {
@@ -35,7 +35,19 @@ public class ServerInitializer
 
     private static ProcessStartInfo GenerateProcessStartInfo(string filePath)
     {
-        return new ProcessStartInfo { CreateNoWindow = true, UseShellExecute = false, FileName = filePath };
+        return new ProcessStartInfo { CreateNoWindow = false, UseShellExecute = false, FileName = filePath };
+    }
+    
+    private static string GetExecutablePath()
+    {
+        var pathToExecutable = Path.Combine(s_fileDirectory, PROCESS_NAME);
+
+        if (OperatingSystem.IsWindows())
+        {
+            pathToExecutable += ".exe";
+        }
+
+        return pathToExecutable;
     }
 
     private void TryStartServer(string filePath)
@@ -51,7 +63,7 @@ public class ServerInitializer
     {
         var processes = Process.GetProcessesByName(PROCESS_NAME);
 
-        return processes.FirstOrDefault(process => process.StartInfo.FileName == filePath);
+        return processes.FirstOrDefault(process => process.MainModule?.FileName == filePath);
     }
 
     private void StartProcess(string filePath)
