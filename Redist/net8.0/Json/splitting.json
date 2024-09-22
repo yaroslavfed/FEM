@@ -1,0 +1,12 @@
+﻿{
+  "SplittingCoefficient": {
+    "X": 4,
+    "Y": 4,
+    "Z": 4
+  },
+  "MultiplyCoefficient": {
+    "X": 1,
+    "Y": 1,
+    "Z": 1
+  }
+}
