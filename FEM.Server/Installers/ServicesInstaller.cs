@@ -11,6 +11,7 @@ using FEM.Server.Services.Parallelepipedal.NumberingService.EdgesNumberingServic
 using FEM.Server.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
 using FEM.Server.Services.Parallelepipedal.VisualizerService;
+using FEM.Server.Services.ProblemService;
 using FEM.Server.Services.SaverService;
 using FEM.Server.Services.SolverService;
 using FEM.Server.Services.TestingService;

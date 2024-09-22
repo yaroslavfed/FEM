@@ -35,7 +35,7 @@ public class ServerInitializer : IServerInitializer
 
     private static ProcessStartInfo GenerateProcessStartInfo(string filePath)
     {
-        return new() { CreateNoWindow = false, UseShellExecute = true, FileName = filePath };
+        return new() { CreateNoWindow = false, UseShellExecute = false, FileName = filePath };
     }
 
     private static string GetExecutablePath()

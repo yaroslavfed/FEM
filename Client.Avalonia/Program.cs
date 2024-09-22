@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using System;
+using Client.Avalonia.Extensions;
+using Client.Shared.Services.BackendLifeTimeManager;
 using ReactiveUI;
 using Splat;
 using Splat.ModeDetection;
@@ -18,15 +20,18 @@ sealed class Program
         ModeDetector.OverrideModeDetector(Mode.Run);
         RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
 
-        BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+        try
+        {
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        } catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Locator.Current.GetRequiredService<IServerInitializer>().Kill();
+            throw;
+        }
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp() =>
-        AppBuilder.Configure<App>()
-                  .UsePlatformDetect()
-                  .WithInterFont()
-                  .LogToTrace()
-                  .UseReactiveUI();
+        AppBuilder.Configure<App>().UsePlatformDetect().WithInterFont().LogToTrace().UseReactiveUI();
 }

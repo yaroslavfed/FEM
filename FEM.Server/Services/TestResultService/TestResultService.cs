@@ -1,4 +1,5 @@
-﻿using FEM.Common.Data.TestSession;
+﻿using System.Diagnostics.CodeAnalysis;
+using FEM.Common.Data.TestSession;
 using FEM.Server.Data;
 using FEM.Server.Services.SaverService;
 
@@ -25,7 +26,7 @@ public class TestResultService : ITestResultService
         var filesList = dir.GetFiles();
         foreach (var file in filesList)
         {
-            var imageBytes = await System.IO.File.ReadAllBytesAsync(file.FullName);
+            var imageBytes = await TryToGetImages(file.FullName);
             var base64String = Convert.ToBase64String(imageBytes);
             plotsRawList.Add(base64String);
         }
@@ -43,6 +44,7 @@ public class TestResultService : ITestResultService
         return result.Id;
     }
 
+    [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH", MessageId = "type: System.Char[]; size: 195MB")]
     public async Task<string> GetTestResultAsync(Guid id)
     {
         var path = Directory.Exists("TestResults/");
@@ -59,5 +61,32 @@ public class TestResultService : ITestResultService
 
         var fileContent = await File.ReadAllTextAsync(file.FullName);
         return fileContent;
+    }
+
+    private async Task<byte[]> TryToGetImages(string filePath, int attemptsNumber = 0)
+    {
+        byte[] result = [];
+        var waitingLifetime = TimeSpan.FromSeconds(1);
+
+        try
+        {
+            if (attemptsNumber < 5)
+                result = await File.ReadAllBytesAsync(filePath);
+            else
+                result = await File.ReadAllBytesAsync(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Assets/not-image.png")
+                );
+        } catch (Exception e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(e.Message);
+            Console.ResetColor();
+
+            attemptsNumber++;
+            await Task.Delay(waitingLifetime);
+            await TryToGetImages(filePath, attemptsNumber);
+        }
+
+        return result;
     }
 }

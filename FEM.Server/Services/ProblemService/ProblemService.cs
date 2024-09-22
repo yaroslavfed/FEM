@@ -3,8 +3,9 @@ using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Extensions;
+using FEM.Server.Services.TestingService;
 
-namespace FEM.Server.Services.TestingService;
+namespace FEM.Server.Services.ProblemService;
 
 /// <inheritdoc cref="IProblemService"/>
 public class ProblemService : IProblemService

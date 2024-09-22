@@ -1,4 +1,5 @@
-﻿using FEM.Common.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using FEM.Common.Enums;
 using FEM.Server.Data;
 using FEM.Server.Data.Domain;
 using FEM.Server.Services.InaccuracyService;
@@ -97,6 +98,7 @@ public class FemController : ControllerBase
     [HttpPost(Name = "vector-fem-solver")]
     [ProducesResponseType(typeof(FemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [SuppressMessage("ReSharper.DPA", "DPA0011: High execution time of MVC action")]
     public async Task<IActionResult> CreateCalculation([FromBody] TestSession testSessionParameters)
     {
         Console.WriteLine($"[Started session] Id: {testSessionParameters.Id}");
@@ -107,10 +109,12 @@ public class FemController : ControllerBase
 
             _logger.LogInformation($"[{nameof(FemController)}] create test session");
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
+            Console.WriteLine($"[{nameof(FemController)}] [Info] Test session created");
 
             _logger.LogInformation($"[{nameof(FemController)}] save plots to images");
             await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
-            
+            Console.WriteLine($"[{nameof(FemController)}] [Info] Mesh`s plots were created");
+
             _logger.LogInformation($"[{nameof(FemController)}] resolve matrix portrait");
             var matrixProfile
                 = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, EMatrixFormats.Profile);
@@ -138,6 +142,7 @@ public class FemController : ControllerBase
 
             _logger.LogInformation($"[{nameof(FemController)}] save matrix profile to files");
             await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
+            Console.WriteLine($"[{nameof(FemController)}] [Info] Matrix profile was saved from file");
 
             _logger.LogInformation($"[{nameof(FemController)}] calculate slae start");
             var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);

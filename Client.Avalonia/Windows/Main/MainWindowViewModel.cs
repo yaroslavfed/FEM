@@ -55,7 +55,7 @@ public class MainWindowViewModel : ViewModelBase, IScreen
 
         Result = _response
                  .Where(response => response is not null)
-                 .Distinct(response => response?.Id)
+                 .DistinctUntilChanged(response => response?.Id)
                  .Select(response => _testingService.GetSessionResultAsync(response!.Id))
                  .Switch()!;
 
@@ -116,7 +116,7 @@ public class MainWindowViewModel : ViewModelBase, IScreen
             ZStepToBounds = CoordinatesParametersTabViewModel.ZStepToBounds
         };
 
-        var additionParameters = new AdditionParameters()
+        var additionParameters = new AdditionParameters
         {
             MuCoefficient = AdditionalParametersTabViewModel.MuCoefficient,
             GammaCoefficient = AdditionalParametersTabViewModel.GammaCoefficient,

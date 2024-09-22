@@ -12,12 +12,12 @@ public class PdfReportService : IReportService
         var document = new Document();
         var page = document.Pages.Add();
 
-        var path = Directory.Exists($"Plots_{testResult.Id}/");
+        var path = Directory.Exists($"Client/Plots_{testResult.Id}/");
 
         if (!path)
             throw new DirectoryNotFoundException("Directory with results doesn`t exist");
 
-        var dir = new DirectoryInfo($"Plots_{testResult.Id}/");
+        var dir = new DirectoryInfo($"Client/Plots_{testResult.Id}/");
         var filesList = dir.GetFiles();
         var files = filesList.Where(info => info.FullName.Contains(".png")).ToArray();
 
@@ -66,7 +66,8 @@ public class PdfReportService : IReportService
         page.Paragraphs.Add(new TextFragment($"Кол-во итераций: {testResult.ItersCount}"));
         page.Paragraphs.Add(new TextFragment("Вектор решения:"));
         page.Paragraphs.Add(new TextFragment("\n"));
-        foreach (var point in testResult.SolutionInfo!.EdgeVectorValue)
+
+        foreach (var point in testResult.SolutionInfo.EdgeVectorValue)
         {
             page.Paragraphs.Add(new TextFragment($"{point}"));
         }
