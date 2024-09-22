@@ -37,7 +37,7 @@ namespace Client.Shared.HttpClientContext
         public FemClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
-            BaseUrl = "https://localhost:7000";
+            BaseUrl = "http://localhost:5000";
             _httpClient = httpClient;
             Initialize();
         }

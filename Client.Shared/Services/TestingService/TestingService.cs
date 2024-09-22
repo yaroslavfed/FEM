@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using Client.Shared.API;
+using Client.Shared.API.TestingServiceClient;
 using Client.Shared.Data;
 using Client.Shared.HttpClientContext;
 using Client.Shared.Services.ReportService;
@@ -30,28 +31,39 @@ public class TestingService : ITestingService
         }
     }
 
-    public async Task GetSessionResultAsync(Guid id)
+    public async Task<TestResult?> GetSessionResultAsync(Guid id)
     {
+        TestResult? testResult;
+        var path = $"Client/Plots_{id}/";
         try
         {
             var response = await _client.GetSessionResult(id);
-            var testResult = JsonSerializer.Deserialize<TestResult>(response);
+            testResult = JsonSerializer.Deserialize<TestResult>(response);
 
             if (testResult is null)
-                return;
+                return null;
 
-            Directory.CreateDirectory($"Plots_{id}/");
+            if (Directory.Exists(path))
+                return testResult;
+
+            Directory.CreateDirectory(path);
             foreach (var plot in testResult.Plots.Select((value, index) => new { index, value }))
             {
                 var bytes = Convert.FromBase64String(plot.value);
-                await File.WriteAllBytesAsync($"Plots_{id}/plot{plot.index}.png", bytes);
+                using FileStream fileStream = new FileStream(
+                    Path.Combine(path, $"plot{plot.index}.png"),
+                    FileMode.CreateNew
+                );
+                fileStream.Write(bytes);
             }
 
-            await _reportService.GenerateReportAsync(testResult);
+            return testResult;
         } catch (Exception e)
         {
             Debug.Fail(e.Message);
             throw;
         }
+
+        return testResult;
     }
 }

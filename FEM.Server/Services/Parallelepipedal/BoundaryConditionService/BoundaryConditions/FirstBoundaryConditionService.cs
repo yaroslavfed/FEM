@@ -8,11 +8,11 @@ namespace FEM.Server.Services.Parallelepipedal.BoundaryConditionService.Boundary
 
 public class FirstBoundaryConditionService : IBoundaryConditionService
 {
-    private readonly ITestingService _testingService;
+    private readonly IProblemService _problemService;
 
-    public FirstBoundaryConditionService(ITestingService testingService)
+    public FirstBoundaryConditionService(IProblemService problemService)
     {
-        _testingService = testingService;
+        _problemService = problemService;
     }
 
     public async Task SetBoundaryConditionsAsync(TestSession<Mesh> testSession, IMatrixFormat matrixProfile)
@@ -186,8 +186,8 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                    .FirstOrDefault(edge => edge.EdgeIndex == edgeIndex)
                    ?? throw new("Edge with this index did not find");
 
-        var localNodes = await _testingService.ResolveLocalNodes(edge, testSession);
-        var contributionValue = await _testingService.ResolveMatrixContributions(
+        var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
+        var contributionValue = await _problemService.ResolveMatrixContributions(
             (localNodes.firstNode, localNodes.secondNode),
             localNodes.direction
         );

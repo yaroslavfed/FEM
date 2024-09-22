@@ -16,7 +16,7 @@ public class SaverService : ISaverService
     public async Task SaveResultAsync(TestResult result)
     {
         Directory.CreateDirectory("TestResults");
-        var fileName = $"{result.Id}";
+        var fileName = $"{result.Id}.txt";
         var path = Path.Combine("TestResults", fileName);
         await _jsonStorage.SaveResultToFileAsync(result, path);
     }

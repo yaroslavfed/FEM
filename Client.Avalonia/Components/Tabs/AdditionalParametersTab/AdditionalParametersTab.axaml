@@ -1,0 +1,50 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:additionalParametersTab="clr-namespace:Client.Avalonia.Components.Tabs.AdditionalParametersTab"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Client.Avalonia.Components.Tabs.AdditionalParametersTab.AdditionalParametersTab"
+             x:DataType="additionalParametersTab:AdditionalParametersTabViewModel">
+
+    <Design.DataContext>
+        <additionalParametersTab:AdditionalParametersTabViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="* * * *" ColumnDefinitions="Auto *" Classes="va-top m-2">
+        <TextBlock Grid.Row="1" Grid.Column="0"
+                   Classes="ha-left va-center"
+                   Text="{Binding MuLabel}" />
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding MuCoefficient}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0"
+                   Classes="ha-left va-center"
+                   Text="{Binding GammaLabel}" />
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Classes="ha-stretch m-2"
+                 Text="{Binding GammaCoefficient}" />
+
+        <Grid Row="3" Column="0" ColumnSpan="2" ColumnDefinitions="* Auto" Margin="0 8 8 0">
+            <TextBlock Grid.Column="0"
+                       Classes="va-top ha-left"
+                       Text="{Binding BoundaryConditionsGroupLabel}" />
+            <StackPanel Grid.Column="1"
+                        Classes="ml-2 ha-left">
+                <RadioButton GroupName="Boundaries" DataContext="{Binding BoundaryConditions[0], Mode=TwoWay}"
+                             Content="{Binding BoundaryName}"
+                             IsChecked="{Binding IsBoundarySelected}" />
+                <RadioButton GroupName="Boundaries" DataContext="{Binding BoundaryConditions[1], Mode=TwoWay}"
+                             Content="{Binding BoundaryName}"
+                             IsChecked="{Binding IsBoundarySelected}"
+                             IsEnabled="False" />
+                <RadioButton GroupName="Boundaries" DataContext="{Binding BoundaryConditions[2], Mode=TwoWay}"
+                             Content="{Binding BoundaryName}"
+                             IsChecked="{Binding IsBoundarySelected}"
+                             IsEnabled="False" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+</UserControl>

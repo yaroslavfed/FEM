@@ -381,3 +381,6 @@ FodyWeavers.xsd
 /FEM.Server/OutputPlots
 /FEM.Server/TestResults
 /FEM.Server/output.txt
+
+/Redist
+/Redist/net8.0
