@@ -7,7 +7,7 @@ namespace FEM.Server.Services.TestingService;
 
 public interface IProblemService
 {
-    Task<double> ResolveMatrixContributions((Node firstNode, Node secondNode) nodesPair, EDirections direction);
+    Task<double> ResolveMatrixContributionsAsync((Node firstNode, Node secondNode) nodesPair, EDirections direction);
 
     Task<double> ResolveVectorContributionsAsync((Node firstNode, Node secondNode) nodesPair, EDirections direction);
 

@@ -10,7 +10,7 @@ namespace FEM.Server.Services.ProblemService;
 /// <inheritdoc cref="IProblemService"/>
 public class ProblemService : IProblemService
 {
-    public async Task<double> ResolveMatrixContributions(
+    public async Task<double> ResolveMatrixContributionsAsync(
         (Node firstNode, Node secondNode) nodesPair,
         EDirections direction
     )

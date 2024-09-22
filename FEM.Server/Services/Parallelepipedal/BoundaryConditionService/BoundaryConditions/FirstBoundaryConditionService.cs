@@ -187,7 +187,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                    ?? throw new("Edge with this index did not find");
 
         var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
-        var contributionValue = await _problemService.ResolveMatrixContributions(
+        var contributionValue = await _problemService.ResolveMatrixContributionsAsync(
             (localNodes.firstNode, localNodes.secondNode),
             localNodes.direction
         );

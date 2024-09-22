@@ -41,7 +41,7 @@ public class RightPartVectorService : IRightPartVectorService
             (localNodes.firstNode, localNodes.secondNode),
             localNodes.direction
         );
-        var matrixContributions = await _problemService.ResolveMatrixContributions(
+        var matrixContributions = await _problemService.ResolveMatrixContributionsAsync(
             (localNodes.firstNode, localNodes.secondNode),
             localNodes.direction
         );

@@ -29,7 +29,7 @@ public class InaccuracyService : IInaccuracyService
         foreach (var edge in edgesList)
         {
             var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
-            var matrixContributions = await _problemService.ResolveMatrixContributions(
+            var matrixContributions = await _problemService.ResolveMatrixContributionsAsync(
                 (localNodes.firstNode, localNodes.secondNode),
                 localNodes.direction
             );
