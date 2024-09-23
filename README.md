@@ -55,6 +55,6 @@
 Кнопка `Cкачать отчёт` генерирует pdf файл с визуализацией построенной сетки и численным решением на каждом из рёбер.
 
 Для изменения искомой функции необходимо поменять её в файле ***/FEM.Server/Services/ProblemService/ProblemService.cs*** методы
-`ResolveMatrixContributionsAsync` (описывает искомую функцию) и `ResolveVectorContributionsAsync` (описывает $rot(rot\vec{A})$).
+`ResolveMatrixContributionsAsync` (описывает искомую функцию) и `ResolveVectorContributionsAsync` ( описывает $rot(rot\vec{A})$ ).
 
 **После изменения искомой функции, потребуется перекомпиляция проекта**
