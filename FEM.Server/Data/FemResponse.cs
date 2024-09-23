@@ -11,7 +11,7 @@ public class FemResponse
     public required Guid Id { get; init; }
     
     /// <summary>
-    /// Невязка решения
+    /// Относительная погрешность решения
     /// </summary>
     public required double Discrepancy { get; init; }
 
