@@ -54,7 +54,36 @@
 
 Кнопка `Cкачать отчёт` генерирует pdf файл с визуализацией построенной сетки и численным решением на каждом из рёбер.
 
-Для изменения искомой функции необходимо поменять её в файле ***/FEM.Server/Services/ProblemService/ProblemService.cs*** методы
-`ResolveMatrixContributionsAsync` (описывает искомую функцию) и `ResolveVectorContributionsAsync` ( описывает $rot(rot\vec{A})$ ).
+Для изменения искомой функции необходимо поменять её в файле ***/FEM.Server/Services/ProblemService/ProblemService.cs***
+
+- В методе `ResolveMatrixContributionsAsync` описывается искомая функция, для её изменения следует изменить следующий код:
+
+```csharp
+    List<double> contributionsFromVectorA =
+    [
+        35.0 * Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
+        Math.Pow(coordinate.X, 3) + 25.0 * Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
+        Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + 45.0 * Math.Pow(coordinate.Z, 3)
+    ];
+```
+
+Например данная функция представляет собой подобное:
+
+> <img src="https://latex.codecogs.com/svg.image?\vec{A}=\begin{pmatrix}35x^3&plus;y^3&plus;z^3\\x^3&plus;25y^3&plus;z^3\\x^3&plus;y^3&plus;45z^3\end{pmatrix}" title="\vec{A}=\begin{pmatrix}35x^3+y^3+z^3\\x^3+25y^3+z^3\\x^3+y^3+45z^3\end{pmatrix}"  alt=""/>
+
+- В методе `ResolveVectorContributionsAsync` описывает $rot(rot\vec{A})$, для её изменения следует изменить следующий код:
+
+```csharp
+    List<double> contributionsFromVectorF =
+    [
+        8.0 * (coordinate.Y + coordinate.Z),
+        8.0 * (coordinate.X + coordinate.Z),
+        8.0 * (coordinate.X + coordinate.Y)
+    ];
+```
+
+Например данная функция представляет собой подобное:
+
+> <img src="https://latex.codecogs.com/svg.image?\vec{F}=8*\begin{pmatrix}y&plus;z\\x&plus;z\\x&plus;y\end{pmatrix}" title="\vec{F}=8*\begin{pmatrix}y+z\\x+z\\x+y\end{pmatrix}" />
 
 **После изменения искомой функции, потребуется перекомпиляция проекта**
