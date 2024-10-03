@@ -22,7 +22,9 @@ public partial class App : Application
         SetupMainWindow();
 
         // Поднимаем сервер вместе с фронтом 
+#if !DEBUG
         StartBackend();
+#endif
         base.OnFrameworkInitializationCompleted();
     }
 
@@ -36,7 +38,8 @@ public partial class App : Application
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
 
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.UIThread.Post(
+            () =>
             {
                 MainWindow window = new() { DataContext = Locator.Current.GetService<IScreen>() };
 
