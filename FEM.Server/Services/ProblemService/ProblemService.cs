@@ -1,7 +1,7 @@
 using FEM.Common.Data.Domain;
-using FEM.Common.Data.TestSession;
+using FEM.Common.Data.MeshModels;
 using FEM.Common.Enums;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.NonStationary.DTO.TestingContext;
 using FEM.Server.Extensions;
 using FEM.Server.Services.TestingService;
 
@@ -56,11 +56,11 @@ public class ProblemService : IProblemService
 
     public async Task<(Node firstNode, Node secondNode, EDirections direction)> ResolveLocalNodes(
         Edge edge,
-        TestSession<Mesh> testSession
+        NonStationaryTestSession<Mesh> nonStationaryTestSession
     )
     {
-        var finiteElementIndex = await edge.FiniteElementIndexByEdges(testSession.Mesh);
-        var localFiniteElement = testSession.Mesh.Elements[finiteElementIndex];
+        var finiteElementIndex = await edge.FiniteElementIndexByEdges(nonStationaryTestSession.Mesh);
+        var localFiniteElement = nonStationaryTestSession.Mesh.Elements[finiteElementIndex];
 
         var edgeIndex = await edge.ResolveLocal(localFiniteElement);
         var firstNode = localFiniteElement.Edges[edgeIndex].Nodes[0];

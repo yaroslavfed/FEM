@@ -10,7 +10,7 @@ public record Axis
     /// <summary>
     /// Дополнительные параметры векторного МКЭ
     /// </summary>
-    public required AdditionalParameters AdditionalParameters { get; init; }
+    public required SolutionParameters AdditionalParameters { get; init; }
 
     /// <summary>
     /// Параметры геометрической параметризации расчетной области

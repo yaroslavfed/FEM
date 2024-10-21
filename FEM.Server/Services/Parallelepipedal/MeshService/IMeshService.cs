@@ -1,6 +1,6 @@
 ﻿using FEM.Common.Data.Domain;
-using FEM.Server.Data.Domain;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.Common.Data.MeshModels;
+using FEM.Server.Data.InputModels;
 
 namespace FEM.Server.Services.Parallelepipedal.MeshService;
 

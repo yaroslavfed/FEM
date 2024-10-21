@@ -1,5 +1,6 @@
-﻿using FEM.Common.Data.MathModels.MatrixFormats;
+﻿using FEM.Common.Data.MatrixFormats;
 using FEM.Server.Data;
+using FEM.Server.Data.OutputModels;
 using FEM.Solvers.Solvers;
 
 namespace FEM.Server.Services.SolverService;

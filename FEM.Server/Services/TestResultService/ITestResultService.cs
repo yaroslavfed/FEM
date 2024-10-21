@@ -1,4 +1,5 @@
 ﻿using FEM.Server.Data;
+using FEM.Server.Data.OutputModels;
 
 namespace FEM.Server.Services.TestResultService;
 

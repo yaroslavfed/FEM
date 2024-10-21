@@ -1,22 +1,13 @@
-﻿using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Common.Enums;
-using FEM.Common.Resolvers.MatrixFormatResolver;
-using FEM.Server.Data.Parallelepipedal;
+﻿using FEM.Common.Data.MatrixFormats;
+using FEM.Common.Data.MeshModels;
 
 namespace FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
 
 /// <inheritdoc cref="IMatrixPortraitService"/>
 public class MatrixPortraitService : IMatrixPortraitService
 {
-    private readonly IMatrixFormatResolver _matrixFormatResolver;
-
-    public MatrixPortraitService(IMatrixFormatResolver matrixFormatResolver)
-    {
-        _matrixFormatResolver = matrixFormatResolver;
-    }
-
     /// <inheritdoc cref="IMatrixPortraitService.ResolveMatrixPortraitAsync"/>
-    public async Task<IMatrixFormat> ResolveMatrixPortraitAsync(Mesh mesh, EMatrixFormats matrixFormat)
+    public async Task<MatrixProfileFormat> ResolveMatrixPortraitAsync(Mesh mesh)
     {
         var edgesCount = mesh.Elements.SelectMany(element => element.Edges).DistinctBy(edge => edge.EdgeIndex).Count();
         var bufferList = Enumerable.Range(0, edgesCount).Select(_ => new List<int>()).ToList();
@@ -47,7 +38,7 @@ public class MatrixPortraitService : IMatrixPortraitService
         foreach (var item in bufferList.Where(item => !IsOrdered(item)))
             item.Sort();
 
-        var matrixProfile = _matrixFormatResolver.ResolveMatrixFormat(matrixFormat);
+        var matrixProfile = new MatrixProfileFormat();
 
         return await matrixProfile.CreateProfileArraysAsync(bufferList);
     }

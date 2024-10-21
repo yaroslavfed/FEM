@@ -1,10 +1,9 @@
-﻿using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Common.Data.TestSession;
-using FEM.Server.Data.Parallelepipedal;
+﻿using FEM.Common.Data.MeshModels;
+using FEM.NonStationary.DTO.TestingContext;
 
 namespace FEM.Server.Services.Parallelepipedal.BoundaryConditionService.BoundaryConditions;
 
 public interface IBoundaryConditionService
 {
-    Task SetBoundaryConditionsAsync(TestSession<Mesh> testSession, IMatrixFormat matrixProfile);
+    Task SetBoundaryConditionsAsync(NonStationaryTestSession<Mesh> nonStationaryTestSession, IMatrixFormat matrixProfile);
 }

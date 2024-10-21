@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using FEM.Common.Data.MeshModels;
 using FEM.Common.Enums;
 using FEM.Common.Extensions;
-using FEM.Server.Data.Parallelepipedal;
 
 namespace FEM.Server.Profiles;
 

@@ -1,7 +1,7 @@
 using FEM.Common.Data.Domain;
-using FEM.Common.Data.TestSession;
+using FEM.Common.Data.MeshModels;
 using FEM.Common.Enums;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.NonStationary.DTO.TestingContext;
 
 namespace FEM.Server.Services.TestingService;
 
@@ -13,6 +13,6 @@ public interface IProblemService
 
     Task<(Node firstNode, Node secondNode, EDirections direction)> ResolveLocalNodes(
         Edge edge,
-        TestSession<Mesh> testSession
+        NonStationaryTestSession<Mesh> nonStationaryTestSession
     );
 }

@@ -1,6 +1,8 @@
-﻿using FEM.Common.Data.TestSession;
+﻿using FEM.Common.Data.MeshModels;
+using FEM.Common.Data.TestingContext;
+using FEM.NonStationary.DTO.TestingContext;
 using FEM.Server.Data;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.Server.Data.OutputModels;
 using FEM.Server.Services.TestingService;
 
 namespace FEM.Server.Services.InaccuracyService;
@@ -14,11 +16,11 @@ public class InaccuracyService : IInaccuracyService
         _problemService = problemService;
     }
 
-    public async Task GetSolutionVectorInaccuracy(TestSession<Mesh> testSession, SolutionResult solutionResult)
+    public async Task GetSolutionVectorInaccuracy(NonStationaryTestSession<Mesh> nonStationaryTestSession, SolutionResult solutionResult)
     {
         var edgeVectorTruthValue = new List<double>();
 
-        var edgesList = testSession
+        var edgesList = nonStationaryTestSession
                         .Mesh
                         .Elements
                         .SelectMany(element => element.Edges)
@@ -28,7 +30,7 @@ public class InaccuracyService : IInaccuracyService
 
         foreach (var edge in edgesList)
         {
-            var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
+            var localNodes = await _problemService.ResolveLocalNodes(edge, nonStationaryTestSession);
             var matrixContributions = await _problemService.ResolveMatrixContributionsAsync(
                 (localNodes.firstNode, localNodes.secondNode),
                 localNodes.direction

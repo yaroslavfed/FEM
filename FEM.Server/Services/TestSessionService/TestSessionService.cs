@@ -1,6 +1,6 @@
-﻿using FEM.Common.Data.TestSession;
-using FEM.Server.Data.Domain;
-using FEM.Server.Data.Parallelepipedal;
+﻿using FEM.Common.Data.MeshModels;
+using FEM.NonStationary.DTO.TestingContext;
+using FEM.Server.Data.InputModels;
 using FEM.Server.Services.Parallelepipedal.MeshService;
 
 namespace FEM.Server.Services.TestSessionService;
@@ -14,13 +14,13 @@ public class TestSessionService : ITestSessionService
         _meshService = meshService;
     }
 
-    public async Task<TestSession<Mesh>> CreateTestSessionAsync()
+    public async Task<NonStationaryTestSession<Mesh>> CreateTestSessionAsync()
     {
         var testConfiguration = await _meshService.GenerateTestConfiguration();
         var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
 
         return await Task.FromResult(
-            new TestSession<Mesh>
+            new NonStationaryTestSession<Mesh>
             {
                 Mesh = mesh,
                 Mu = testConfiguration.AdditionalParameters.Mu,
@@ -30,13 +30,13 @@ public class TestSessionService : ITestSessionService
         );
     }
 
-    public async Task<TestSession<Mesh>> CreateTestSessionAsync(TestSession testSession)
+    public async Task<NonStationaryTestSession<Mesh>> CreateTestSessionAsync(TestSession testSession)
     {
         var testConfiguration = await _meshService.GenerateTestConfiguration(testSession);
         var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
 
         return await Task.FromResult(
-            new TestSession<Mesh>
+            new NonStationaryTestSession<Mesh>
             {
                 Mesh = mesh,
                 Mu = testConfiguration.AdditionalParameters.Mu,

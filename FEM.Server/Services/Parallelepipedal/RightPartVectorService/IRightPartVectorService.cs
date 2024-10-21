@@ -1,6 +1,5 @@
-using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Common.Data.TestSession;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.Common.Data.MeshModels;
+using FEM.NonStationary.DTO.TestingContext;
 
 namespace FEM.Server.Services.Parallelepipedal.RightPartVectorService;
 
@@ -13,6 +12,6 @@ public interface IRightPartVectorService
     /// Получение вектора правой части
     /// </summary>
     /// <param name="matrixProfile">Выбранный формат хранения</param>
-    /// <param name="testSession"><see cref="TestSession{TMesh}"/></param>
-    Task GetRightPartVectorAsync(IMatrixFormat matrixProfile, TestSession<Mesh> testSession);
+    /// <param name="nonStationaryTestSession"><see cref="NonStationaryNonStationaryTestSession{TMesh}"/></param>
+    Task GetRightPartVectorAsync(IMatrixFormat matrixProfile, NonStationaryTestSession<Mesh> nonStationaryTestSession);
 }

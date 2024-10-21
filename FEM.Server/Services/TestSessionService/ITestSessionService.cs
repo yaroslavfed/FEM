@@ -1,6 +1,6 @@
-﻿using FEM.Common.Data.TestSession;
-using FEM.Server.Data.Domain;
-using FEM.Server.Data.Parallelepipedal;
+﻿using FEM.Common.Data.MeshModels;
+using FEM.NonStationary.DTO.TestingContext;
+using FEM.Server.Data.InputModels;
 
 namespace FEM.Server.Services.TestSessionService;
 
@@ -14,12 +14,12 @@ public interface ITestSessionService
     /// </summary>
     /// <remarks>Для использования с внутренними данными получаемыми из конфига</remarks>
     /// <returns>Сессия тестирования расчётной области</returns>
-    Task<TestSession<Mesh>> CreateTestSessionAsync();
+    Task<NonStationaryTestSession<Mesh>> CreateTestSessionAsync();
 
     /// <summary>
     /// Создаем сессию тестирования
     /// </summary>
     /// <remarks>Для использования с внешними в API</remarks>
     /// <returns>Сессия тестирования расчётной области</returns>
-    Task<TestSession<Mesh>> CreateTestSessionAsync(TestSession testSession);
+    Task<NonStationaryTestSession<Mesh>> CreateTestSessionAsync(TestSession testSession);
 }

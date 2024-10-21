@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using FEM.Common.Data.TestSession;
+using FEM.NonStationary.DTO.TestingContext;
 using FEM.Server.Data;
+using FEM.Server.Data.OutputModels;
 using FEM.Server.Services.SaverService;
 
 namespace FEM.Server.Services.TestResultService;
@@ -31,7 +32,7 @@ public class TestResultService : ITestResultService
             plotsRawList.Add(base64String);
         }
 
-        var result = new TestResult
+        var result = new NonStationaryTestResult
         {
             Id = Guid.NewGuid(),
             SolutionInfo = solutionParameters.SolutionInfo,

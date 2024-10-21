@@ -1,4 +1,4 @@
-﻿using FEM.Common.Data.TestSession;
+﻿using FEM.NonStationary.DTO.TestingContext;
 using FEM.Storage.FileStorage;
 
 namespace FEM.Server.Services.SaverService;
@@ -13,7 +13,7 @@ public class SaverService : ISaverService
     }
 
     // TODO: изменить на сохранение в бд
-    public async Task SaveResultAsync(TestResult result)
+    public async Task SaveResultAsync(NonStationaryTestResult result)
     {
         Directory.CreateDirectory("TestResults");
         var fileName = $"{result.Id}.txt";

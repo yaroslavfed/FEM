@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.Common.Data.MatrixFormats;
+using FEM.Common.Data.MeshModels;
 using FEM.Server.Services.SaverService;
 
 namespace FEM.Server.Services.Parallelepipedal.VisualizerService;

@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using FEM.Common.Data.TestSession;
 
 namespace FEM.Common.Parsers;
 

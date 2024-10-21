@@ -1,8 +1,7 @@
 using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels;
-using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Common.Data.TestSession;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.Common.Data.MeshModels;
+using FEM.NonStationary.DTO.TestingContext;
 using FEM.Server.Models.Parallelepipedal.MassMatrix;
 using FEM.Server.Services.TestingService;
 
@@ -22,20 +21,20 @@ public class RightPartVectorService : IRightPartVectorService
     }
     
     /// <inheritdoc cref="IRightPartVectorService.GetRightPartVectorAsync"/>
-    public async Task GetRightPartVectorAsync(IMatrixFormat matrixProfile, TestSession<Mesh> testSession)
+    public async Task GetRightPartVectorAsync(IMatrixFormat matrixProfile, NonStationaryTestSession<Mesh> nonStationaryTestSession)
     {
-        foreach (var element in testSession.Mesh.Elements)
+        foreach (var element in nonStationaryTestSession.Mesh.Elements)
         {
-            await ResolveRightPartVectorAsync(matrixProfile, element, testSession);
+            await ResolveRightPartVectorAsync(matrixProfile, element, nonStationaryTestSession);
         }
     }
 
     /// <summary>
     /// Расчет значений элементов вектора правой части
     /// </summary>
-    private async Task<double> ResolveRightPartValueAsync(Edge edge, TestSession<Mesh> testSession)
+    private async Task<double> ResolveRightPartValueAsync(Edge edge, NonStationaryTestSession<Mesh> nonStationaryTestSession)
     {
-        var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
+        var localNodes = await _problemService.ResolveLocalNodes(edge, nonStationaryTestSession);
 
         var vectorContributions = await _problemService.ResolveVectorContributionsAsync(
             (localNodes.firstNode, localNodes.secondNode),
@@ -46,7 +45,7 @@ public class RightPartVectorService : IRightPartVectorService
             localNodes.direction
         );
 
-        return 1.0 / testSession.Mu * vectorContributions + testSession.Gamma * matrixContributions;
+        return 1.0 / nonStationaryTestSession.Mu * vectorContributions + nonStationaryTestSession.Gamma * matrixContributions;
     }
 
     /// <summary>
@@ -54,11 +53,11 @@ public class RightPartVectorService : IRightPartVectorService
     /// </summary>
     /// <param name="matrixProfile">Выбранный формат хранения</param>
     /// <param name="element">Выбранный КЭ</param>
-    /// <param name="testSession"><see cref="TestSession{TMesh}"/></param>
+    /// <param name="nonStationaryTestSession"><see cref="NonStationaryNonStationaryTestSession{TMesh}"/></param>
     private async Task ResolveRightPartVectorAsync(
         IMatrixFormat matrixProfile,
         FiniteElement element,
-        TestSession<Mesh> testSession
+        NonStationaryTestSession<Mesh> nonStationaryTestSession
     )
     {
         var nodesList = element.Edges.SelectMany(edge => edge.Nodes).Distinct().ToArray();
@@ -69,7 +68,7 @@ public class RightPartVectorService : IRightPartVectorService
         var hy = lastNode.Coordinate.Y - firstNode.Coordinate.Y;
         var hz = lastNode.Coordinate.Z - firstNode.Coordinate.Z;
 
-        var localRightPartAsync = await ResolveLocalRightPartAsync(hx, hy, hz, element, testSession);
+        var localRightPartAsync = await ResolveLocalRightPartAsync(hx, hy, hz, element, nonStationaryTestSession);
 
         for (var i = 0; i < element.Edges.Count; i++)
         {
@@ -84,21 +83,21 @@ public class RightPartVectorService : IRightPartVectorService
     /// <param name="hy">Шаг по OY</param>
     /// <param name="hz">Шаг по OZ</param>
     /// <param name="element">Конечный элемент расчётной области</param>
-    /// <param name="testSession">Сессия расчёта области</param>
+    /// <param name="nonStationaryTestSession">Сессия расчёта области</param>
     /// <returns>Вектор правой части</returns>
     private async Task<IList<double>> ResolveLocalRightPartAsync(
         double hx,
         double hy,
         double hz,
         FiniteElement element,
-        TestSession<Mesh> testSession
+        NonStationaryTestSession<Mesh> nonStationaryTestSession
     )
     {
         List<double> localRightPart = [..Enumerable.Range(0, 12).Select(_ => 0)];
         var tempLocalRightPart = new List<double>();
 
         for (var i = 0; i < localRightPart.Count; i++)
-            tempLocalRightPart.Add(await ResolveRightPartValueAsync(element.Edges[i], testSession));
+            tempLocalRightPart.Add(await ResolveRightPartValueAsync(element.Edges[i], nonStationaryTestSession));
 
         var coefficient = hx * hy * hz / 36.0;
 

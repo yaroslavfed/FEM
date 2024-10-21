@@ -1,6 +1,5 @@
-﻿using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Common.Enums;
-using FEM.Server.Data.Parallelepipedal;
+﻿using FEM.Common.Data.MatrixFormats;
+using FEM.Common.Data.MeshModels;
 
 namespace FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
 
@@ -13,7 +12,6 @@ public interface IMatrixPortraitService
     /// Получаем портрет матрицы
     /// </summary>
     /// <param name="mesh">Сетка расчётной области</param>
-    /// <param name="matrixFormat">Формат хранения матрицы</param>
     /// <returns>Получаем матрицу в указанном формате</returns>
-    Task<IMatrixFormat> ResolveMatrixPortraitAsync(Mesh mesh, EMatrixFormats matrixFormat);
+    Task<MatrixProfileFormat> ResolveMatrixPortraitAsync(Mesh mesh);
 }

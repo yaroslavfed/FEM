@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.Common.Data.MeshModels;
 
 namespace FEM.Server.Models.Parallelepipedal.BasicFunction;
 

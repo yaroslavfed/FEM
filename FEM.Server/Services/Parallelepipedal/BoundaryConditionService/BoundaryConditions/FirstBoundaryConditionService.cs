@@ -1,7 +1,7 @@
 ﻿using FEM.Common.Data.Domain;
-using FEM.Common.Data.MathModels.MatrixFormats;
-using FEM.Common.Data.TestSession;
-using FEM.Server.Data.Parallelepipedal;
+using FEM.Common.Data.MatrixFormats;
+using FEM.Common.Data.MeshModels;
+using FEM.NonStationary.DTO.TestingContext;
 using FEM.Server.Services.TestingService;
 
 namespace FEM.Server.Services.Parallelepipedal.BoundaryConditionService.BoundaryConditions;
@@ -15,13 +15,13 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
         _problemService = problemService;
     }
 
-    public async Task SetBoundaryConditionsAsync(TestSession<Mesh> testSession, IMatrixFormat matrixProfile)
+    public async Task SetBoundaryConditionsAsync(NonStationaryTestSession<Mesh> nonStationaryTestSession, IMatrixFormat matrixProfile)
     {
-        var boundaryConditionsList = await AddBoundaryCondition(testSession);
+        var boundaryConditionsList = await AddBoundaryCondition(nonStationaryTestSession);
         var boundaryNodesList = Enumerable
                                 .Range(
                                     0,
-                                    testSession
+                                    nonStationaryTestSession
                                         .Mesh
                                         .Elements
                                         .SelectMany(element => element.Edges)
@@ -61,9 +61,9 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                     }
     }
 
-    private async Task<List<(int index, double value)>> AddBoundaryCondition(TestSession<Mesh> testSession)
+    private async Task<List<(int index, double value)>> AddBoundaryCondition(NonStationaryTestSession<Mesh> nonStationaryTestSession)
     {
-        var nodesList = await GetNodesListAsync(testSession);
+        var nodesList = await GetNodesListAsync(nonStationaryTestSession);
 
         var nx = nodesList.Select(node => node.Coordinate.X).Distinct().Count();
         var ny = nodesList.Select(node => node.Coordinate.Y).Distinct().Count();
@@ -84,7 +84,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                 n[2] = i * (gr + pop) + gr + j * nx + nx;
                 n[3] = (i + 1) * (gr + pop) + j * (2 * nx - 1) + (nx - 1);
 
-                await FillBoundaryConditionsList(n, boundaryConditionsList, testSession);
+                await FillBoundaryConditionsList(n, boundaryConditionsList, nonStationaryTestSession);
             }
 
         // Заполняем краевые условия для правой грани КЭ
@@ -96,7 +96,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                 n[2] = i * (gr + pop) + gr + (nx - 2) + j * nx + nx + 1;
                 n[3] = (i + 1) * (gr + pop) + j * (2 * nx - 1) + (nx - 1) + (nx - 2) + 1;
 
-                await FillBoundaryConditionsList(n, boundaryConditionsList, testSession);
+                await FillBoundaryConditionsList(n, boundaryConditionsList, nonStationaryTestSession);
             }
 
         // Заполняем краевые условия для нижней грани КЭ
@@ -108,7 +108,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                 n[2] = i * (2 * nx - 1) + j + (nx - 1) + 1;
                 n[3] = (i + 1) * (2 * nx - 1) + j;
 
-                await FillBoundaryConditionsList(n, boundaryConditionsList, testSession);
+                await FillBoundaryConditionsList(n, boundaryConditionsList, nonStationaryTestSession);
             }
 
         // Заполняем краевые условия для верхней грани КЭ
@@ -120,7 +120,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                 n[2] = (nz - 1) * (gr + pop) + i * (2 * nx - 1) + (nx - 1) + j + 1;
                 n[3] = (nz - 1) * (gr + pop) + (i + 1) * (2 * nx - 1) + j;
 
-                await FillBoundaryConditionsList(n, boundaryConditionsList, testSession);
+                await FillBoundaryConditionsList(n, boundaryConditionsList, nonStationaryTestSession);
             }
 
         // Заполняем краевые условия для передней грани КЭ
@@ -132,7 +132,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                 n[2] = i * (gr + pop) + gr + j + 1;
                 n[3] = (i + 1) * (gr + pop) + j;
 
-                await FillBoundaryConditionsList(n, boundaryConditionsList, testSession);
+                await FillBoundaryConditionsList(n, boundaryConditionsList, nonStationaryTestSession);
             }
 
         // Заполняем краевые условия для задней грани КЭ
@@ -144,7 +144,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
                 n[2] = i * (gr + pop) + gr + j + (ny - 2) * nx + nx + 1;
                 n[3] = (i + 1) * (gr + pop) + (ny - 2 + 1) * (2 * nx - 1) + j;
 
-                await FillBoundaryConditionsList(n, boundaryConditionsList, testSession);
+                await FillBoundaryConditionsList(n, boundaryConditionsList, nonStationaryTestSession);
             }
 
         boundaryConditionsList.Sort((first, second) => first.index.CompareTo(second.index));
@@ -155,7 +155,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
     private async Task FillBoundaryConditionsList(
         IList<int> list,
         List<(int nodeIndex, double nodeValue)> boundaryConditionsList,
-        TestSession<Mesh> testSession
+        NonStationaryTestSession<Mesh> nonStationaryTestSession
     )
     {
         for (var index = 0; index < 4; index += 3)
@@ -163,7 +163,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             if (IsInBoundary(list[index], boundaryConditionsList))
                 continue;
 
-            var contributionValue = await CalculateContributionValueAsync(testSession, list[index]);
+            var contributionValue = await CalculateContributionValueAsync(nonStationaryTestSession, list[index]);
             boundaryConditionsList.Add((list[index], contributionValue));
         }
 
@@ -172,21 +172,21 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             if (IsInBoundary(list[index], boundaryConditionsList))
                 continue;
 
-            var contributionValue = await CalculateContributionValueAsync(testSession, list[index]);
+            var contributionValue = await CalculateContributionValueAsync(nonStationaryTestSession, list[index]);
             boundaryConditionsList.Add((list[index], contributionValue));
         }
     }
 
-    private async Task<double> CalculateContributionValueAsync(TestSession<Mesh> testSession, int edgeIndex)
+    private async Task<double> CalculateContributionValueAsync(NonStationaryTestSession<Mesh> nonStationaryTestSession, int edgeIndex)
     {
-        var edge = testSession
+        var edge = nonStationaryTestSession
                    .Mesh
                    .Elements
                    .SelectMany(element => element.Edges)
                    .FirstOrDefault(edge => edge.EdgeIndex == edgeIndex)
                    ?? throw new("Edge with this index did not find");
 
-        var localNodes = await _problemService.ResolveLocalNodes(edge, testSession);
+        var localNodes = await _problemService.ResolveLocalNodes(edge, nonStationaryTestSession);
         var contributionValue = await _problemService.ResolveMatrixContributionsAsync(
             (localNodes.firstNode, localNodes.secondNode),
             localNodes.direction
@@ -204,9 +204,9 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
         return false;
     }
 
-    private static Task<Node[]> GetNodesListAsync(TestSession<Mesh> testSession)
+    private static Task<Node[]> GetNodesListAsync(NonStationaryTestSession<Mesh> nonStationaryTestSession)
     {
-        var localNode = testSession
+        var localNode = nonStationaryTestSession
                         .Mesh
                         .Elements
                         .SelectMany(element => element.Edges.SelectMany(edge => edge.Nodes))
