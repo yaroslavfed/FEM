@@ -1,0 +1,6 @@
+services:
+  fem.server:
+    image: ${DOCKER_REGISTRY-}femserver
+    build:
+      context: .
+      dockerfile: FEM.Server/Dockerfile

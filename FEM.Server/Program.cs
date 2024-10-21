@@ -58,13 +58,15 @@ builder.Host.UseNLog();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseReDoc(options => { options.Path = "/redoc"; });
-}
+// if (app.Environment.IsDevelopment())
+// {
+
+// }
+
+app.UseOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseReDoc(options => { options.Path = "/redoc"; });
 
 app.UseHttpsRedirection();
 app.UseRouting();

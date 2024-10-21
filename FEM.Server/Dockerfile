@@ -4,16 +4,18 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["FEM.Server/FEM.Server.csproj", "FEM.Server/"]
+COPY ["FEM.Common/FEM.Common.csproj", "FEM.Common/"]
+COPY ["FEM.Solvers/FEM.Solvers.csproj", "FEM.Solvers/"]
+COPY ["FEM.Storage/FEM.Storage.csproj", "FEM.Storage/"]
+COPY ["FEM.Database/FEM.Database.csproj", "FEM.Database/"]
 RUN dotnet restore "./FEM.Server/FEM.Server.csproj"
+
 COPY . .
 WORKDIR "/src/FEM.Server"
 RUN dotnet build "./FEM.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
