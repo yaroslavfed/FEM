@@ -1,15 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using FEM.Common.Core.Services.BoundaryConditionService;
+using FEM.Common.Core.Services.GlobalMatrixService;
+using FEM.Common.Core.Services.InaccuracyService;
+using FEM.Common.Core.Services.MatrixPortraitService;
+using FEM.Common.Core.Services.RightPartVectorService;
+using FEM.Common.Core.Services.SolverService;
+using FEM.Common.Core.Services.TestResultService;
+using FEM.Common.Core.Services.TestSessionService;
+using FEM.Common.Services.VisualizerService;
 using FEM.Server.Data.OutputModels;
-using FEM.Server.Extensions;
-using FEM.Server.Services.InaccuracyService;
-using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
-using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
-using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
-using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
-using FEM.Server.Services.Parallelepipedal.VisualizerService;
-using FEM.Server.Services.SolverService;
-using FEM.Server.Services.TestResultService;
-using FEM.Server.Services.TestSessionService;
+using FEM.Stationary.DTO.Configurations;
 using FEM.Stationary.DTO.TestingContext;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,7 +62,7 @@ public class StationaryFemController : ControllerBase
     /// <summary>
     /// Решает стационарное уравнение с помощью векторного МКЭ
     /// </summary>
-    /// <param name="stationaryTestSession"><see cref="StationaryTestSession">Входные параметры расчётной сессии</see></param>
+    /// <param name="testConfiguration"><see cref="StationaryTestSession">Входные параметры расчётной сессии</see></param>
     /// /// <remarks>
     /// Sample request:
     /// 
@@ -100,21 +100,20 @@ public class StationaryFemController : ControllerBase
     [ProducesResponseType(typeof(FemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [SuppressMessage("ReSharper.DPA", "DPA0011: High execution time of MVC action")]
-    public async Task<IActionResult> CreateCalculation([FromBody] StationaryTestSession stationaryTestSession)
+    public async Task<IActionResult> CreateCalculation([FromBody] StationaryTestConfiguration testConfiguration)
     {
-        // Инициализируем тестирование из входных параметров
-        var testSessionParameters = stationaryTestSession.InitializeTestSession();
-
-        Console.WriteLine($"[{nameof(StationaryFemController)}] [Started session] Id: {testSessionParameters.Id}");
-        _logger.LogInformation($"[{nameof(StationaryFemController)}] [Started session] Id: {testSessionParameters.Id}");
+        Console.WriteLine($"[{nameof(StationaryFemController)}] [Info] Started session");
+        _logger.LogInformation($"[{nameof(StationaryFemController)}] [Info] Started session");
 
         try
         {
-            _logger.LogInformation($"[{nameof(StationaryFemController)}] {nameof(CreateCalculation)} initialize");
+            _logger.LogInformation(
+                $"[{nameof(StationaryFemController)}] {nameof(CreateCalculation)} initialize calculation"
+            );
             _logger.LogInformation($"[{nameof(StationaryFemController)}] create test session");
 
             // Создаем сессию тестирования
-            var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
+            var testSession = await _testSessionService.CreateTestSessionAsync(testConfiguration);
 
             Console.WriteLine($"[{nameof(StationaryFemController)}] [Info] Test session created");
             _logger.LogInformation($"[{nameof(StationaryFemController)}] [Info] Test session created");
@@ -198,7 +197,8 @@ public class StationaryFemController : ControllerBase
             );
         } finally
         {
-            Console.WriteLine($"[Ended session] Id: {testSessionParameters.Id}");
+            Console.WriteLine($"[{nameof(StationaryFemController)}] [Info] Started ended");
+            _logger.LogInformation($"[{nameof(StationaryFemController)}] [Info] Started ended");
         }
     }
 

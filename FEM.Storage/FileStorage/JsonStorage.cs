@@ -1,7 +1,8 @@
 ﻿using System.Collections.Frozen;
-using FEM.Common.Data.Domain;
-using FEM.Common.Data.InputModels;
-using FEM.Common.Parsers;
+using FEM.Common.DTO.Abstractions;
+using FEM.Common.DTO.Domain;
+using FEM.Common.DTO.Models.InputModels;
+using FEM.Storage.Parsers;
 
 namespace FEM.Storage.FileStorage;
 
@@ -23,8 +24,8 @@ public class JsonStorage : IJsonStorage
 
 
     public async Task<Axis> GetAxisAsync() => await ReadConfigurationFromFileAsync();
-    
-    public async Task SaveResultToFileAsync(TestResult result, string fileName)
+
+    public async Task SaveResultToFileAsync(TestResultBase result, string fileName)
     {
         await _parser.ParseEntityToFileAsync(result, fileName);
     }
@@ -33,9 +34,7 @@ public class JsonStorage : IJsonStorage
     {
         var positioning = await _parser.ParseEntityFromFileAsync<Positioning>(_directories["positioning"]);
         var splitting = await _parser.ParseEntityFromFileAsync<Splitting>(_directories["splitting"]);
-        var additionalParameters
-            = await _parser.ParseEntityFromFileAsync<AdditionalParameters>(_directories["additionalParameters"]);
 
-        return new() { Positioning = positioning, Splitting = splitting, AdditionalParameters = additionalParameters };
+        return new() { Positioning = positioning, Splitting = splitting };
     }
 }

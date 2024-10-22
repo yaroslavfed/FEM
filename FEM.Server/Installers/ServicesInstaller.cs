@@ -1,22 +1,24 @@
-﻿using FEM.Common.Data.MathModels;
+﻿using FEM.Common.Core.Services.BaseMatrixServices.MassMatrix;
+using FEM.Common.Core.Services.BaseMatrixServices.StiffnessMatrix;
+using FEM.Common.Core.Services.BoundaryConditionService;
+using FEM.Common.Core.Services.GlobalMatrixService;
+using FEM.Common.Core.Services.InaccuracyService;
+using FEM.Common.Core.Services.MatrixPortraitService;
+using FEM.Common.Core.Services.ProblemService;
+using FEM.Common.Core.Services.RightPartVectorService;
+using FEM.Common.Core.Services.SolverService;
+using FEM.Common.Core.Services.TestResultService;
+using FEM.Common.Core.Services.TestSessionService;
+using FEM.Common.Data.MathModels;
+using FEM.Common.DTO.Models.MathModels;
 using FEM.Common.Resolvers.MatrixFormatResolver;
-using FEM.Server.Models.Parallelepipedal.MassMatrix;
-using FEM.Server.Models.Parallelepipedal.StiffnessMatrix;
-using FEM.Server.Services.InaccuracyService;
-using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
-using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
-using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
-using FEM.Server.Services.Parallelepipedal.MeshService;
-using FEM.Server.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
-using FEM.Server.Services.Parallelepipedal.NumberingService.NodesNumberingService;
-using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
-using FEM.Server.Services.Parallelepipedal.VisualizerService;
+using FEM.Common.Services.MeshService;
+using FEM.Common.Services.NumberingService.EdgesNumberingService;
+using FEM.Common.Services.NumberingService.NodesNumberingService;
+using FEM.Common.Services.SaverService;
+using FEM.Common.Services.VisualizerService;
 using FEM.Server.Services.ProblemService;
-using FEM.Server.Services.SaverService;
-using FEM.Server.Services.SolverService;
-using FEM.Server.Services.TestingService;
-using FEM.Server.Services.TestResultService;
-using FEM.Server.Services.TestSessionService;
+using FEM.Stationary.Core.Services.TestSessionService;
 using FEM.Storage.Converter;
 
 namespace FEM.Server.Installers;
@@ -41,7 +43,6 @@ public static class ServicesInstaller
         builder.AddScoped<IProblemService, ProblemService>();
         builder.AddScoped<ITestSessionService, TestSessionService>();
 
-        builder.AddScoped<IMatrixFormatResolver, MatrixFormatResolver>();
         builder.AddScoped<IBoundaryConditionFactory, BoundaryConditionFactory>();
 
         builder.AddScoped<IVisualizerService, VisualizerService>();

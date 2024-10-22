@@ -1,4 +1,4 @@
-﻿using FEM.Common.Data.TestingContext;
+﻿using FEM.Common.DTO.TestingContext;
 
 namespace FEM.NonStationary.DTO.TestingContext;
 

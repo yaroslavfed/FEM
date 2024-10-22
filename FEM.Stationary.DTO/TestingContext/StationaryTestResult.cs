@@ -1,11 +1,10 @@
-﻿using FEM.Common.Data.TestingContext;
+﻿using FEM.Common.DTO.Abstractions;
+using FEM.Common.DTO.TestingContext;
 
 namespace FEM.Stationary.DTO.TestingContext;
 
-public record StationaryTestResult
+public record StationaryTestResult : TestResultBase
 {
-    public Guid Id { get; init; }
-
     public IEnumerable<string> Plots { get; init; } = [];
 
     public int ItersCount { get; set; }

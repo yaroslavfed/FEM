@@ -1,5 +1,5 @@
-﻿using FEM.Common.Data.MeshModels.MeshParameters;
-using FEM.Common.Enums;
+﻿using FEM.Common.DTO.Enums;
+using FEM.Common.DTO.Models.MeshModels.MeshParameters;
 using FEM.NonStationary.DTO.InputModels;
 
 namespace FEM.NonStationary.DTO.TestingContext;

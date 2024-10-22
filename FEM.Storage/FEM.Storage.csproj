@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
+        <ProjectReference Include="..\FEM.Common.DTO\FEM.Common.DTO.csproj" />
         <ProjectReference Include="..\FEM.Database\FEM.Database.csproj" />
     </ItemGroup>
 

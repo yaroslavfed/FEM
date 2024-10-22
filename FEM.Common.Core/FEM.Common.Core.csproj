@@ -7,14 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+      <ProjectReference Include="..\FEM.NonStationary.DTO\FEM.NonStationary.DTO.csproj" />
+      <ProjectReference Include="..\FEM.Solvers\FEM.Solvers.csproj" />
+      <ProjectReference Include="..\FEM.Stationary.DTO\FEM.Stationary.DTO.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FEM.NonStationary.Core\FEM.NonStationary.Core.csproj" />
-      <ProjectReference Include="..\FEM.NonStationary.DTO\FEM.NonStationary.DTO.csproj" />
-      <ProjectReference Include="..\FEM.Stationary.Core\FEM.Stationary.Core.csproj" />
-      <ProjectReference Include="..\FEM.Stationary.DTO\FEM.Stationary.DTO.csproj" />
+      <Folder Include="Services\BaseMatrixServices\" />
     </ItemGroup>
 
 </Project>

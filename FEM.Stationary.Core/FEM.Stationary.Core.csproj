@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FEM.Common.Core\FEM.Common.Core.csproj" />
+      <ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
+      <ProjectReference Include="..\FEM.Stationary.DTO\FEM.Stationary.DTO.csproj" />
+    </ItemGroup>
+
 </Project>

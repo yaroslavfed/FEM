@@ -1,4 +1,4 @@
-﻿using FEM.Common.Data.TestSession;
+﻿using FEM.Common.DTO.Abstractions;
 using FEM.NonStationary.DTO.InputModels;
 
 namespace FEM.NonStationary.DTO.TestingContext;

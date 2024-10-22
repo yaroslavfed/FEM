@@ -1,6 +1,6 @@
-﻿using FEM.Common.Data.InputModels;
-using FEM.Common.Data.MathModels;
-using FEM.Common.Enums;
+﻿using FEM.Common.DTO.Enums;
+using FEM.Common.DTO.Models.InputModels;
+using FEM.Common.DTO.Models.MathModels;
 
 namespace FEM.Common.Extensions;
 

@@ -24,15 +24,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\FEM.Common.Core\FEM.Common.Core.csproj" />
 		<ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
-		<ProjectReference Include="..\FEM.NonStationary.Core\FEM.NonStationary.Core.csproj" />
 		<ProjectReference Include="..\FEM.NonStationary.DTO\FEM.NonStationary.DTO.csproj" />
-		<ProjectReference Include="..\FEM.Solvers\FEM.Solvers.csproj" />
-		<ProjectReference Include="..\FEM.Stationary.Core\FEM.Stationary.Core.csproj" />
-		<ProjectReference Include="..\FEM.Storage\FEM.Storage.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Services\SolverService\" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-﻿using FEM.Common.Enums;
+﻿using FEM.Common.DTO.Enums;
 
 namespace FEM.Stationary.DTO.InputModels;
 

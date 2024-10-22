@@ -1,5 +1,5 @@
-﻿using FEM.Common.Data.MathModels;
-using FEM.Common.Data.MatrixFormats;
+﻿using FEM.Common.DTO.Models.MathModels;
+using FEM.Common.DTO.Models.MatrixFormats;
 
 namespace FEM.Solvers.Solvers;
 

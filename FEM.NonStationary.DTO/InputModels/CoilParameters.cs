@@ -1,4 +1,4 @@
-﻿using FEM.Common.Data.MathModels;
+﻿using FEM.Common.DTO.Models.MathModels;
 
 namespace FEM.NonStationary.DTO.InputModels;
 

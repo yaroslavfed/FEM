@@ -1,11 +1,13 @@
-﻿using FEM.Common.Data.MathModels;
-using FEM.Common.Data.MatrixFormats;
+﻿using FEM.Common.DTO.Models.MathModels;
+using FEM.Common.DTO.Models.MatrixFormats;
+
+// ReSharper disable InconsistentNaming
 
 namespace FEM.Solvers.Solvers
 {
     public class LosLUSolver : ISolver
     {
-        private readonly int _maxItCount;
+        private readonly int    _maxItCount;
         private readonly double _eps;
 
         public LosLUSolver(int maxItCount, double eps)
@@ -13,15 +15,19 @@ namespace FEM.Solvers.Solvers
             _maxItCount = maxItCount;
             _eps = eps;
         }
-        
+
         public (Vector solve, double discrepancy, int iterCount) Solve(MatrixProfileFormat slae)
         {
             var (d, l, u) = ILUsqModi(slae);
             return LOSLU(slae, d, l, u);
         }
 
-        private (Vector solve, double discrepancy, int iterCount) LOSLU(MatrixProfileFormat slae, Vector d, Vector l,
-            Vector u)
+        private (Vector solve, double discrepancy, int iterCount) LOSLU(
+            MatrixProfileFormat slae,
+            Vector d,
+            Vector l,
+            Vector u
+        )
         {
             var size = slae.Size;
             var solve = new Vector(size);
