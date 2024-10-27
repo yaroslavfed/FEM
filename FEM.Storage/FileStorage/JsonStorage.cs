@@ -1,7 +1,7 @@
 ﻿using System.Collections.Frozen;
-using FEM.Common.DTO.Abstractions;
-using FEM.Common.DTO.Domain;
-using FEM.Common.DTO.Models.InputModels;
+using FEM.SharedDTO.Abstractions;
+using FEM.SharedDTO.Domain;
+using FEM.SharedDTO.Models.InputModels;
 using FEM.Storage.Parsers;
 
 namespace FEM.Storage.FileStorage;
@@ -25,7 +25,7 @@ public class JsonStorage : IJsonStorage
 
     public async Task<Axis> GetAxisAsync() => await ReadConfigurationFromFileAsync();
 
-    public async Task SaveResultToFileAsync(TestResultBase result, string fileName)
+    public async Task SaveResultToFileAsync<TData>(TData result, string fileName) where TData : TestResultBase
     {
         await _parser.ParseEntityToFileAsync(result, fileName);
     }

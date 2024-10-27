@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using FEM.Common.DTO.Enums;
-using FEM.Common.DTO.Models.MeshModels;
-using FEM.Common.Extensions;
+using FEM.Core.Extensions;
+using FEM.SharedDTO.Enums;
+using FEM.SharedDTO.Models.MeshModels;
 
 namespace FEM.Server.Profiles;
 

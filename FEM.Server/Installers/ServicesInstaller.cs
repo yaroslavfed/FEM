@@ -1,25 +1,21 @@
-﻿using FEM.Common.Core.Services.BaseMatrixServices.MassMatrix;
-using FEM.Common.Core.Services.BaseMatrixServices.StiffnessMatrix;
-using FEM.Common.Core.Services.BoundaryConditionService;
-using FEM.Common.Core.Services.GlobalMatrixService;
-using FEM.Common.Core.Services.InaccuracyService;
-using FEM.Common.Core.Services.MatrixPortraitService;
-using FEM.Common.Core.Services.ProblemService;
-using FEM.Common.Core.Services.RightPartVectorService;
-using FEM.Common.Core.Services.SolverService;
-using FEM.Common.Core.Services.TestResultService;
-using FEM.Common.Core.Services.TestSessionService;
-using FEM.Common.Data.MathModels;
-using FEM.Common.DTO.Models.MathModels;
-using FEM.Common.Resolvers.MatrixFormatResolver;
-using FEM.Common.Services.MeshService;
-using FEM.Common.Services.NumberingService.EdgesNumberingService;
-using FEM.Common.Services.NumberingService.NodesNumberingService;
-using FEM.Common.Services.SaverService;
-using FEM.Common.Services.VisualizerService;
-using FEM.Server.Services.ProblemService;
-using FEM.Stationary.Core.Services.TestSessionService;
+﻿using FEM.Core.Services.BaseMatrixServices.MassMatrix;
+using FEM.Core.Services.BaseMatrixServices.StiffnessMatrix;
+using FEM.Core.Services.BoundaryConditionService;
+using FEM.Core.Services.InaccuracyService;
+using FEM.Core.Services.MatrixPortraitService;
+using FEM.Core.Services.MeshService;
+using FEM.Core.Services.NumberingService.EdgesNumberingService;
+using FEM.Core.Services.NumberingService.NodesNumberingService;
+using FEM.Core.Services.ProblemService;
+using FEM.Core.Services.SolverService;
+using FEM.SharedDTO.Models.MathModels;
 using FEM.Storage.Converter;
+using Stationary.Core.Services.GlobalMatrixService;
+using Stationary.Core.Services.RightPartVectorService;
+using Stationary.Core.Services.SaverService;
+using Stationary.Core.Services.TestResultService;
+using Stationary.Core.Services.TestSessionService;
+using Stationary.Core.Services.VisualizerService;
 
 namespace FEM.Server.Installers;
 
@@ -27,30 +23,22 @@ public static class ServicesInstaller
 {
     public static void AddServices(this IServiceCollection builder)
     {
-        builder.AddScoped<IGlobalMatrixServices, GlobalMatrixService>();
-        builder.AddScoped<IRightPartVectorService, RightPartVectorService>();
         builder.AddScoped<ISolverService, SolverService>();
-
         builder.AddScoped<IStiffnessMatrix<Matrix>, StiffnessMatrix>();
         builder.AddScoped<IMassMatrix<Matrix>, MassMatrix>();
-
         builder.AddScoped<IMeshService, MeshService>();
         builder.AddScoped<IMatrixPortraitService, MatrixPortraitService>();
-
         builder.AddScoped<INodesNumberingService, NodesNumberingService>();
         builder.AddScoped<IEdgesNumberingService, EdgesNumberingService>();
-
-        builder.AddScoped<IProblemService, ProblemService>();
-        builder.AddScoped<ITestSessionService, TestSessionService>();
-
         builder.AddScoped<IBoundaryConditionFactory, BoundaryConditionFactory>();
-
-        builder.AddScoped<IVisualizerService, VisualizerService>();
+        builder.AddScoped<IStationaryVisualizerService, StationaryVisualizerService>();
         builder.AddScoped<IConverterService, ConverterService>();
-
-        builder.AddScoped<ITestResultService, TestResultService>();
-        builder.AddScoped<ISaverService, SaverService>();
-
+        builder.AddScoped<IStationarySaverService, StationarySaverService>();
         builder.AddScoped<IInaccuracyService, InaccuracyService>();
+        builder.AddScoped<IStationaryTestSessionService, StationaryTestSessionService>();
+        builder.AddScoped<IStationaryGlobalMatrixServices, StationaryGlobalMatrixService>();
+        builder.AddScoped<IStationaryRightPartVectorService, StationaryRightPartVectorService>();
+        builder.AddScoped<IProblemService, ProblemService>();
+        builder.AddScoped<IStationaryTestResultService, StationaryTestResultService>();
     }
 }

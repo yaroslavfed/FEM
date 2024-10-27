@@ -1,4 +1,4 @@
-﻿using FEM.Common.DTO.Abstractions;
+﻿using FEM.SharedDTO.Abstractions;
 
 namespace FEM.Server.Data.InputModels;
 

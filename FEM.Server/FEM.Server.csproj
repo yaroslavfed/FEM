@@ -22,15 +22,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\FEM.Common.Core\FEM.Common.Core.csproj" />
-		<ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
-		<ProjectReference Include="..\FEM.NonStationary.DTO\FEM.NonStationary.DTO.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Update="Scripts\draw_mesh_script.py">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\FEM.Core\FEM.Core.csproj" />
+	  <ProjectReference Include="..\NonStationary.Core\NonStationary.Core.csproj" />
+	  <ProjectReference Include="..\Stationary.Core\Stationary.Core.csproj" />
 	</ItemGroup>
 
 </Project>

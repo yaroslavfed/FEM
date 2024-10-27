@@ -1,5 +1,5 @@
-﻿using FEM.Common.DTO.Abstractions;
-using FEM.Server.Data.InputModels;
+﻿using FEM.Server.Data.InputModels;
+using FEM.SharedDTO.Abstractions;
 
 namespace FEM.Server.Extensions;
 

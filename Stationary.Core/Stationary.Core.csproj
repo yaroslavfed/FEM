@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FEM.Core\FEM.Core.csproj" />
+      <ProjectReference Include="..\FEM.SharedDTO\FEM.SharedDTO.csproj" />
+      <ProjectReference Include="..\Stationary.DTO\Stationary.DTO.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Installers\" />
+    </ItemGroup>
+
+</Project>

@@ -1,17 +1,17 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using FEM.Common.Core.Services.BoundaryConditionService;
-using FEM.Common.Core.Services.GlobalMatrixService;
-using FEM.Common.Core.Services.InaccuracyService;
-using FEM.Common.Core.Services.MatrixPortraitService;
-using FEM.Common.Core.Services.RightPartVectorService;
-using FEM.Common.Core.Services.SolverService;
-using FEM.Common.Core.Services.TestResultService;
-using FEM.Common.Core.Services.TestSessionService;
-using FEM.Common.Services.VisualizerService;
-using FEM.Server.Data.OutputModels;
-using FEM.Stationary.DTO.Configurations;
-using FEM.Stationary.DTO.TestingContext;
+using FEM.Core.Services.BoundaryConditionService;
+using FEM.Core.Services.InaccuracyService;
+using FEM.Core.Services.MatrixPortraitService;
+using FEM.Core.Services.SolverService;
 using Microsoft.AspNetCore.Mvc;
+using Stationary.Core.Services.GlobalMatrixService;
+using Stationary.Core.Services.RightPartVectorService;
+using Stationary.Core.Services.TestResultService;
+using Stationary.Core.Services.TestSessionService;
+using Stationary.Core.Services.VisualizerService;
+using Stationary.DTO.Configurations;
+using Stationary.DTO.OutputModels;
+using Stationary.DTO.TestingContext;
 
 namespace FEM.Server.Controllers;
 
@@ -22,28 +22,28 @@ namespace FEM.Server.Controllers;
 [Route("api/fem/stationary")]
 public class StationaryFemController : ControllerBase
 {
-    private readonly ILogger                   _logger;
-    private readonly IGlobalMatrixServices     _globalMatrixServices;
-    private readonly ITestSessionService       _testSessionService;
-    private readonly IMatrixPortraitService    _portraitService;
-    private readonly IRightPartVectorService   _rightPartVectorService;
-    private readonly IVisualizerService        _visualizerService;
-    private readonly IBoundaryConditionFactory _boundaryCondition;
-    private readonly ISolverService            _solverService;
-    private readonly ITestResultService        _testResultService;
-    private readonly IInaccuracyService        _inaccuracyService;
+    private readonly ILogger                           _logger;
+    private readonly IStationaryGlobalMatrixServices   _globalMatrixServices;
+    private readonly IStationaryTestSessionService     _testSessionService;
+    private readonly IMatrixPortraitService            _portraitService;
+    private readonly IStationaryRightPartVectorService _rightPartVectorService;
+    private readonly IStationaryVisualizerService      _visualizerService;
+    private readonly IBoundaryConditionFactory         _boundaryCondition;
+    private readonly ISolverService                    _solverService;
+    private readonly IStationaryTestResultService      _testResultService;
+    private readonly IInaccuracyService                _inaccuracyService;
 
     /// <inheritdoc />
     public StationaryFemController(
         ILogger<StationaryFemController> logger,
-        IGlobalMatrixServices globalMatrixServices,
-        ITestSessionService testSessionService,
+        IStationaryGlobalMatrixServices globalMatrixServices,
+        IStationaryTestSessionService testSessionService,
         IMatrixPortraitService portraitService,
-        IRightPartVectorService rightPartVectorService,
-        IVisualizerService visualizerService,
+        IStationaryRightPartVectorService rightPartVectorService,
+        IStationaryVisualizerService visualizerService,
         IBoundaryConditionFactory boundaryCondition,
         ISolverService solverService,
-        ITestResultService testResultService,
+        IStationaryTestResultService testResultService,
         IInaccuracyService inaccuracyService
     )
     {
@@ -62,44 +62,13 @@ public class StationaryFemController : ControllerBase
     /// <summary>
     /// Решает стационарное уравнение с помощью векторного МКЭ
     /// </summary>
-    /// <param name="testConfiguration"><see cref="StationaryTestSession">Входные параметры расчётной сессии</see></param>
-    /// /// <remarks>
-    /// Sample request:
-    /// 
-    ///     POST
-    ///     {
-    ///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    ///        "meshParameters": {
-    ///            "xCenterCoordinate": 0.5,
-    ///            "yCenterCoordinate": 0.5,
-    ///            "zCenterCoordinate": 0.5,
-    ///            "xStepToBounds": 0.5,
-    ///            "yStepToBounds": 0.5,
-    ///            "zStepToBounds": 0.5
-    ///        },
-    ///        "splittingParameters": {
-    ///            "xSplittingCoefficient": 4,
-    ///            "ySplittingCoefficient": 4,
-    ///            "zSplittingCoefficient": 4,
-    ///            "xMultiplyCoefficient": 1,
-    ///            "yMultiplyCoefficient": 1,
-    ///            "zMultiplyCoefficient": 1
-    ///        },
-    ///        "additionParameters": {
-    ///            "muCoefficient": 1,
-    ///            "gammaCoefficient": 1,
-    ///            "boundaryCondition": 0
-    ///        }
-    ///     }
-    /// 
-    /// </remarks>
+    /// <param name="testConfiguration"><see cref="StationaryTestConfiguration">Входные параметры расчётной сессии</see></param>
     /// <response code="200">Возвращает id результата, невязку и количество итераций</response>
     /// <response code="500">На сервере что-то пошло не так</response>
-    /// <returns>Решение уравнения</returns>
-    [HttpPost(Name = "vector-fem-solver")]
-    [ProducesResponseType(typeof(FemResponse), StatusCodes.Status200OK)]
+    /// <returns>Решение стационарного уравнения</returns>
+    [HttpPost]
+    [ProducesResponseType(typeof(StationaryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [SuppressMessage("ReSharper.DPA", "DPA0011: High execution time of MVC action")]
     public async Task<IActionResult> CreateCalculation([FromBody] StationaryTestConfiguration testConfiguration)
     {
         Console.WriteLine($"[{nameof(StationaryFemController)}] [Info] Started session");
@@ -182,7 +151,7 @@ public class StationaryFemController : ControllerBase
             var resultId = await _testResultService.AddTestResultAsync(solutionParameters);
 
             // Генерируем ответное сообщение
-            var femResponse = new FemResponse
+            var femResponse = new StationaryResponse
             {
                 Id = resultId,
                 Discrepancy = solutionParameters.SolutionInfo!.Discrepancy,
@@ -206,16 +175,10 @@ public class StationaryFemController : ControllerBase
     /// Получает результат сессии из хранилища
     /// </summary>
     /// <param name="id">Идентификатор проведенной расчётной сессии</param>
-    /// /// <remarks>
-    /// Sample request:
-    ///
-    ///     Get
-    ///     3fa85f64-5717-4562-b3fc-2c963f66afa6
-    /// </remarks>
     /// <response code="200">Полную информацию о проведенной сессии</response>
     /// <response code="500">На сервере что-то пошло не так</response>
     /// <returns>Полная модель решения уравнения</returns>
-    [HttpGet("{id:guid}", Name = "additional-info")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetTestResult(Guid id)

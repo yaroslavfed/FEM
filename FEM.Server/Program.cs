@@ -21,6 +21,7 @@ services
         }
     );
 
+// TODO: Исправить на нормальную документацию
 services.AddOpenApiDocument(
     options =>
     {
@@ -32,8 +33,8 @@ services.AddOpenApiDocument(
                 Title = "FEM API",
                 Description = "Vector FEM solver",
                 TermsOfService = "https://example.com/terms",
-                Contact = new OpenApiContact { Name = "Example Contact", Url = "https://example.com/contact" },
-                License = new OpenApiLicense { Name = "Example License", Url = "https://example.com/license" }
+                Contact = new() { Name = "Example Contact", Url = "https://example.com/contact" },
+                License = new() { Name = "Example License", Url = "https://example.com/license" }
             };
         };
     }

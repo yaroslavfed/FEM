@@ -29,7 +29,8 @@ public class JsonParser : IParser
     }
 
     /// <inheritdoc cref="IParser.SerializeAsync{TEntity}"/>
-    public Task<string> SerializeAsync<TEntity>(TEntity @object) => Task.FromResult(JsonSerializer.Serialize(@object));
+    public Task<string> SerializeAsync<TEntity>(TEntity @object) =>
+        Task.FromResult(JsonSerializer.Serialize(@object));
 
     public async Task ParseEntityToFileAsync<TEntity>(TEntity context, string fileName)
     {
