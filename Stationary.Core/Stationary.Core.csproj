@@ -7,8 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FEM.Core\FEM.Core.csproj" />
-      <ProjectReference Include="..\FEM.SharedDTO\FEM.SharedDTO.csproj" />
+      <ProjectReference Include="..\FEM.SharedCore\FEM.SharedCore.csproj" />
       <ProjectReference Include="..\Stationary.DTO\Stationary.DTO.csproj" />
     </ItemGroup>
 

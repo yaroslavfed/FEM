@@ -18,7 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\FEM.SharedDTO\FEM.SharedDTO.csproj" />
         <ProjectReference Include="..\FEM.Database\FEM.Database.csproj" />
     </ItemGroup>
 

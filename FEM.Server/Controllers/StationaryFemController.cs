@@ -1,17 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FEM.Core.Services.BoundaryConditionService;
-using FEM.Core.Services.InaccuracyService;
-using FEM.Core.Services.MatrixPortraitService;
-using FEM.Core.Services.SolverService;
+﻿using FEM.SharedCore.Services.BoundaryConditionService;
+using FEM.SharedCore.Services.InaccuracyService;
+using FEM.SharedCore.Services.MatrixPortraitService;
+using FEM.SharedCore.Services.SolverService;
 using Microsoft.AspNetCore.Mvc;
 using Stationary.Core.Services.GlobalMatrixService;
 using Stationary.Core.Services.RightPartVectorService;
 using Stationary.Core.Services.TestResultService;
-using Stationary.Core.Services.TestSessionService;
 using Stationary.Core.Services.VisualizerService;
 using Stationary.DTO.Configurations;
 using Stationary.DTO.OutputModels;
-using Stationary.DTO.TestingContext;
+using IStationaryTestSessionService
+    = FEM.SharedCore.Services.TestSessionService.ITestSessionService<Stationary.DTO.TestingContext.StationaryTestSession
+        , Stationary.DTO.Configurations.StationaryTestConfiguration>;
 
 namespace FEM.Server.Controllers;
 

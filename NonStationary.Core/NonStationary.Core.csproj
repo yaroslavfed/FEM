@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FEM.SharedCore\FEM.SharedCore.csproj" />
       <ProjectReference Include="..\NonStationary.DTO\NonStationary.DTO.csproj" />
     </ItemGroup>
 

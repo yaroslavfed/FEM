@@ -1,5 +1,4 @@
-﻿using FEM.SharedDTO.Abstractions;
-using Stationary.DTO.TestingContext;
+﻿using Stationary.DTO.TestingContext;
 
 namespace Stationary.Core.Services.SaverService;
 

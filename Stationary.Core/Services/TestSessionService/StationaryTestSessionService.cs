@@ -1,11 +1,11 @@
-﻿using FEM.Core.Services.MeshService;
-using FEM.SharedDTO.Abstractions;
+﻿using FEM.SharedCore.Services.MeshService;
+using FEM.SharedCore.Services.TestSessionService;
 using Stationary.DTO.Configurations;
 using Stationary.DTO.TestingContext;
 
 namespace Stationary.Core.Services.TestSessionService;
 
-public class StationaryTestSessionService : IStationaryTestSessionService
+public class StationaryTestSessionService : ITestSessionService<StationaryTestSession, StationaryTestConfiguration>
 {
     private readonly IMeshService _meshService;
 
@@ -20,7 +20,7 @@ public class StationaryTestSessionService : IStationaryTestSessionService
     /// </summary>
     /// <param name="testConfiguration"><see cref="StationaryTestConfiguration">Параметры сессии тестирования</see></param>
     /// <returns></returns>
-    public async Task<TestSessionBase> CreateTestSessionAsync(StationaryTestConfiguration testConfiguration)
+    public async Task<StationaryTestSession> CreateTestSessionAsync(StationaryTestConfiguration testConfiguration)
     {
         var testSessionParameters = await _meshService.GenerateTestConfiguration(testConfiguration);
         var mesh = await _meshService.GenerateMeshAsync(testSessionParameters);

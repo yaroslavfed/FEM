@@ -17,7 +17,7 @@ public class StationarySaverService : IStationarySaverService
     public async Task SaveResultAsync(StationaryTestResult result)
     {
         Directory.CreateDirectory("TestResults");
-        var fileName = $"{result.Id}.txt";
+        var fileName = $"{result.Id}.json";
         var path = Path.Combine("TestResults", fileName);
         await _jsonStorage.SaveResultToFileAsync(result, path);
     }

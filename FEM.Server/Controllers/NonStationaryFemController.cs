@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NonStationary.DTO.Configurations;
 using NonStationary.DTO.OutputModels;
+using INonStationaryTestSessionService
+    = FEM.SharedCore.Services.TestSessionService.ITestSessionService<NonStationary.DTO.TestingContext.NonStationaryTestSession
+        , NonStationary.DTO.Configurations.NonStationaryTestConfiguration>;
 
 namespace FEM.Server.Controllers;
 
@@ -11,8 +14,15 @@ namespace FEM.Server.Controllers;
 [Route("api/fem/non-stationary")]
 public class NonStationaryFemController : ControllerBase
 {
-    public NonStationaryFemController()
+    private readonly INonStationaryTestSessionService _testSessionService;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="testSessionService"></param>
+    public NonStationaryFemController(INonStationaryTestSessionService testSessionService)
     {
+        _testSessionService = testSessionService;
     }
 
     /// <summary>
@@ -27,6 +37,14 @@ public class NonStationaryFemController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateCalculation([FromBody] NonStationaryTestConfiguration testConfiguration)
     {
-        return Ok();
+        try
+        {
+            // Создаем сессию тестирования
+            var testSession = await _testSessionService.CreateTestSessionAsync(testConfiguration);
+            return Ok();
+        } catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 }

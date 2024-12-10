@@ -1,5 +1,5 @@
-using FEM.Core.Services.BaseMatrixServices.MassMatrix;
-using FEM.Core.Services.ProblemService;
+using FEM.SharedCore.Services.BaseMatrixServices.MassMatrix;
+using FEM.SharedCore.Services.ProblemService;
 using FEM.SharedDTO.Abstractions;
 using FEM.SharedDTO.Domain;
 using FEM.SharedDTO.Models.MathModels;

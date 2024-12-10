@@ -1,4 +1,5 @@
 ﻿using FEM.SharedDTO.Abstractions;
+using NonStationary.DTO.GridModels;
 using NonStationary.DTO.InputModels;
 
 namespace NonStationary.DTO.TestingContext;
@@ -16,5 +17,5 @@ public record NonStationaryTestSession : TestSessionBase
     /// <summary>
     /// Параметры сетки по времени
     /// </summary>
-    public required TimeGridParameters TimeGridParameters { get; init; }
+    public required TimeGrid TimeGrid { get; init; }
 }

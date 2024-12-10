@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FEM.Core.Extensions;
+using FEM.SharedCore.Extensions;
 using FEM.SharedDTO.Enums;
 using FEM.SharedDTO.Models.MeshModels;
 

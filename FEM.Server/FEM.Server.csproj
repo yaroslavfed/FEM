@@ -28,7 +28,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\FEM.Core\FEM.Core.csproj" />
 	  <ProjectReference Include="..\NonStationary.Core\NonStationary.Core.csproj" />
 	  <ProjectReference Include="..\Stationary.Core\Stationary.Core.csproj" />
 	</ItemGroup>

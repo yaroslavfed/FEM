@@ -1,5 +1,5 @@
-﻿using FEM.Core.Services.BaseMatrixServices.MassMatrix;
-using FEM.Core.Services.BaseMatrixServices.StiffnessMatrix;
+﻿using FEM.SharedCore.Services.BaseMatrixServices.MassMatrix;
+using FEM.SharedCore.Services.BaseMatrixServices.StiffnessMatrix;
 using FEM.SharedDTO.Abstractions;
 using FEM.SharedDTO.Models.MathModels;
 using FEM.SharedDTO.Models.MatrixFormats;

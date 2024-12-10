@@ -13,12 +13,12 @@ public record TimeGridParameters
     /// <summary>
     /// Шаг у сетки по времени
     /// </summary>
-    public double TimeGridSplittingCoefficient { get; init; }
+    public double TimeGridSplittingCoefficient { get; set; }
 
     /// <summary>
     /// Коэффициент разрядки у сетки по времени
     /// </summary>
-    public double TimeGridMultiplyCoefficient { get; init; }
+    public double TimeGridMultiplyCoefficient { get; set; }
 
     /// <summary>
     /// Вложенность сетки по времени

@@ -1,21 +1,28 @@
-﻿using FEM.Core.Services.BaseMatrixServices.MassMatrix;
-using FEM.Core.Services.BaseMatrixServices.StiffnessMatrix;
-using FEM.Core.Services.BoundaryConditionService;
-using FEM.Core.Services.InaccuracyService;
-using FEM.Core.Services.MatrixPortraitService;
-using FEM.Core.Services.MeshService;
-using FEM.Core.Services.NumberingService.EdgesNumberingService;
-using FEM.Core.Services.NumberingService.NodesNumberingService;
-using FEM.Core.Services.ProblemService;
-using FEM.Core.Services.SolverService;
+﻿using FEM.SharedCore.Services.BaseMatrixServices.MassMatrix;
+using FEM.SharedCore.Services.BaseMatrixServices.StiffnessMatrix;
+using FEM.SharedCore.Services.BoundaryConditionService;
+using FEM.SharedCore.Services.InaccuracyService;
+using FEM.SharedCore.Services.MatrixPortraitService;
+using FEM.SharedCore.Services.MeshService;
+using FEM.SharedCore.Services.NumberingService.EdgesNumberingService;
+using FEM.SharedCore.Services.NumberingService.NodesNumberingService;
+using FEM.SharedCore.Services.ProblemService;
+using FEM.SharedCore.Services.SolverService;
+using FEM.SharedCore.Services.TestSessionService;
 using FEM.SharedDTO.Models.MathModels;
 using FEM.Storage.Converter;
+using NonStationary.Core.Services.TestSessionService;
+using NonStationary.Core.Services.TimeService;
+using NonStationary.DTO.Configurations;
+using NonStationary.DTO.TestingContext;
 using Stationary.Core.Services.GlobalMatrixService;
 using Stationary.Core.Services.RightPartVectorService;
 using Stationary.Core.Services.SaverService;
 using Stationary.Core.Services.TestResultService;
 using Stationary.Core.Services.TestSessionService;
 using Stationary.Core.Services.VisualizerService;
+using Stationary.DTO.Configurations;
+using Stationary.DTO.TestingContext;
 
 namespace FEM.Server.Installers;
 
@@ -35,7 +42,13 @@ public static class ServicesInstaller
         builder.AddScoped<IConverterService, ConverterService>();
         builder.AddScoped<IStationarySaverService, StationarySaverService>();
         builder.AddScoped<IInaccuracyService, InaccuracyService>();
-        builder.AddScoped<IStationaryTestSessionService, StationaryTestSessionService>();
+        builder
+            .AddScoped<ITestSessionService<StationaryTestSession, StationaryTestConfiguration>,
+                StationaryTestSessionService>();
+        builder
+            .AddScoped<ITestSessionService<NonStationaryTestSession, NonStationaryTestConfiguration>,
+                NonStationaryTestSessionService>();
+        builder.AddScoped<ITimeService, TimeService>();
         builder.AddScoped<IStationaryGlobalMatrixServices, StationaryGlobalMatrixService>();
         builder.AddScoped<IStationaryRightPartVectorService, StationaryRightPartVectorService>();
         builder.AddScoped<IProblemService, ProblemService>();
