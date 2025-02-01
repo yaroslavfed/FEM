@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>41cd6c9e-8222-4a89-a254-3f2b5bbe764b</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LangVersion>13</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -28,8 +29,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\NonStationary.Core\NonStationary.Core.csproj" />
 	  <ProjectReference Include="..\Stationary.Core\Stationary.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="TestResults\63dccfe9-ee02-49d4-b4dd-6fa366b28780.json" />
+	  <_ContentIncludedByDefault Remove="TestResults\dd3e6011-632b-4e8c-89d2-d6dfecb2b4f5.json" />
 	</ItemGroup>
 
 </Project>

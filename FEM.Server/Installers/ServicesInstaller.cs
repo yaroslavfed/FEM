@@ -11,10 +11,6 @@ using FEM.SharedCore.Services.SolverService;
 using FEM.SharedCore.Services.TestSessionService;
 using FEM.SharedDTO.Models.MathModels;
 using FEM.Storage.Converter;
-using NonStationary.Core.Services.TestSessionService;
-using NonStationary.Core.Services.TimeService;
-using NonStationary.DTO.Configurations;
-using NonStationary.DTO.TestingContext;
 using Stationary.Core.Services.GlobalMatrixService;
 using Stationary.Core.Services.RightPartVectorService;
 using Stationary.Core.Services.SaverService;
@@ -45,10 +41,6 @@ public static class ServicesInstaller
         builder
             .AddScoped<ITestSessionService<StationaryTestSession, StationaryTestConfiguration>,
                 StationaryTestSessionService>();
-        builder
-            .AddScoped<ITestSessionService<NonStationaryTestSession, NonStationaryTestConfiguration>,
-                NonStationaryTestSessionService>();
-        builder.AddScoped<ITimeService, TimeService>();
         builder.AddScoped<IStationaryGlobalMatrixServices, StationaryGlobalMatrixService>();
         builder.AddScoped<IStationaryRightPartVectorService, StationaryRightPartVectorService>();
         builder.AddScoped<IProblemService, ProblemService>();
