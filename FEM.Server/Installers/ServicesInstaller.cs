@@ -11,6 +11,7 @@ using FEM.Server.Services.Parallelepipedal.NumberingService.EdgesNumberingServic
 using FEM.Server.Services.Parallelepipedal.NumberingService.NodesNumberingService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
 using FEM.Server.Services.Parallelepipedal.VisualizerService;
+using FEM.Server.Services.PlotService;
 using FEM.Server.Services.ProblemService;
 using FEM.Server.Services.SaverService;
 using FEM.Server.Services.SolverService;
@@ -44,6 +45,7 @@ public static class ServicesInstaller
         builder.AddScoped<IMatrixFormatResolver, MatrixFormatResolver>();
         builder.AddScoped<IBoundaryConditionFactory, BoundaryConditionFactory>();
 
+        builder.AddScoped<IPlotService, PlotService>();
         builder.AddScoped<IVisualizerService, VisualizerService>();
         builder.AddScoped<IConverterService, ConverterService>();
 

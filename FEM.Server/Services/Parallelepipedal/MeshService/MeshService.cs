@@ -1,5 +1,4 @@
 ﻿using FEM.Common.Data.Domain;
-using FEM.Common.Data.InputModels;
 using FEM.Common.Data.MathModels;
 using FEM.Common.Enums;
 using FEM.Common.Extensions;
@@ -14,6 +13,8 @@ namespace FEM.Server.Services.Parallelepipedal.MeshService;
 /// <inheritdoc cref="IMeshService"/>
 public class MeshService : IMeshService
 {
+    private readonly Random _random = new();
+
     private readonly IJsonStorage           _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
@@ -132,7 +133,8 @@ public class MeshService : IMeshService
                                                ]
                                            }
                                        )
-                                       .ToList()
+                                       .ToList(),
+                               Density = _random.Next(2, 5)
                            }
                        )
                        .ToList()

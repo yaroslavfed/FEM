@@ -2,22 +2,26 @@
 using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Services.Parallelepipedal.MeshService;
+using FEM.Server.Services.PlotService;
 
 namespace FEM.Server.Services.TestSessionService;
 
 public class TestSessionService : ITestSessionService
 {
     private readonly IMeshService _meshService;
+    private readonly IPlotService _plotService;
 
-    public TestSessionService(IMeshService meshService)
+    public TestSessionService(IMeshService meshService, IPlotService plotService)
     {
         _meshService = meshService;
+        _plotService = plotService;
     }
 
     public async Task<TestSession<Mesh>> CreateTestSessionAsync()
     {
         var testConfiguration = await _meshService.GenerateTestConfiguration();
         var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
+
 
         return await Task.FromResult(
             new TestSession<Mesh>
@@ -34,6 +38,7 @@ public class TestSessionService : ITestSessionService
     {
         var testConfiguration = await _meshService.GenerateTestConfiguration(testSession);
         var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
+        await _plotService.ShowPlotAsync(mesh);
 
         return await Task.FromResult(
             new TestSession<Mesh>

@@ -11,4 +11,9 @@ public record FiniteElement
     /// Список ребер принадлежащих КЭ
     /// </summary>
     public IList<Edge> Edges { get; init; } = new List<Edge>();
+
+    /// <summary>
+    /// Плотность среды
+    /// </summary>
+    public double Density { get; set; }
 }
