@@ -193,7 +193,7 @@ def plot_finite_element_mesh(
                         closed=True,
                         facecolor=color,
                         edgecolor='k',
-                        alpha=0.5
+                        alpha=1
                     )
                     ax.add_patch(poly)
                 except:
@@ -221,7 +221,7 @@ def plot_finite_element_mesh(
         """Отрисовка сечения на указанной оси"""
         ax.cla()
         ax.set_title(f"Сечение по {axis}={position:.2f}")
-        ax.grid(True, linestyle='--', alpha=0.3)
+        ax.grid(True, linestyle='dotted', alpha=0.5)
 
         for element in elements:
             color = cmap(norm(element.Density))
@@ -254,7 +254,7 @@ def plot_finite_element_mesh(
                         closed=True,
                         facecolor=color,
                         edgecolor='k',
-                        alpha=0.7
+                        alpha=1
                     )
                     ax.add_patch(poly)
                 except:
@@ -324,9 +324,9 @@ if __name__ == "__main__":
         elements = load_from_json("mesh_data.json")
         plot_finite_element_mesh(
             elements=elements,
-            x_slice=1,
+            x_slice=0.6,
             y_slice=1,
-            z_slice=1
+            z_slice=0.5
         )
     except Exception as e:
         print(f"\nОшибка: {str(e)}")

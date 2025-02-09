@@ -36,21 +36,24 @@ public static class MathExtensions
     }
 
     public static List<double> SplitAxis(
-        this List<double> axis,
         double multiplyCoefficient,
         int splittingCoefficient,
         double strataLastPoint,
         double strataFirstPoint
     )
     {
+        if (multiplyCoefficient == 0)
+            return [strataFirstPoint, strataLastPoint];
+
         // Обработка по X
-        var h = multiplyCoefficient is not 1.0
+        var h = Math.Abs(multiplyCoefficient - 1.0) > 0E-16
             ? (strataLastPoint - strataFirstPoint)
               * (1.0 - multiplyCoefficient)
               / (1.0 - Math.Pow(multiplyCoefficient, splittingCoefficient))
             : (strataLastPoint - strataFirstPoint) / splittingCoefficient;
 
-        axis.Add(strataFirstPoint);
+        List<double> axis = [strataFirstPoint];
+
         for (var i = 0; i < splittingCoefficient; i++)
         {
             axis.Add(axis.Last() + h);

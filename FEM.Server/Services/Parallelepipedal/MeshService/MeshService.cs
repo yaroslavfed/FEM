@@ -86,12 +86,11 @@ public class MeshService : IMeshService
 
     public async Task<Mesh> GenerateMeshAsync(Axis meshModel)
     {
-        // var pointsList = await ConfigurePointsListAsync(meshModel);
-        var pointsListTest = await ConfigureAnomalyPointsListAsync(meshModel);
+        var pointsList = await ConfigureAnomalyPointsListAsync(meshModel);
 
-        var nx = pointsListTest.Select(points => points.X).Distinct().ToArray().Length;
-        var ny = pointsListTest.Select(points => points.Y).Distinct().ToArray().Length;
-        var nz = pointsListTest.Select(points => points.Z).Distinct().ToArray().Length;
+        var nx = pointsList.Select(points => points.X).Distinct().ToArray().Length;
+        var ny = pointsList.Select(points => points.Y).Distinct().ToArray().Length;
+        var nz = pointsList.Select(points => points.Z).Distinct().ToArray().Length;
 
         var finiteElements = Enumerable
                              .Range(0, (nx - 1) * (ny - 1) * (nz - 1))
@@ -120,9 +119,9 @@ public class MeshService : IMeshService
                                                        NodeIndex = associationPoints.First,
                                                        Coordinate = new()
                                                        {
-                                                           X = pointsListTest[associationPoints.First].X,
-                                                           Y = pointsListTest[associationPoints.First].Y,
-                                                           Z = pointsListTest[associationPoints.First].Z
+                                                           X = pointsList[associationPoints.First].X,
+                                                           Y = pointsList[associationPoints.First].Y,
+                                                           Z = pointsList[associationPoints.First].Z
                                                        }
                                                    },
                                                    new()
@@ -130,9 +129,9 @@ public class MeshService : IMeshService
                                                        NodeIndex = associationPoints.Second,
                                                        Coordinate = new()
                                                        {
-                                                           X = pointsListTest[associationPoints.Second].X,
-                                                           Y = pointsListTest[associationPoints.Second].Y,
-                                                           Z = pointsListTest[associationPoints.Second].Z
+                                                           X = pointsList[associationPoints.Second].X,
+                                                           Y = pointsList[associationPoints.Second].Y,
+                                                           Z = pointsList[associationPoints.Second].Z
                                                        }
                                                    }
                                                ]
@@ -197,12 +196,17 @@ public class MeshService : IMeshService
     /// </summary>
     /// <param name="meshParameters">Входные параметры модели сетки</param>
     /// <returns>Список точек принадлежащих расчётной области</returns>
-    private Task<List<Point3D>> ConfigureAnomalyPointsListAsync(Axis meshParameters)
+    private async Task<List<Point3D>> ConfigureAnomalyPointsListAsync(Axis meshParameters)
     {
-        var mainAreaPoints = meshParameters.Positioning.GetPoints();
-        var mainAreaX = mainAreaPoints["x"].ToList();
-        var mainAreaY = mainAreaPoints["y"].ToList();
-        var mainAreaZ = mainAreaPoints["z"].ToList();
+        var mainAreaPoints = await ConfigurePointsListAsync(meshParameters);
+        var mainAreaX = mainAreaPoints.Select(point3D => point3D.X).ToArray();
+        var mainAreaY = mainAreaPoints.Select(point3D => point3D.Y).ToArray();
+        var mainAreaZ = mainAreaPoints.Select(point3D => point3D.Z).ToArray();
+
+        // var mainAreaPoints = meshParameters.Positioning.GetPoints();
+        // var mainAreaX = mainAreaPoints["x"].ToList();
+        // var mainAreaY = mainAreaPoints["y"].ToList();
+        // var mainAreaZ = mainAreaPoints["z"].ToList();
 
         var minX = mainAreaX.Min();
         var maxX = mainAreaX.Max();
@@ -240,7 +244,7 @@ public class MeshService : IMeshService
                           from itemX in filteredAnomaliesX
                           select new Point3D { X = itemX, Y = itemY, Z = itemZ }).ToList();
 
-        return Task.FromResult(strataMesh);
+        return strataMesh;
     }
 
     /// <summary>
@@ -250,21 +254,21 @@ public class MeshService : IMeshService
     /// <returns>Список точек принадлежащих расчётной области</returns>
     private static Task<List<Point3D>> ConfigurePointsListAsync(Axis meshParameters)
     {
-        var x = new List<double>().SplitAxis(
+        var x = MathExtensions.SplitAxis(
             meshParameters.Splitting.MultiplyCoefficient.X,
             (int)meshParameters.Splitting.SplittingCoefficient.X,
             meshParameters.Positioning.GetHighPoint3D().X,
             meshParameters.Positioning.GetLowPoint3D().X
         );
 
-        var y = new List<double>().SplitAxis(
+        var y = MathExtensions.SplitAxis(
             meshParameters.Splitting.MultiplyCoefficient.Y,
             (int)meshParameters.Splitting.SplittingCoefficient.Y,
             meshParameters.Positioning.GetHighPoint3D().Y,
             meshParameters.Positioning.GetLowPoint3D().Y
         );
 
-        var z = new List<double>().SplitAxis(
+        var z = MathExtensions.SplitAxis(
             meshParameters.Splitting.MultiplyCoefficient.Z,
             (int)meshParameters.Splitting.SplittingCoefficient.Z,
             meshParameters.Positioning.GetHighPoint3D().Z,
