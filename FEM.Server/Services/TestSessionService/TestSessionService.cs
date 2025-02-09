@@ -6,6 +6,7 @@ using FEM.Server.Services.PlotService;
 
 namespace FEM.Server.Services.TestSessionService;
 
+/// <inheritdoc />
 public class TestSessionService : ITestSessionService
 {
     private readonly IMeshService _meshService;
@@ -17,11 +18,11 @@ public class TestSessionService : ITestSessionService
         _plotService = plotService;
     }
 
+    /// <inheritdoc />
     public async Task<TestSession<Mesh>> CreateTestSessionAsync()
     {
         var testConfiguration = await _meshService.GenerateTestConfiguration();
         var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
-
 
         return await Task.FromResult(
             new TestSession<Mesh>
@@ -34,10 +35,13 @@ public class TestSessionService : ITestSessionService
         );
     }
 
+    /// <inheritdoc />
     public async Task<TestSession<Mesh>> CreateTestSessionAsync(TestSession testSession)
     {
         var testConfiguration = await _meshService.GenerateTestConfiguration(testSession);
         var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
+
+        await _meshService.AssignDensitiesAsync(mesh, testConfiguration);
         await _plotService.ShowPlotAsync(mesh);
 
         return await Task.FromResult(

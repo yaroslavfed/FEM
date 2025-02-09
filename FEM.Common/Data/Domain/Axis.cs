@@ -21,4 +21,11 @@ public record Axis
     /// Дробление сетки
     /// </summary>
     public required Splitting Splitting { get; init; }
+    
+    /// <summary>
+    /// Список физических объектов
+    /// </summary>
+    public required IReadOnlyList<Strata> StrataList { get; set; }
+    
+    public double DensityBase { get; set; }
 }

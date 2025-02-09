@@ -28,4 +28,11 @@ public interface IMeshService
     /// <param name="testSession">Параметры проводимой расчётной сессии</param>
     /// <returns>Параметры проводимого теста</returns>
     Task<Axis> GenerateTestConfiguration(TestSession testSession);
+
+    /// <summary>
+    /// Добавление физического параметра в КЭ
+    /// </summary>
+    /// <param name="mesh">Сетка расчётной области</param>
+    /// <param name="meshModel">Параметры расчётной обрасти</param>
+    public Task AssignDensitiesAsync(Mesh mesh, Axis meshModel);
 }

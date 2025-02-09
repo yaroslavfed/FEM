@@ -1,6 +1,8 @@
-﻿namespace FEM.Server.Data.Domain;
+﻿using FEM.Common.Data.Domain;
 
-public class TestSession
+namespace FEM.Server.Data.Domain;
+
+public record TestSession
 {
     public required Guid Id { get; set; }
 
@@ -9,4 +11,8 @@ public class TestSession
     public required SplittingParameters SplittingParameters { get; set; }
 
     public required AdditionParameters AdditionParameters { get; set; }
+
+    public required IReadOnlyList<Strata> StrataList { get; set; }
+
+    public double DensityBase { get; set; } = 0;
 }

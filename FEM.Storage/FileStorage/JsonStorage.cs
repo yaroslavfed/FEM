@@ -24,7 +24,7 @@ public class JsonStorage : IJsonStorage
 
 
     public async Task<Axis> GetAxisAsync() => await ReadConfigurationFromFileAsync();
-    
+
     public async Task SaveResultToFileAsync(TestResult result, string fileName)
     {
         await _parser.ParseEntityToFileAsync(result, fileName);
@@ -37,6 +37,13 @@ public class JsonStorage : IJsonStorage
         var additionalParameters
             = await _parser.ParseEntityFromFileAsync<AdditionalParameters>(_directories["additionalParameters"]);
 
-        return new() { Positioning = positioning, Splitting = splitting, AdditionalParameters = additionalParameters };
+        return new()
+        {
+            Positioning = positioning,
+            Splitting = splitting,
+            AdditionalParameters = additionalParameters,
+            StrataList = Array.Empty<Strata>(),
+            DensityBase = 0
+        };
     }
 }
