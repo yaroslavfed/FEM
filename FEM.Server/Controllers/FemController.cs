@@ -126,39 +126,39 @@ public class FemController : ControllerBase
                     .DistinctBy(edge => edge.EdgeIndex)
                     .Count()
             );
-
+            
             _logger.LogInformation($"[{nameof(FemController)}] calculate global matrix");
             await _globalMatrixServices.GetGlobalMatrixAsync(matrixProfile, testSession);
-
+            
             _logger.LogInformation($"[{nameof(FemController)}] calculate right part vector");
             await _rightPartVectorService.GetRightPartVectorAsync(matrixProfile, testSession);
-
+            
             _logger.LogInformation($"[{nameof(FemController)}] resolve boundary conditions");
             var boundaryConditionService
                 = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
-
+            
             _logger.LogInformation($"[{nameof(FemController)}] set boundary conditions");
             await boundaryConditionService.SetBoundaryConditionsAsync(testSession, matrixProfile);
-
+            
             _logger.LogInformation($"[{nameof(FemController)}] save matrix profile to files");
             await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
             Console.WriteLine($"[{nameof(FemController)}] [Info] Matrix profile was saved from file");
-
+            
             _logger.LogInformation($"[{nameof(FemController)}] calculate slae start");
             var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
-
+            
             await _inaccuracyService.GetSolutionVectorInaccuracy(testSession, solutionParameters);
-
+            
             _logger.LogInformation($"[{nameof(FemController)}] saving test result");
             var resultId = await _testResultService.AddTestResultAsync(solutionParameters);
-
+            
             var femResponse = new FemResponse
             {
                 Id = resultId,
                 Discrepancy = solutionParameters.SolutionInfo!.Discrepancy,
                 IterationsCount = solutionParameters.ItersCount
             };
-
+            
             return Ok(femResponse);
         } catch (Exception exception)
         {

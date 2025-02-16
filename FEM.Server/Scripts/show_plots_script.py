@@ -2,6 +2,7 @@ import json
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from scipy.spatial import ConvexHull
 from dataclasses import dataclass
 from typing import List, Optional
@@ -151,6 +152,7 @@ def plot_finite_element_mesh(
     ax3d.set_xlabel('X', fontsize=12, labelpad=15)
     ax3d.set_ylabel('Y', fontsize=12, labelpad=15)
     ax3d.set_zlabel('Z', fontsize=12, labelpad=15)
+
     ax3d.set_title('3D View', pad=20)
 
     # Функция для получения всех узлов элемента
@@ -216,6 +218,12 @@ def plot_finite_element_mesh(
         ax.set_ylim(bounds[plane]['y'])
         ax.set_aspect('equal')
 
+    def invert_color(color):
+        """Инвертирует цвет, принимая его в любом формате (название, HEX, RGB)"""
+        rgb = mcolors.to_rgb(color)  # Преобразуем в RGB (0-1)
+        inverted = (1 - rgb[0], 1 - rgb[1], 1 - rgb[2])  # Инверсия
+        return inverted  # Возвращаем инвертированный цвет
+
     # Функция для отрисовки сечений
     def draw_slice(ax, axis: str, position: float):
         """Отрисовка сечения на указанной оси"""
@@ -253,7 +261,7 @@ def plot_finite_element_mesh(
                         np.array(points)[hull.vertices],
                         closed=True,
                         facecolor=color,
-                        edgecolor='k',
+                        edgecolor=invert_color(color),
                         alpha=1
                     )
                     ax.add_patch(poly)
@@ -289,6 +297,7 @@ def plot_finite_element_mesh(
     cbar_ax = fig.add_axes([0.90, 0.15, 0.02, 0.7])
     fig.colorbar(mappable, cax=cbar_ax, label='Плотность (kg/m³)')
 
+    plt.savefig("graph.png", dpi=300)
     plt.show()
 
 if __name__ == "__main__":
@@ -324,9 +333,9 @@ if __name__ == "__main__":
         elements = load_from_json("mesh_data.json")
         plot_finite_element_mesh(
             elements=elements,
-            x_slice=0.6,
-            y_slice=1,
-            z_slice=0.5
+            x_slice=5,
+            y_slice=5,
+            z_slice=-2.5
         )
     except Exception as e:
         print(f"\nОшибка: {str(e)}")

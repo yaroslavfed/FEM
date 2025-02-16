@@ -30,9 +30,9 @@ public class PlotService : IPlotService
         return Task.CompletedTask;
     }
 
-    public Task ShowPlotAsync(Mesh mesh)
+    public async Task ShowPlotAsync(Mesh mesh)
     {
-        CreateDataFiles(mesh);
+        await CreateDataFiles(mesh);
 
         using Process myProcess = new();
         myProcess.StartInfo.FileName = "python";
@@ -41,7 +41,5 @@ public class PlotService : IPlotService
         myProcess.StartInfo.RedirectStandardInput = true;
         myProcess.StartInfo.RedirectStandardOutput = false;
         myProcess.Start();
-
-        return Task.CompletedTask;
     }
 }

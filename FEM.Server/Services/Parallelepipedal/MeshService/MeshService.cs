@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using FEM.Common.Data.Domain;
+﻿using FEM.Common.Data.Domain;
 using FEM.Common.Data.InputModels;
 using FEM.Common.Data.MathModels;
 using FEM.Common.Enums;
