@@ -32,7 +32,7 @@ public class VisualizerService : IVisualizerService
         if (!isDataFileExist)
             throw new FileNotFoundException($"Data file was not found from path {_dataFileName}");
 
-        await RunDrawingAsync();
+        await StartDrawingAsync();
     }
 
     public async Task WriteMatrixToFileAsync(IMatrixFormat matrixProfile)
@@ -50,7 +50,7 @@ public class VisualizerService : IVisualizerService
         }
     }
 
-    private Task RunDrawingAsync()
+    private Task StartDrawingAsync()
     {
         using Process myProcess = new();
         myProcess.StartInfo.FileName = "python";

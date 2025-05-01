@@ -28,7 +28,7 @@ class Edge:
 @dataclass
 class FiniteElement:
     Edges: List[Edge]
-    Density: float
+    Mu: float
 
 def load_from_json(file_path: str) -> List[FiniteElement]:
     """Загрузка данных из JSON файла, созданного в C#"""
@@ -63,7 +63,7 @@ def load_from_json(file_path: str) -> List[FiniteElement]:
 
         elements.append(FiniteElement(
             Edges=edges,
-            Density=element['Density']
+            Mu=element['Mu']
         ))
 
     if not elements:
@@ -99,8 +99,8 @@ def plot_finite_element_mesh(
     ax_bottom_right = fig.add_subplot(gs[1, 1]) # Для YZ или сечения X
 
     # Настройка цветовой карты
-    densities = [el.Density for el in elements]
-    norm = plt.Normalize(min(densities), max(densities))
+    mues = [el.Mu for el in elements]
+    norm = plt.Normalize(min(mues), max(mues))
     cmap = plt.get_cmap('Greys')
     mappable = ScalarMappable(norm=norm, cmap=cmap)
 
@@ -129,7 +129,7 @@ def plot_finite_element_mesh(
 
     # 3D визуализация рёбер
     for element in elements:
-        color = cmap(norm(element.Density))
+        color = cmap(norm(element.Mu))
         for edge in element.Edges:
             if len(edge.Nodes) != 2:
                 continue
@@ -172,7 +172,7 @@ def plot_finite_element_mesh(
         ax.grid(True, linestyle='--', alpha=0.3)
 
         for element in elements:
-            color = cmap(norm(element.Density))
+            color = cmap(norm(element.Mu))
             nodes = get_element_nodes(element)
 
             # Проецируем узлы на плоскость
@@ -232,7 +232,7 @@ def plot_finite_element_mesh(
         ax.grid(True, linestyle='dotted', alpha=0.5)
 
         for element in elements:
-            color = cmap(norm(element.Density))
+            color = cmap(norm(element.Mu))
             points = []
             for edge in element.Edges:
                 if len(edge.Nodes) != 2:
@@ -333,9 +333,9 @@ if __name__ == "__main__":
         elements = load_from_json("mesh_data.json")
         plot_finite_element_mesh(
             elements=elements,
-            x_slice=100,
-            y_slice=100,
-            z_slice=-20
+            x_slice=0,
+            y_slice=0,
+            z_slice=0
         )
     except Exception as e:
         print(f"\nОшибка: {str(e)}")

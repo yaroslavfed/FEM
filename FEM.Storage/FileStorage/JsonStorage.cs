@@ -42,8 +42,7 @@ public class JsonStorage : IJsonStorage
             Positioning = positioning,
             Splitting = splitting,
             AdditionalParameters = additionalParameters,
-            StrataList = Array.Empty<Strata>(),
-            DensityBase = 0
+            StrataList = []
         };
     }
 }

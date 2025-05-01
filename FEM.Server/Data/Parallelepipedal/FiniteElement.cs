@@ -15,5 +15,5 @@ public record FiniteElement
     /// <summary>
     /// Плотность среды
     /// </summary>
-    public double Density { get; set; }
+    public double Mu { get; set; }
 }

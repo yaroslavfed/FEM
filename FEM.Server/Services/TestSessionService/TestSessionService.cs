@@ -10,29 +10,10 @@ namespace FEM.Server.Services.TestSessionService;
 public class TestSessionService : ITestSessionService
 {
     private readonly IMeshService _meshService;
-    private readonly IPlotService _plotService;
 
-    public TestSessionService(IMeshService meshService, IPlotService plotService)
+    public TestSessionService(IMeshService meshService)
     {
         _meshService = meshService;
-        _plotService = plotService;
-    }
-
-    /// <inheritdoc />
-    public async Task<TestSession<Mesh>> CreateTestSessionAsync()
-    {
-        var testConfiguration = await _meshService.GenerateTestConfiguration();
-        var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
-
-        return await Task.FromResult(
-            new TestSession<Mesh>
-            {
-                Mesh = mesh,
-                Mu = testConfiguration.AdditionalParameters.Mu,
-                Gamma = testConfiguration.AdditionalParameters.Gamma,
-                BoundaryCondition = testConfiguration.AdditionalParameters.BoundaryCondition - 1
-            }
-        );
     }
 
     /// <inheritdoc />
@@ -41,8 +22,7 @@ public class TestSessionService : ITestSessionService
         var testConfiguration = await _meshService.GenerateTestConfiguration(testSession);
         var mesh = await _meshService.GenerateMeshAsync(testConfiguration);
 
-        await _meshService.AssignDensitiesAsync(mesh, testConfiguration);
-        await _plotService.ShowPlotAsync(mesh);
+        await _meshService.AssignMuesAsync(mesh, testConfiguration);
 
         return await Task.FromResult(
             new TestSession<Mesh>

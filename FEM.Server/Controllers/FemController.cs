@@ -8,6 +8,7 @@ using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
 using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
 using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
 using FEM.Server.Services.Parallelepipedal.VisualizerService;
+using FEM.Server.Services.PlotService;
 using FEM.Server.Services.SolverService;
 using FEM.Server.Services.TestResultService;
 using FEM.Server.Services.TestSessionService;
@@ -22,7 +23,6 @@ namespace FEM.Server.Controllers;
 [Route("api/[controller]/Vector")]
 public class FemController : ControllerBase
 {
-    private readonly ILogger                   _logger;
     private readonly IGlobalMatrixServices     _globalMatrixServices;
     private readonly ITestSessionService       _testSessionService;
     private readonly IMatrixPortraitService    _portraitService;
@@ -32,9 +32,9 @@ public class FemController : ControllerBase
     private readonly ISolverService            _solverService;
     private readonly ITestResultService        _testResultService;
     private readonly IInaccuracyService        _inaccuracyService;
+    private readonly IPlotService              _plotService;
 
     public FemController(
-        ILogger<FemController> logger,
         IGlobalMatrixServices globalMatrixServices,
         ITestSessionService testSessionService,
         IMatrixPortraitService portraitService,
@@ -43,10 +43,10 @@ public class FemController : ControllerBase
         IBoundaryConditionFactory boundaryCondition,
         ISolverService solverService,
         ITestResultService testResultService,
-        IInaccuracyService inaccuracyService
+        IInaccuracyService inaccuracyService,
+        IPlotService plotService
     )
     {
-        _logger = logger;
         _globalMatrixServices = globalMatrixServices;
         _testSessionService = testSessionService;
         _portraitService = portraitService;
@@ -56,6 +56,7 @@ public class FemController : ControllerBase
         _solverService = solverService;
         _testResultService = testResultService;
         _inaccuracyService = inaccuracyService;
+        _plotService = plotService;
     }
 
     /// <summary>
@@ -67,28 +68,45 @@ public class FemController : ControllerBase
     ///
     ///     POST
     ///     {
-    ///        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    ///        "meshParameters": {
-    ///            "xCenterCoordinate": 0.5,
-    ///            "yCenterCoordinate": 0.5,
-    ///            "zCenterCoordinate": 0.5,
-    ///            "xStepToBounds": 0.5,
-    ///            "yStepToBounds": 0.5,
-    ///            "zStepToBounds": 0.5
-    ///        },
-    ///        "splittingParameters": {
-    ///            "xSplittingCoefficient": 4,
-    ///            "ySplittingCoefficient": 4,
-    ///            "zSplittingCoefficient": 4,
-    ///            "xMultiplyCoefficient": 1,
-    ///            "yMultiplyCoefficient": 1,
-    ///            "zMultiplyCoefficient": 1
-    ///        },
-    ///        "additionParameters": {
-    ///            "muCoefficient": 1,
-    ///            "gammaCoefficient": 1,
-    ///            "boundaryCondition": 0
-    ///        }
+    ///         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    ///         "meshParameters": {
+    ///             "xCenterCoordinate": 0,
+    ///             "yCenterCoordinate": 0,
+    ///             "zCenterCoordinate": 0,
+    ///             "xStepToBounds": 2,
+    ///             "yStepToBounds": 2,
+    ///             "zStepToBounds": 2
+    ///         },
+    ///         "splittingParameters": {
+    ///             "xSplittingCoefficient": 4,
+    ///             "ySplittingCoefficient": 4,
+    ///             "zSplittingCoefficient": 4,
+    ///             "xMultiplyCoefficient": 1,
+    ///             "yMultiplyCoefficient": 1,
+    ///             "zMultiplyCoefficient": 1
+    ///         },
+    ///         "additionParameters": {
+    ///             "muCoefficient": 1,
+    ///             "gammaCoefficient": 1,
+    ///             "boundaryCondition": 0
+    ///         },
+    ///         "strataList": [
+    ///             {
+    ///                 "positioning": {
+    ///                     "centerCoordinate": {
+    ///                         "x": 0,
+    ///                         "y": 0,
+    ///                         "z": 0
+    ///                     },
+    ///                     "boundsDistance": {
+    ///                         "x": 1,
+    ///                         "y": 1,
+    ///                         "z": 1
+    ///                     }
+    ///                 },
+    ///                 "mu": 6
+    ///             }
+    ///         ]
     ///     }
     ///
     /// </remarks>
@@ -105,19 +123,14 @@ public class FemController : ControllerBase
 
         try
         {
-            _logger.LogInformation($"[{nameof(FemController)}] {nameof(CreateCalculation)} initialize");
-
-            _logger.LogInformation($"[{nameof(FemController)}] create test session");
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
-            Console.WriteLine($"[{nameof(FemController)}] [Info] Test session created");
-
-            _logger.LogInformation($"[{nameof(FemController)}] save plots to images");
-            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
-            Console.WriteLine($"[{nameof(FemController)}] [Info] Mesh`s plots were created");
-
-            _logger.LogInformation($"[{nameof(FemController)}] resolve matrix portrait");
+            
             var matrixProfile
                 = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, EMatrixFormats.Profile);
+            var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
+            var boundaryConditionService
+                = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
+
             await matrixProfile.InitializeVectorsAsync(
                 testSession
                     .Mesh
@@ -126,40 +139,22 @@ public class FemController : ControllerBase
                     .DistinctBy(edge => edge.EdgeIndex)
                     .Count()
             );
-            
-            _logger.LogInformation($"[{nameof(FemController)}] calculate global matrix");
+
             await _globalMatrixServices.GetGlobalMatrixAsync(matrixProfile, testSession);
-            
-            _logger.LogInformation($"[{nameof(FemController)}] calculate right part vector");
             await _rightPartVectorService.GetRightPartVectorAsync(matrixProfile, testSession);
-            
-            _logger.LogInformation($"[{nameof(FemController)}] resolve boundary conditions");
-            var boundaryConditionService
-                = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
-            
-            _logger.LogInformation($"[{nameof(FemController)}] set boundary conditions");
+
             await boundaryConditionService.SetBoundaryConditionsAsync(testSession, matrixProfile);
-            
-            _logger.LogInformation($"[{nameof(FemController)}] save matrix profile to files");
-            await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
-            Console.WriteLine($"[{nameof(FemController)}] [Info] Matrix profile was saved from file");
-            
-            _logger.LogInformation($"[{nameof(FemController)}] calculate slae start");
-            var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
-            
+
             await _inaccuracyService.GetSolutionVectorInaccuracy(testSession, solutionParameters);
-            
-            _logger.LogInformation($"[{nameof(FemController)}] saving test result");
+
+            await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
+            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
+            await _plotService.ShowPlotAsync(testSession.Mesh);
+
             var resultId = await _testResultService.AddTestResultAsync(solutionParameters);
-            
-            var femResponse = new FemResponse
-            {
-                Id = resultId,
-                Discrepancy = solutionParameters.SolutionInfo!.Discrepancy,
-                IterationsCount = solutionParameters.ItersCount
-            };
-            
-            return Ok(femResponse);
+            var result = await _testResultService.GetTestResultAsync(resultId);
+
+            return Ok(result);
         } catch (Exception exception)
         {
             return BadRequest(
@@ -168,36 +163,6 @@ public class FemController : ControllerBase
         } finally
         {
             Console.WriteLine($"[Ended session] Id: {testSessionParameters.Id}");
-        }
-    }
-
-    /// <summary>
-    /// Получает результат сессии из хранилища
-    /// </summary>
-    /// <param name="id">Идентификатор проведенной расчётной сессии</param>
-    /// /// <remarks>
-    /// Sample request:
-    ///
-    ///     Get
-    ///     3fa85f64-5717-4562-b3fc-2c963f66afa6
-    /// </remarks>
-    /// <response code="200">Полную информацию о проведенной сессии</response>
-    /// <response code="500">На сервере что-то пошло не так</response>
-    /// <returns>Полная модель решения уравнения</returns>
-    [HttpGet("{id:guid}", Name = "additional-info")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetTestResult(Guid id)
-    {
-        try
-        {
-            var result = await _testResultService.GetTestResultAsync(id);
-            return Ok(result);
-        } catch (Exception exception)
-        {
-            return BadRequest(
-                $"Something went wrong. Status code: {StatusCodes.Status500InternalServerError}, {exception.Message}"
-            );
         }
     }
 }

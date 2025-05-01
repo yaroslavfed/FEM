@@ -7,29 +7,20 @@ using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Services.Parallelepipedal.NumberingService.EdgesNumberingService;
 using FEM.Server.Services.Parallelepipedal.NumberingService.NodesNumberingService;
-using FEM.Storage.FileStorage;
 
 namespace FEM.Server.Services.Parallelepipedal.MeshService;
 
 /// <inheritdoc cref="IMeshService"/>
 public class MeshService : IMeshService
 {
-    private readonly IJsonStorage           _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
 
-    public MeshService(
-        IJsonStorage meshStorage,
-        IEdgesNumberingService edgesNumberingService,
-        INodesNumberingService nodesNumberingService
-    )
+    public MeshService(IEdgesNumberingService edgesNumberingService, INodesNumberingService nodesNumberingService)
     {
-        _meshStorage = meshStorage;
         _edgesNumberingService = edgesNumberingService;
         _nodesNumberingService = nodesNumberingService;
     }
-
-    public async Task<Axis> GenerateTestConfiguration() => await _meshStorage.GetAxisAsync();
 
     public Task<Axis> GenerateTestConfiguration(TestSession testSession)
     {
@@ -75,7 +66,6 @@ public class MeshService : IMeshService
                 BoundaryCondition = (EBoundaryConditions)testSession.AdditionParameters.BoundaryCondition
             },
             StrataList = testSession.StrataList,
-            DensityBase = testSession.DensityBase
         };
 
         return Task.FromResult(axis);
@@ -100,13 +90,11 @@ public class MeshService : IMeshService
         var mesh = new Mesh
         {
             Elements = finiteElements
-                       .Select(
-                           element => new FiniteElement
+                       .Select(element => new FiniteElement
                            {
                                Edges = element
                                        .MapNodesEdges
-                                       .Select(
-                                           (associationPoints, edgeIndex) => new Edge
+                                       .Select((associationPoints, edgeIndex) => new Edge
                                            {
                                                EdgeIndex = element.Edges[edgeIndex],
                                                Nodes =
@@ -144,7 +132,7 @@ public class MeshService : IMeshService
     }
 
     /// <inheritdoc />
-    public Task AssignDensitiesAsync(Mesh mesh, Axis meshModel)
+    public Task AssignMuesAsync(Mesh mesh, Axis meshModel)
     {
         foreach (var element in mesh.Elements)
         {
@@ -156,7 +144,7 @@ public class MeshService : IMeshService
                 = meshModel.StrataList.FirstOrDefault(strata => IsPointInsideStrata(center, strata.Positioning));
 
             // Если нашли соответствующий Strata, присваиваем плотность
-            element.Density = matchingStrata?.Density ?? meshModel.DensityBase; // значение по-умолчанию
+            element.Mu = matchingStrata?.Mu ?? meshModel.AdditionalParameters.Mu;
         }
 
         return Task.CompletedTask;

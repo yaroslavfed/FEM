@@ -16,12 +16,6 @@ public interface IMeshService
     Task<Mesh> GenerateMeshAsync(Axis axis);
 
     /// <summary>
-    /// Получение входных данных из внутренней памяти
-    /// </summary>
-    /// <returns>Параметры проводимого теста</returns>
-    Task<Axis> GenerateTestConfiguration();
-
-    /// <summary>
     /// Получение входных данных из внешнего источника
     /// </summary>
     /// <remarks>Для использования с API</remarks>
@@ -34,5 +28,5 @@ public interface IMeshService
     /// </summary>
     /// <param name="mesh">Сетка расчётной области</param>
     /// <param name="meshModel">Параметры расчётной обрасти</param>
-    public Task AssignDensitiesAsync(Mesh mesh, Axis meshModel);
+    public Task AssignMuesAsync(Mesh mesh, Axis meshModel);
 }

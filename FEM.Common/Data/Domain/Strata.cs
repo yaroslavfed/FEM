@@ -15,5 +15,5 @@ public record Strata
     /// <summary>
     /// Плотность физического объекта
     /// </summary>
-    public required double Density { get; set; }
+    public required double Mu { get; set; }
 }
