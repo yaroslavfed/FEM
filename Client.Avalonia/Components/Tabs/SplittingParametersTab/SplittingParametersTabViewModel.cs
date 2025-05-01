@@ -8,9 +8,7 @@ public class SplittingParametersTabViewModel : ViewModelBase
 
     #region Labels
 
-    public string SplittingParamsLabel { get; set; } = "Кол-во конечных элементов:";
 
-    public string MultyParamsLabel { get; set; } = "Коэффициент разрядки:";
 
     #endregion
 

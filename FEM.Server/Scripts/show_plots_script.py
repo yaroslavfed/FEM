@@ -333,9 +333,9 @@ if __name__ == "__main__":
         elements = load_from_json("mesh_data.json")
         plot_finite_element_mesh(
             elements=elements,
-            x_slice=5,
-            y_slice=5,
-            z_slice=-2.5
+            x_slice=100,
+            y_slice=100,
+            z_slice=-20
         )
     except Exception as e:
         print(f"\nОшибка: {str(e)}")

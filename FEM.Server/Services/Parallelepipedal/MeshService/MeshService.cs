@@ -14,8 +14,6 @@ namespace FEM.Server.Services.Parallelepipedal.MeshService;
 /// <inheritdoc cref="IMeshService"/>
 public class MeshService : IMeshService
 {
-    private readonly Random _random = new();
-
     private readonly IJsonStorage           _meshStorage;
     private readonly IEdgesNumberingService _edgesNumberingService;
     private readonly INodesNumberingService _nodesNumberingService;
