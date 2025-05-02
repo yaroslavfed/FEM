@@ -13,4 +13,6 @@ public record TestSession
     public required AdditionParameters AdditionParameters { get; init; }
 
     public required IReadOnlyList<Strata> StrataList { get; init; }
+
+    public required CurrentSource CurrentSource { get; init; }
 }

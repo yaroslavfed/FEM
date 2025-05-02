@@ -9,10 +9,7 @@ public class BasicFunction : IBasicFunction<Vector>
 {
     private readonly FiniteElementBounds _feBounds;
 
-    public BasicFunction(
-        FiniteElement finiteElement,
-        IMapper mapper
-    )
+    public BasicFunction(FiniteElement finiteElement, IMapper mapper)
     {
         _feBounds = mapper.Map<FiniteElementBounds>(finiteElement);
     }
@@ -22,8 +19,8 @@ public class BasicFunction : IBasicFunction<Vector>
         {
             1 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     HierarchicalFunctionsMinus(
                         _feBounds.LowCoordinate.Y,
                         _feBounds.HighCoordinate.Y,
@@ -34,14 +31,16 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0,
+
                     0
-                }
+                ]
             },
             2 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     HierarchicalFunctionsPlus(
                         _feBounds.LowCoordinate.Y,
                         _feBounds.HighCoordinate.Y,
@@ -52,14 +51,16 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0,
+
                     0
-                }
+                ]
             },
             3 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     HierarchicalFunctionsMinus(
                         _feBounds.LowCoordinate.Y,
                         _feBounds.HighCoordinate.Y,
@@ -70,14 +71,16 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0,
+
                     0
-                }
+                ]
             },
             4 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     HierarchicalFunctionsPlus(
                         _feBounds.LowCoordinate.Y,
                         _feBounds.HighCoordinate.Y,
@@ -88,15 +91,18 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0,
+
                     0
-                }
+                ]
             },
             5 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
+
                     HierarchicalFunctionsMinus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -107,14 +113,16 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0
-                }
+                ]
             },
             6 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
+
                     HierarchicalFunctionsPlus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -125,14 +133,16 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0
-                }
+                ]
             },
             7 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
+
                     HierarchicalFunctionsMinus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -143,14 +153,16 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0
-                }
+                ]
             },
             8 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
+
                     HierarchicalFunctionsPlus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -161,15 +173,17 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Z,
                         position.Coordinate.Z
                     ),
+
                     0
-                }
+                ]
             },
             9 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
                     0,
+
                     HierarchicalFunctionsMinus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -180,14 +194,15 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
-                }
+                ]
             },
             10 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
                     0,
+
                     HierarchicalFunctionsPlus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -198,14 +213,15 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
-                }
+                ]
             },
             11 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
                     0,
+
                     HierarchicalFunctionsMinus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -216,14 +232,15 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
-                }
+                ]
             },
             12 => new()
             {
-                Data = new List<double>
-                {
+                Data =
+                [
                     0,
                     0,
+
                     HierarchicalFunctionsPlus(
                         _feBounds.LowCoordinate.X,
                         _feBounds.HighCoordinate.X,
@@ -234,7 +251,7 @@ public class BasicFunction : IBasicFunction<Vector>
                         _feBounds.HighCoordinate.Y,
                         position.Coordinate.Y
                     )
-                }
+                ]
             },
             _ => throw new ArgumentOutOfRangeException()
         };

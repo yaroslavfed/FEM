@@ -1,0 +1,26 @@
+﻿using FEM.Common.Data.MathModels;
+
+namespace FEM.Server.Data.Domain;
+
+public record CurrentSource
+{
+    /// <summary>
+    /// Начало отрезка
+    /// </summary>
+    public Point3D Start { get; set; }
+
+    /// <summary>
+    /// Конец отрезка
+    /// </summary>
+    public Point3D End { get; set; }
+
+    /// <summary>
+    /// Величина тока в амперах
+    /// </summary>
+    public double Current { get; set; }
+
+    /// <summary>
+    /// Число разбиений на сегменты
+    /// </summary>
+    public int Segments { get; set; } = 10;
+}
