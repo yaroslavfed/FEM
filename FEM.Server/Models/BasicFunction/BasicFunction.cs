@@ -275,24 +275,24 @@ public class BasicFunction : IBasicFunction
         var dz = new Point3D(p.X, p.Y, p.Z + h);
 
         var fx = GetBasicFunctions(element, number, new Sensor { Coordinate = p }).Data;
-        var fx_dx = GetBasicFunctions(element, number, new Sensor { Coordinate = dx }).Data;
-        var fx_dy = GetBasicFunctions(element, number, new Sensor { Coordinate = dy }).Data;
-        var fx_dz = GetBasicFunctions(element, number, new Sensor { Coordinate = dz }).Data;
+        var fxDx = GetBasicFunctions(element, number, new Sensor { Coordinate = dx }).Data;
+        var fxDy = GetBasicFunctions(element, number, new Sensor { Coordinate = dy }).Data;
+        var fxDz = GetBasicFunctions(element, number, new Sensor { Coordinate = dz }).Data;
 
         // Производные компонент по координатам (d/dx, d/dy, d/dz)
-        var dAx_dy = (fx_dy[0] - fx[0]) / h;
-        var dAx_dz = (fx_dz[0] - fx[0]) / h;
+        var dAxDy = (fxDy[0] - fx[0]) / h;
+        var dAxDz = (fxDz[0] - fx[0]) / h;
 
-        var dAy_dx = (fx_dx[1] - fx[1]) / h;
-        var dAy_dz = (fx_dz[1] - fx[1]) / h;
+        var dAyDx = (fxDx[1] - fx[1]) / h;
+        var dAyDz = (fxDz[1] - fx[1]) / h;
 
-        var dAz_dx = (fx_dx[2] - fx[2]) / h;
-        var dAz_dy = (fx_dy[2] - fx[2]) / h;
+        var dAzDx = (fxDx[2] - fx[2]) / h;
+        var dAzDy = (fxDy[2] - fx[2]) / h;
 
         // Вычисление ротора curl A = (∂Az/∂y - ∂Ay/∂z, ∂Ax/∂z - ∂Az/∂x, ∂Ay/∂x - ∂Ax/∂y)
-        var curlX = dAz_dy - dAy_dz;
-        var curlY = dAx_dz - dAz_dx;
-        var curlZ = dAy_dx - dAx_dy;
+        var curlX = dAzDy - dAyDz;
+        var curlY = dAxDz - dAzDx;
+        var curlZ = dAyDx - dAxDy;
 
         return new((float)curlX, (float)curlY, (float)curlZ);
     }
