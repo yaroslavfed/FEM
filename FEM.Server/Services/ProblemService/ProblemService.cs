@@ -1,57 +1,94 @@
+using System.Numerics;
 using FEM.Common.Data.Domain;
 using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Extensions;
-using FEM.Server.Services.TestingService;
+using FEM.Server.Models.BasicFunction;
+using FEM.Server.Models.CurrentSource;
 
 namespace FEM.Server.Services.ProblemService;
 
 /// <inheritdoc cref="IProblemService"/>
 public class ProblemService : IProblemService
 {
-    public async Task<double> ResolveMatrixContributionsAsync(
-        (Node firstNode, Node secondNode) nodesPair,
-        EDirections direction
-    )
-    {
-        var coordinate = (await CalculateNodeAsync(direction, nodesPair)).Coordinate;
-        List<double> contributionsFromVectorA =
-        [
-            35.0 * Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
-            Math.Pow(coordinate.X, 3) + 25.0 * Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
-            Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + 45.0 * Math.Pow(coordinate.Z, 3)
-        ];
+    private readonly IBasicFunction _basicFunction;
 
-        return direction switch
-        {
-            EDirections.Ox => contributionsFromVectorA[0],
-            EDirections.Oy => contributionsFromVectorA[1],
-            EDirections.Oz => contributionsFromVectorA[2],
-            _              => throw new NotImplementedException()
-        };
+    public ProblemService(IBasicFunction basicFunction)
+    {
+        _basicFunction = basicFunction;
     }
 
-    public async Task<double> ResolveVectorContributionsAsync(
-        (Node firstNode, Node secondNode) nodesPair,
-        EDirections direction
+    /// <inheritdoc />
+    public async Task<double[,]> BuildElementStiffnessMatrixAsync(FiniteElement element)
+    {
+        const int edgeCount = 12; // В параллелепипеде 12 рёбер → 12 базисных функций
+
+        var matrix = new double[edgeCount, edgeCount];
+
+        // Предполагаем, что у нас есть метод GetBasisFunctionCurl(i) → Vector3[]
+        // возвращающий значения ротора базисной функции φ_i в узлах элемента
+
+        for (int i = 0; i < edgeCount; i++)
+        {
+            var curlI = await GetBasisFunctionCurlAsync(element, i); // List<Vector3> длины 8
+
+            for (int j = 0; j < edgeCount; j++)
+            {
+                var curlJ = await GetBasisFunctionCurlAsync(element, j); // List<Vector3> длины 8
+
+                double localIntegral = 0;
+
+                // Простая квадратурная формула: усреднение по вершинам (или использовать формулу точнее)
+                for (int k = 0; k < curlI.Count; k++)
+                {
+                    var dotProduct = Vector3.Dot(curlI[k], curlJ[k]);
+                    localIntegral += dotProduct;
+                }
+
+                localIntegral /= curlI.Count;    // Среднее значение скалярного произведения роторов
+                localIntegral /= element.Mu;     // Учитываем 1/mu
+                localIntegral *= element.Volume; // Интеграл по объёму
+
+                matrix[i, j] = localIntegral;
+            }
+        }
+
+        return matrix;
+    }
+
+    /// <inheritdoc />
+    public async Task<double[]> BuildElementRightHandVectorAsync(
+        FiniteElement element,
+        IEnumerable<ICurrentSource> currentSources
     )
     {
-        var coordinate = (await CalculateNodeAsync(direction, nodesPair)).Coordinate;
-        List<double> contributionsFromVectorF =
-        [
-            8.0 * (coordinate.Y + coordinate.Z),
-            8.0 * (coordinate.X + coordinate.Z),
-            8.0 * (coordinate.X + coordinate.Y)
-        ];
+        const int edgeCount = 12;
+        var rhs = new double[edgeCount];
 
-        return direction switch
+        // Получаем центр и объём элемента
+        var center = element.Center;
+        var volume = element.Volume;
+
+        foreach (var source in currentSources)
         {
-            EDirections.Ox => contributionsFromVectorF[0],
-            EDirections.Oy => contributionsFromVectorF[1],
-            EDirections.Oz => contributionsFromVectorF[2],
-            _              => throw new NotImplementedException()
-        };
+            // Проверка: влияет ли токовый источник на этот элемент
+            if (!source.Intersects(element.BoundingBox))
+                continue;
+
+            // Получаем токовую плотность J в центре элемента
+            var J = await source.EvaluateCurrentDensityAsync(center);
+
+            for (int i = 0; i < edgeCount; i++)
+            {
+                var phi = await GetBasisFunctionAsync(element, i, center); // Векторная функция в центре
+                var dot = Vector3.Dot(J, phi);
+
+                rhs[i] += dot * volume; // Интеграл приближён квадратурой
+            }
+        }
+
+        return rhs;
     }
 
     public async Task<(Node firstNode, Node secondNode, EDirections direction)> ResolveLocalNodes(

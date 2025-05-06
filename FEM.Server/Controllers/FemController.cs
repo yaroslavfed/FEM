@@ -2,16 +2,19 @@
 using FEM.Common.Enums;
 using FEM.Server.Data;
 using FEM.Server.Data.Domain;
+using FEM.Server.Services.AssemblyService;
+using FEM.Server.Services.BoundaryConditionService;
+using FEM.Server.Services.GlobalMatrixService;
+using FEM.Server.Services.IBasisFunctionProvider;
 using FEM.Server.Services.InaccuracyService;
-using FEM.Server.Services.Parallelepipedal.BoundaryConditionService;
-using FEM.Server.Services.Parallelepipedal.GlobalMatrixService;
-using FEM.Server.Services.Parallelepipedal.MatrixPortraitService;
-using FEM.Server.Services.Parallelepipedal.RightPartVectorService;
-using FEM.Server.Services.Parallelepipedal.VisualizerService;
+using FEM.Server.Services.MatrixPortraitService;
 using FEM.Server.Services.PlotService;
+using FEM.Server.Services.RightPartVectorService;
 using FEM.Server.Services.SolverService;
+using FEM.Server.Services.SourceProvider;
 using FEM.Server.Services.TestResultService;
 using FEM.Server.Services.TestSessionService;
+using FEM.Server.Services.VisualizerService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FEM.Server.Controllers;
@@ -23,40 +26,19 @@ namespace FEM.Server.Controllers;
 [Route("api/[controller]/Vector")]
 public class FemController : ControllerBase
 {
-    private readonly IGlobalMatrixServices     _globalMatrixServices;
-    private readonly ITestSessionService       _testSessionService;
-    private readonly IMatrixPortraitService    _portraitService;
-    private readonly IRightPartVectorService   _rightPartVectorService;
-    private readonly IVisualizerService        _visualizerService;
-    private readonly IBoundaryConditionFactory _boundaryCondition;
-    private readonly ISolverService            _solverService;
-    private readonly ITestResultService        _testResultService;
-    private readonly IInaccuracyService        _inaccuracyService;
-    private readonly IPlotService              _plotService;
+    private readonly ITestSessionService    _testSessionService;
+    private readonly ICurrentSourceProvider _currentSourceProvider;
+    private readonly IBasisFunctionProvider _basisFunctionProvider;
 
     public FemController(
-        IGlobalMatrixServices globalMatrixServices,
         ITestSessionService testSessionService,
-        IMatrixPortraitService portraitService,
-        IRightPartVectorService rightPartVectorService,
-        IVisualizerService visualizerService,
-        IBoundaryConditionFactory boundaryCondition,
-        ISolverService solverService,
-        ITestResultService testResultService,
-        IInaccuracyService inaccuracyService,
-        IPlotService plotService
+        ICurrentSourceProvider currentSourceProvider,
+        IBasisFunctionProvider basisFunctionProvider
     )
     {
-        _globalMatrixServices = globalMatrixServices;
         _testSessionService = testSessionService;
-        _portraitService = portraitService;
-        _rightPartVectorService = rightPartVectorService;
-        _visualizerService = visualizerService;
-        _boundaryCondition = boundaryCondition;
-        _solverService = solverService;
-        _testResultService = testResultService;
-        _inaccuracyService = inaccuracyService;
-        _plotService = plotService;
+        _currentSourceProvider = currentSourceProvider;
+        _basisFunctionProvider = basisFunctionProvider;
     }
 
     /// <summary>
@@ -119,42 +101,42 @@ public class FemController : ControllerBase
     [SuppressMessage("ReSharper.DPA", "DPA0011: High execution time of MVC action")]
     public async Task<IActionResult> CreateCalculation([FromBody] TestSession testSessionParameters)
     {
-        Console.WriteLine($"[Started session] Id: {testSessionParameters.Id}");
-
         try
         {
+            // 1. Построение сетки
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
-            
-            var matrixProfile
-                = await _portraitService.ResolveMatrixPortraitAsync(testSession.Mesh, EMatrixFormats.Profile);
-            var solutionParameters = await _solverService.GetSolutionVectorAsync(matrixProfile, 1000, 1e-15);
-            var boundaryConditionService
-                = await _boundaryCondition.ResolveBoundaryConditionAsync(testSession.BoundaryCondition);
 
-            await matrixProfile.InitializeVectorsAsync(
-                testSession
-                    .Mesh
-                    .Elements
-                    .SelectMany(element => element.Edges)
-                    .DistinctBy(edge => edge.EdgeIndex)
-                    .Count()
+            // 3. Источник тока
+            var sources = await _currentSourceProvider.GetSourcesAsync(testSessionParameters.CurrentSource);
+
+            // 5. Построение матрицы жесткости и вектора правой части
+            var matrix = new Matrix(mesh.Edges.Count, mesh.Edges.Count);
+            var rhs = new Vector(mesh.Edges.Count);
+
+            foreach (var element in mesh.Elements)
+            {
+                var localMatrix = await _problemService.GetLocalMatrixAsync(element);
+                var localVector = await _problemService.GetLocalVectorAsync(element, sources);
+
+                var globalIndices = element.GetGlobalEdgeIndices();
+
+                matrix.Assemble(localMatrix, globalIndices);
+                rhs.Assemble(localVector, globalIndices);
+            }
+
+            // 6. Применение краевых условий
+            await _firstBoundaryConditionService.ApplyAsync(
+                matrix,
+                rhs,
+                mesh,
+                testSession.AdditionParameters.BoundaryCondition
             );
 
-            await _globalMatrixServices.GetGlobalMatrixAsync(matrixProfile, testSession);
-            await _rightPartVectorService.GetRightPartVectorAsync(matrixProfile, testSession);
+            // 7. Решение СЛАУ
+            var solution = matrix.Solve(rhs);
 
-            await boundaryConditionService.SetBoundaryConditionsAsync(testSession, matrixProfile);
-
-            await _inaccuracyService.GetSolutionVectorInaccuracy(testSession, solutionParameters);
-
-            await _visualizerService.WriteMatrixToFileAsync(matrixProfile);
-            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
-            await _plotService.ShowPlotAsync(testSession.Mesh);
-
-            var resultId = await _testResultService.AddTestResultAsync(solutionParameters);
-            var result = await _testResultService.GetTestResultAsync(resultId);
-
-            return Ok(result);
+            // 8. Постобработка или сохранение результата
+            return Ok(new { Message = "Calculation completed successfully" });
         } catch (Exception exception)
         {
             return BadRequest(
@@ -165,4 +147,5 @@ public class FemController : ControllerBase
             Console.WriteLine($"[Ended session] Id: {testSessionParameters.Id}");
         }
     }
+
 }

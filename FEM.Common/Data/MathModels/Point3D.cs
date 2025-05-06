@@ -5,6 +5,15 @@
 /// </summary>
 public record Point3D
 {
+    public Point3D() { }
+
+    public Point3D(double x, double y, double z)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+    }
+
     /// <summary>
     /// Координата по X
     /// </summary>

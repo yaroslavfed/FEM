@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using AutoMapper;
 using FEM.Server.Data.Parallelepipedal;
-using FEM.Server.Models.Parallelepipedal.BasicFunction;
 
 namespace FEM.Server.Models.CurrentSource;
 
@@ -46,10 +45,11 @@ public class LineCurrentSource : ICurrentSource
             if (el == null || el != element)
                 continue;
 
-            var basis = new BasicFunction(el, _mapper);
+            var basis = new BasicFunction(_mapper);
             for (int j = 0; j < 12; j++)
             {
                 var phi = basis.GetBasicFunctions(
+                    el,
                     j + 1,
                     new() { Coordinate = new() { X = mid.X, Y = mid.Y, Z = mid.Z } }
                 );
