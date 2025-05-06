@@ -274,10 +274,10 @@ public class BasicFunction : IBasicFunction
         var dy = new Point3D(p.X, p.Y + h, p.Z);
         var dz = new Point3D(p.X, p.Y, p.Z + h);
 
-        var fx = GetBasicFunctions(element, number, new Sensor { Coordinate = p }).Data;
-        var fxDx = GetBasicFunctions(element, number, new Sensor { Coordinate = dx }).Data;
-        var fxDy = GetBasicFunctions(element, number, new Sensor { Coordinate = dy }).Data;
-        var fxDz = GetBasicFunctions(element, number, new Sensor { Coordinate = dz }).Data;
+        var fx = GetBasicFunctions(element, number, new() { Coordinate = p }).Data;
+        var fxDx = GetBasicFunctions(element, number, new() { Coordinate = dx }).Data;
+        var fxDy = GetBasicFunctions(element, number, new() { Coordinate = dy }).Data;
+        var fxDz = GetBasicFunctions(element, number, new() { Coordinate = dz }).Data;
 
         // Производные компонент по координатам (d/dx, d/dy, d/dz)
         var dAxDy = (fxDy[0] - fx[0]) / h;

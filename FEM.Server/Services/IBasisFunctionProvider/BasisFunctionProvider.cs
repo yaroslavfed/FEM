@@ -1,9 +1,9 @@
-﻿using FEM.Common.Data.Domain;
-using FEM.Common.Data.MathModels;
-using FEM.Server.Data.Domain;
+﻿using System.Numerics;
+using FEM.Common.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Models.BasicFunction;
 using FEM.Server.Services.IBasisFunctionProvider;
+using Vector = FEM.Common.Data.MathModels.Vector;
 
 public class BasicFunctionProvider : IBasisFunctionProvider
 {
@@ -14,12 +14,12 @@ public class BasicFunctionProvider : IBasisFunctionProvider
         _basicFunction = basicFunction;
     }
 
-    public Vector3D GetValue(FiniteElement element, int edgeNumber, Point3D point)
+    public Vector GetValue(FiniteElement element, int edgeNumber, Sensor point)
     {
-        return _basicFunction.GetValue(element, edgeNumber, point);
+        return _basicFunction.GetBasicFunctions(element, edgeNumber, point);
     }
 
-    public Vector3D GetCurl(FiniteElement element, int edgeNumber, Point3D point)
+    public Vector3 GetCurl(FiniteElement element, int edgeNumber, Sensor point)
     {
         return _basicFunction.GetCurl(element, edgeNumber, point);
     }
