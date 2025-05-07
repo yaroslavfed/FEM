@@ -1,9 +1,8 @@
-﻿using FEM.Common.Data.MathModels;
-using Vector = FEM.Server.Data.Domain.Vector;
+﻿using FEM.Server.Data.Domain;
 
 namespace FEM.Server.Services.BoundaryConditionService;
 
 public interface IBoundaryConditionService
 {
-    public Task ApplyBoundaryConditionsAsync(SparseMatrix matrix, Vector rhs);
+    public Task ApplyBoundaryConditionsAsync(Matrix matrix, Vector rhs, IReadOnlyList<int> constrainedDofs);
 }

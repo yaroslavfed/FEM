@@ -1,4 +1,6 @@
-﻿namespace FEM.Server.Data.Domain;
+﻿using MathNet.Numerics.LinearAlgebra;
+
+namespace FEM.Server.Data.Domain;
 
 public record Matrix
 {
@@ -59,5 +61,39 @@ public record Matrix
         }
 
         return string.Join("\n", lines);
+    }
+
+    public void Assemble(Matrix local, int[] globalIndices)
+    {
+        for (int i = 0; i < local.Rows; i++)
+        {
+            for (int j = 0; j < local.Columns; j++)
+            {
+                int row = globalIndices[i];
+                int col = globalIndices[j];
+                this[row, col] += local[i, j];
+            }
+        }
+    }
+
+    public void ClearRow(int row)
+    {
+        for (int j = 0; j < Columns; j++)
+            this[row, j] = 0.0;
+    }
+
+    public void ClearColumn(int col)
+    {
+        for (int i = 0; i < Rows; i++)
+            this[i, col] = 0.0;
+    }
+
+    /// <summary>
+    /// Преобразование в MathNet-матрицу
+    /// </summary>
+    /// <returns>MathNet-матрица</returns>
+    public Matrix<double> ToMathNet()
+    {
+        return Matrix<double>.Build.Dense(Rows, Columns, (i, j) => _data[i, j]);
     }
 }

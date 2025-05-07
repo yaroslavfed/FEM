@@ -63,7 +63,5 @@ public class TestingService : ITestingService
             Debug.Fail(e.Message);
             throw;
         }
-
-        return testResult;
     }
 }

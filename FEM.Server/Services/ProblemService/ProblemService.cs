@@ -4,15 +4,16 @@ using FEM.Common.Enums;
 using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Extensions;
+using FEM.Server.Services.BasisFunctionProvider;
 
 namespace FEM.Server.Services.ProblemService;
 
 /// <inheritdoc cref="IProblemService"/>
 public class ProblemService : IProblemService
 {
-    private readonly IBasisFunctionProvider.IBasisFunctionProvider _basisFunctionProvider;
+    private readonly IBasisFunctionProvider _basisFunctionProvider;
 
-    public ProblemService(IBasisFunctionProvider.IBasisFunctionProvider basisFunctionProvider)
+    public ProblemService(IBasisFunctionProvider basisFunctionProvider)
     {
         _basisFunctionProvider = basisFunctionProvider;
     }

@@ -1,7 +1,5 @@
-﻿using System.Numerics;
-using FEM.Common.Data.MathModels;
+﻿using FEM.Common.Data.MathModels;
 using FEM.Server.Data.Domain;
-using FEM.Server.Models.CurrentSource;
 
 namespace FEM.Server.Services.SourceProvider;
 

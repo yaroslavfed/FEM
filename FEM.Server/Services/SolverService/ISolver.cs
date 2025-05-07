@@ -1,9 +1,8 @@
-﻿using FEM.Common.Data.MathModels;
-using Vector = FEM.Server.Data.Domain.Vector;
+﻿using FEM.Server.Data.Domain;
 
 namespace FEM.Server.Services.SolverService;
 
 public interface ISolver
 {
-    Vector Solve(SparseMatrix matrix, Vector rhs);
+    Vector Solve(Matrix matrix, Vector rhs);
 }

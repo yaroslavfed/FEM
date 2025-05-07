@@ -1,4 +1,6 @@
-﻿namespace FEM.Server.Data.Domain;
+﻿using MathNet.Numerics.LinearAlgebra;
+
+namespace FEM.Server.Data.Domain;
 
 public record Vector
 {
@@ -52,4 +54,28 @@ public record Vector
     public double Norm() => Math.Sqrt(Dot(this));
 
     public override string ToString() => "[" + string.Join(", ", _data.Select(x => x.ToString("0.###"))) + "]";
+
+    public void Assemble(Vector local, int[] globalIndices)
+    {
+        for (int i = 0; i < local.Size; i++)
+        {
+            int idx = globalIndices[i];
+            this[idx] += local[i];
+        }
+    }
+
+    public Vector<double> ToMathNet()
+    {
+        return Vector<double>.Build.Dense(Size, i => _data[i]);
+    }
+
+    public static Vector FromMathNet(Vector<double> mathNetVector)
+    {
+        var data = mathNetVector.ToArray();
+        var result = new Vector(data.Length);
+        for (int i = 0; i < data.Length; i++)
+            result[i] = data[i];
+
+        return result;
+    }
 }

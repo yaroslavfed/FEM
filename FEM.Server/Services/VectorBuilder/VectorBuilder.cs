@@ -1,42 +1,39 @@
-﻿using FEM.Common.Data.Domain;
-using FEM.Common.Data.MathModels;
+﻿using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Extensions;
-using FEM.Server.Models.CurrentSource;
-using Vector = FEM.Server.Data.Domain.Vector;
+using FEM.Server.Services.BasisFunctionProvider;
 
 namespace FEM.Server.Services.VectorBuilder;
 
 public class VectorBuilder : IVectorBuilder
 {
-    public async Task<Vector> ComputeLocalRightHandSideAsync(FiniteElement element, IEnumerable<ICurrentSource> sources)
+    private readonly IBasisFunctionProvider _basisFunctionProvider;
+
+    public VectorBuilder(IBasisFunctionProvider basisFunctionProvider)
     {
-        const int edgeCount = 12;
-        var vector = new double[edgeCount];
-
-        // Центр элемента для простой оценки J
-        var center = new Sensor(0.0, 0.0, 0.0);
-
-        // Получим J в центре элемента (можно расширить на интегрирование по всей области)
-        var J = Vector.Zero;
-        foreach (var source in sources)
-        {
-            J += await source.GetFieldAsync(center, element);
-        }
-
-        for (int i = 0; i < edgeCount; i++)
-        {
-            var basisFunction = await _basisFunctionService.GetBasisFunctionAsync(element, i);
-            var Wi = basisFunction(center);
-
-            var dot = J.X * Wi.X + J.Y * Wi.Y + J.Z * Wi.Z;
-
-            // Масштаб объема
-            var volume = element.GetSizes().X * element.GetSizes().Y * element.GetSizes().Z;
-            vector[i] = dot * volume;
-        }
-
-        return new Vector(vector);
+        _basisFunctionProvider = basisFunctionProvider;
     }
 
+    public Task<Vector> ComputeLocalRightHandSideAsync(FiniteElement element, IEnumerable<CurrentSegment> sources)
+    {
+        const int edgeCount = 12;
+        var localVector = new Vector(edgeCount);
+
+        var volume = element.GetSizes().X * element.GetSizes().Y * element.GetSizes().Z;
+
+        foreach (var source in sources)
+        {
+            if (!element.Contains(source.Center)) continue;
+
+            for (int i = 0; i < edgeCount; i++)
+            {
+                var basis = _basisFunctionProvider.GetValue(element, i, source.Center);
+                double contribution = basis.Dot(source.Direction) * source.Current;
+
+                localVector[i] += contribution * volume;
+            }
+        }
+
+        return Task.FromResult(localVector);
+    }
 }

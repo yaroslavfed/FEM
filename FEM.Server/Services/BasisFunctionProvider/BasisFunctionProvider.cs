@@ -2,7 +2,8 @@
 using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Models.BasicFunction;
-using FEM.Server.Services.IBasisFunctionProvider;
+
+namespace FEM.Server.Services.BasisFunctionProvider;
 
 public class BasicFunctionProvider : IBasisFunctionProvider
 {

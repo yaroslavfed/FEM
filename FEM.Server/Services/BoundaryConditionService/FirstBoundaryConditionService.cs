@@ -4,17 +4,8 @@ namespace FEM.Server.Services.BoundaryConditionService;
 
 public class FirstBoundaryConditionService : IBoundaryConditionService
 {
-    private readonly IBoundaryProvider _boundaryProvider;
-
-    public FirstBoundaryConditionService(IBoundaryProvider boundaryProvider)
+    public Task ApplyBoundaryConditionsAsync(Matrix matrix, Vector rhs, IReadOnlyList<int> constrainedDofs)
     {
-        _boundaryProvider = boundaryProvider;
-    }
-
-    public async Task ApplyBoundaryConditionsAsync(SparseMatrix matrix, Vector rhs)
-    {
-        var constrainedDofs = await _boundaryProvider.GetConstrainedDegreesOfFreedomAsync();
-
         foreach (int dof in constrainedDofs)
         {
             matrix.ClearRow(dof);
@@ -22,5 +13,7 @@ public class FirstBoundaryConditionService : IBoundaryConditionService
             matrix[dof, dof] = 1.0;
             rhs[dof] = 0.0;
         }
+
+        return Task.CompletedTask;
     }
 }

@@ -1,20 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using FEM.Common.Enums;
 using FEM.Server.Data;
 using FEM.Server.Data.Domain;
-using FEM.Server.Extensions;
+using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Services.AssemblyService;
 using FEM.Server.Services.BoundaryConditionService;
-using FEM.Server.Services.GlobalMatrixService;
-using FEM.Server.Services.IBasisFunctionProvider;
-using FEM.Server.Services.InaccuracyService;
-using FEM.Server.Services.MatrixPortraitService;
-using FEM.Server.Services.PlotService;
-using FEM.Server.Services.ProblemService;
-using FEM.Server.Services.RightPartVectorService;
-using FEM.Server.Services.SolverService;
 using FEM.Server.Services.SourceProvider;
-using FEM.Server.Services.TestResultService;
 using FEM.Server.Services.TestSessionService;
 using FEM.Server.Services.VisualizerService;
 using Microsoft.AspNetCore.Mvc;
@@ -28,22 +18,25 @@ namespace FEM.Server.Controllers;
 [Route("api/[controller]/Vector")]
 public class FemController : ControllerBase
 {
-    private readonly ITestSessionService    _testSessionService;
-    private readonly ICurrentSourceProvider _currentSourceProvider;
-    private readonly IProblemService        _problemService;
-    private readonly IVisualizerService     _visualizerService;
+    private readonly ITestSessionService       _testSessionService;
+    private readonly ICurrentSourceProvider    _currentSourceProvider;
+    private readonly IVisualizerService        _visualizerService;
+    private readonly IAssemblyService          _assemblyService;
+    private readonly IBoundaryConditionService _boundaryConditionService;
 
     /// <inheritdoc />
     public FemController(
         ITestSessionService testSessionService,
         ICurrentSourceProvider currentSourceProvider,
-        IProblemService problemService,
-        IVisualizerService visualizerService
+        IVisualizerService visualizerService,
+        IAssemblyService assemblyService,
+        IBoundaryConditionService boundaryConditionService
     )
     {
         _testSessionService = testSessionService;
         _currentSourceProvider = currentSourceProvider;
-        _problemService = problemService;
+        _assemblyService = assemblyService;
+        _boundaryConditionService = boundaryConditionService;
         _visualizerService = visualizerService;
     }
 
@@ -118,40 +111,24 @@ public class FemController : ControllerBase
 
             // 5. Построение матрицы жесткости и вектора правой части
             // Собираем глобальный список уникальных рёбер по EdgeIndex
-            var globalEdges = testSession
-                              .Mesh
-                              .Elements
-                              .SelectMany(e => e.Edges)
-                              .DistinctBy(e => e.EdgeIndex)
-                              .OrderBy(e => e.EdgeIndex)
-                              .ToList();
-
-            var dofCount = globalEdges.Count;
-
-            var matrix = new Matrix(dofCount, dofCount);
-            var rhs = new Vector(dofCount);
-
-            foreach (var element in testSession.Mesh.Elements)
-            {
-                var localMatrix = await _problemService.AssembleElementStiffnessMatrixAsync(element);
-                var localVector = await _problemService.AssembleElementRightHandVectorAsync(element, sources);
-
-                var globalIndices = element.GetGlobalEdgeIndices();
-
-                matrix.Assemble(localMatrix, globalIndices);
-                rhs.Assemble(localVector, globalIndices);
-            }
+            var (matrix, rhs) = await _assemblyService.AssembleGlobalSystemAsync(testSession.Mesh, sources);
 
             // 6. Применение краевых условий
-            await _firstBoundaryConditionService.ApplyAsync(
-                matrix,
-                rhs,
-                mesh,
-                testSession.AdditionParameters.BoundaryCondition
-            );
+            var constrainedDofs = ComputeBoundaryEdgeIndices(testSession.Mesh);
+            await _boundaryConditionService.ApplyBoundaryConditionsAsync(matrix, rhs, constrainedDofs);
 
             // 7. Решение СЛАУ
-            var solution = matrix.Solve(rhs);
+            var A = matrix.ToMathNet();
+            var b = rhs.ToMathNet();
+
+            // Выполняем LU-разложение
+            var solver = A.LU();
+
+            // Решаем СЛАУ
+            var x = solver.Solve(b);
+
+            // Конвертируем обратно в твой Vector
+            var solution = Vector.FromMathNet(x);
 
             // 8. Постобработка или сохранение результата
             return Ok(new { Message = "Calculation completed successfully" });
@@ -164,6 +141,27 @@ public class FemController : ControllerBase
         {
             Console.WriteLine($"[Ended session] Id: {testSessionParameters.Id}");
         }
+    }
+
+    private static List<int> ComputeBoundaryEdgeIndices(Mesh mesh)
+    {
+        var edgeUsageCount = new Dictionary<int, int>();
+
+        foreach (var element in mesh.Elements)
+        {
+            foreach (var edge in element.Edges)
+            {
+                if (!edgeUsageCount.ContainsKey(edge.EdgeIndex))
+                    edgeUsageCount[edge.EdgeIndex] = 0;
+
+                edgeUsageCount[edge.EdgeIndex]++;
+            }
+        }
+
+        // Рёбра, которые встречаются только один раз — это граничные
+        var boundaryEdges = edgeUsageCount.Where(kvp => kvp.Value == 1).Select(kvp => kvp.Key).ToList();
+
+        return boundaryEdges;
     }
 
 }

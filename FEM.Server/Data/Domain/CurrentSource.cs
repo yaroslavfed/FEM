@@ -7,12 +7,12 @@ public record CurrentSource
     /// <summary>
     /// Начало отрезка
     /// </summary>
-    public Point3D Start { get; set; }
+    public required Point3D Start { get; set; }
 
     /// <summary>
     /// Конец отрезка
     /// </summary>
-    public Point3D End { get; set; }
+    public required Point3D End { get; set; }
 
     /// <summary>
     /// Величина тока в амперах

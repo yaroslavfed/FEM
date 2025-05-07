@@ -2,7 +2,7 @@
 using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 
-namespace FEM.Server.Services.IBasisFunctionProvider;
+namespace FEM.Server.Services.BasisFunctionProvider;
 
 public interface IBasisFunctionProvider
 {

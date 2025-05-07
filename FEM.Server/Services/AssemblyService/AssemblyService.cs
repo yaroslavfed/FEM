@@ -1,58 +1,49 @@
-﻿using FEM.Common.Data.MathModels;
+﻿using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
-using FEM.Server.Models.CurrentSource;
-using FEM.Server.Services.MatrixBuilder;
+using FEM.Server.Extensions;
 using FEM.Server.Services.ProblemService;
-using FEM.Server.Services.VectorBuilder;
-using Vector = FEM.Server.Data.Domain.Vector;
 
 namespace FEM.Server.Services.AssemblyService;
 
 public class AssemblyService : IAssemblyService
 {
     private readonly IProblemService _problemService;
-    private readonly IMatrixBuilder  _matrixBuilder;
-    private readonly IVectorBuilder  _vectorBuilder;
 
-    public AssemblyService(IProblemService problemService, IMatrixBuilder matrixBuilder, IVectorBuilder vectorBuilder)
+    public AssemblyService(IProblemService problemService)
     {
         _problemService = problemService;
-        _matrixBuilder = matrixBuilder;
-        _vectorBuilder = vectorBuilder;
     }
 
-    public async Task<(SparseMatrix globalMatrix, Vector globalRhs)> AssembleGlobalSystemAsync(
+    public async Task<(Matrix GlobalMatrix, Vector GlobalRhs)> AssembleGlobalSystemAsync(
         Mesh mesh,
-        IReadOnlyList<ICurrentSource> sources
+        IReadOnlyList<CurrentSegment> sources
     )
     {
-        var globalMatrix = new SparseMatrix();
-        var globalVector = new Dictionary<int, double>();
+        // Собираем все глобальные уникальные рёбра
+        var globalEdges = mesh
+                          .Elements
+                          .SelectMany(e => e.Edges)
+                          .DistinctBy(e => e.EdgeIndex)
+                          .OrderBy(e => e.EdgeIndex)
+                          .ToList();
+
+        int dofCount = globalEdges.Count;
+
+        var globalMatrix = new Matrix(dofCount, dofCount);
+        var globalRhs = new Vector(dofCount);
 
         foreach (var element in mesh.Elements)
         {
-            var localMatrix = await _matrixBuilder.ComputeLocalStiffnessMatrixAsync(element);
-            var localVector = await _vectorBuilder.ComputeLocalRightHandSideAsync(element, sources);
+            var localMatrix = await _problemService.AssembleElementStiffnessMatrixAsync(element);
+            var localVector = await _problemService.AssembleElementRightHandVectorAsync(element, sources);
 
-            var localEdgeNumbers = _connectivityService.GetLocalToGlobalEdgeMap(element);
+            // EdgeIndex каждого ребра
+            var globalIndices = element.GetGlobalEdgeIndices();
 
-            for (int i = 0; i < 12; i++)
-            {
-                int globalI = localEdgeNumbers[i];
-
-                if (!globalVector.ContainsKey(globalI))
-                    globalVector[globalI] = 0;
-                globalVector[globalI] += localVector[i];
-
-                for (int j = 0; j < 12; j++)
-                {
-                    int globalJ = localEdgeNumbers[j];
-                    globalMatrix.Add(globalI, globalJ, localMatrix[i, j]);
-                }
-            }
+            globalMatrix.Assemble(localMatrix, globalIndices);
+            globalRhs.Assemble(localVector, globalIndices);
         }
 
-        var rhs = Vector.FromDictionary(globalVector, globalMatrix.Size);
-        return (globalMatrix, rhs);
+        return (globalMatrix, globalRhs);
     }
 }
