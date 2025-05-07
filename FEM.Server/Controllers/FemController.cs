@@ -2,6 +2,7 @@
 using FEM.Common.Enums;
 using FEM.Server.Data;
 using FEM.Server.Data.Domain;
+using FEM.Server.Extensions;
 using FEM.Server.Services.AssemblyService;
 using FEM.Server.Services.BoundaryConditionService;
 using FEM.Server.Services.GlobalMatrixService;
@@ -9,6 +10,7 @@ using FEM.Server.Services.IBasisFunctionProvider;
 using FEM.Server.Services.InaccuracyService;
 using FEM.Server.Services.MatrixPortraitService;
 using FEM.Server.Services.PlotService;
+using FEM.Server.Services.ProblemService;
 using FEM.Server.Services.RightPartVectorService;
 using FEM.Server.Services.SolverService;
 using FEM.Server.Services.SourceProvider;
@@ -28,17 +30,21 @@ public class FemController : ControllerBase
 {
     private readonly ITestSessionService    _testSessionService;
     private readonly ICurrentSourceProvider _currentSourceProvider;
-    private readonly IBasisFunctionProvider _basisFunctionProvider;
+    private readonly IProblemService        _problemService;
+    private readonly IVisualizerService     _visualizerService;
 
+    /// <inheritdoc />
     public FemController(
         ITestSessionService testSessionService,
         ICurrentSourceProvider currentSourceProvider,
-        IBasisFunctionProvider basisFunctionProvider
+        IProblemService problemService,
+        IVisualizerService visualizerService
     )
     {
         _testSessionService = testSessionService;
         _currentSourceProvider = currentSourceProvider;
-        _basisFunctionProvider = basisFunctionProvider;
+        _problemService = problemService;
+        _visualizerService = visualizerService;
     }
 
     /// <summary>
@@ -105,18 +111,30 @@ public class FemController : ControllerBase
         {
             // 1. Построение сетки
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
+            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
 
             // 3. Источник тока
             var sources = await _currentSourceProvider.GetSourcesAsync(testSessionParameters.CurrentSource);
 
             // 5. Построение матрицы жесткости и вектора правой части
-            var matrix = new Matrix(mesh.Edges.Count, mesh.Edges.Count);
-            var rhs = new Vector(mesh.Edges.Count);
+            // Собираем глобальный список уникальных рёбер по EdgeIndex
+            var globalEdges = testSession
+                              .Mesh
+                              .Elements
+                              .SelectMany(e => e.Edges)
+                              .DistinctBy(e => e.EdgeIndex)
+                              .OrderBy(e => e.EdgeIndex)
+                              .ToList();
 
-            foreach (var element in mesh.Elements)
+            var dofCount = globalEdges.Count;
+
+            var matrix = new Matrix(dofCount, dofCount);
+            var rhs = new Vector(dofCount);
+
+            foreach (var element in testSession.Mesh.Elements)
             {
-                var localMatrix = await _problemService.GetLocalMatrixAsync(element);
-                var localVector = await _problemService.GetLocalVectorAsync(element, sources);
+                var localMatrix = await _problemService.AssembleElementStiffnessMatrixAsync(element);
+                var localVector = await _problemService.AssembleElementRightHandVectorAsync(element, sources);
 
                 var globalIndices = element.GetGlobalEdgeIndices();
 

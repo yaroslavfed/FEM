@@ -1,6 +1,7 @@
 using FEM.Common.Data.Domain;
 using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
+using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Models.CurrentSource;
 
@@ -9,19 +10,19 @@ namespace FEM.Server.Services.ProblemService;
 public interface IProblemService
 {
     /// <summary>
-    /// Построение локальной матрицы жёсткости конечного элемента, работающего с ротором векторных базисных функций
+    /// Собирает локальную матрицу жёсткости (rot-rot) для заданного конечного элемента.
     /// </summary>
     /// <param name="element">Конечный элемент</param>
-    /// <returns>Локальная матрица жёсткости</returns>
-    Task<double[,]> BuildElementStiffnessMatrixAsync(FiniteElement element);
+    /// <param name="mu">Магнитная проницаемость в элементе</param>
+    Task<Matrix> AssembleElementStiffnessMatrixAsync(FiniteElement element);
 
     /// <summary>
-    /// Построение локального вектора правой части
+    /// Собирает локальный вектор правой части для заданного конечного элемента.
+    /// Вклад даётся только от тех сегментов тока, которые попадают внутрь элемента.
     /// </summary>
     /// <param name="element">Конечный элемент</param>
-    /// <param name="currentSources">Источники тока</param>
-    /// <returns>Локальный вектор правой части</returns>
-    Task<double[]> BuildElementRightHandVectorAsync(FiniteElement element, IEnumerable<ICurrentSource> currentSources);
+    /// <param name="sources">Список токовых сегментов</param>
+    Task<Vector> AssembleElementRightHandVectorAsync(FiniteElement element, IEnumerable<CurrentSegment> sources);
 
     Task<(Node firstNode, Node secondNode, EDirections direction)> ResolveLocalNodes(
         Edge edge,

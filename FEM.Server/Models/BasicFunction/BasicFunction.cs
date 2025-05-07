@@ -1,10 +1,8 @@
-﻿using System.Numerics;
-using AutoMapper;
-using FEM.Common.Data.Domain;
+﻿using AutoMapper;
 using FEM.Common.Data.MathModels;
+using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
-using FEM.Server.Extensions;
-using Vector = FEM.Common.Data.MathModels.Vector;
+
 
 namespace FEM.Server.Models.BasicFunction;
 
@@ -17,7 +15,8 @@ public class BasicFunction : IBasicFunction
         _mapper = mapper;
     }
 
-    public Vector GetBasicFunctions(FiniteElement finiteElement, int? number, Sensor? position)
+    /// <inheritdoc />
+    public Vector3D GetBasicFunctions(FiniteElement finiteElement, int? number, Point3D? position)
     {
         var feBounds = MapFiniteElementsAsync(finiteElement);
 
@@ -25,271 +24,118 @@ public class BasicFunction : IBasicFunction
         {
             1 => new()
             {
-                Data =
-                [
-                    HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position!.Coordinate.Y
-                    )
-                    * HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0,
-
-                    0
-                ]
+                X = HierarchicalFunctionsMinus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position!.Y)
+                    * HierarchicalFunctionsMinus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Y = 0,
+                Z = 0
             },
             2 => new()
             {
-                Data =
-                [
-                    HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position!.Coordinate.Y
-                    )
-                    * HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0,
-
-                    0
-                ]
+                X = HierarchicalFunctionsPlus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position!.Y)
+                    * HierarchicalFunctionsMinus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Y = 0,
+                Z = 0
             },
             3 => new()
             {
-                Data =
-                [
-                    HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position!.Coordinate.Y
-                    )
-                    * HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0,
-
-                    0
-                ]
+                X = HierarchicalFunctionsMinus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position!.Y)
+                    * HierarchicalFunctionsPlus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Y = 0,
+                Z = 0
             },
             4 => new()
             {
-                Data =
-                [
-                    HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position!.Coordinate.Y
-                    )
-                    * HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0,
-
-                    0
-                ]
+                X = HierarchicalFunctionsPlus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position!.Y)
+                    * HierarchicalFunctionsPlus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Y = 0,
+                Z = 0
             },
             5 => new()
             {
-                Data =
-                [
-                    0,
-
-                    HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0
-                ]
+                X = 0,
+                Y = HierarchicalFunctionsMinus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsMinus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Z = 0
             },
             6 => new()
             {
-                Data =
-                [
-                    0,
-
-                    HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0
-                ]
+                X = 0,
+                Y = HierarchicalFunctionsPlus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsMinus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Z = 0
             },
             7 => new()
             {
-                Data =
-                [
-                    0,
-
-                    HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0
-                ]
+                X = 0,
+                Y = HierarchicalFunctionsMinus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsPlus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Z = 0
             },
             8 => new()
             {
-                Data =
-                [
-                    0,
-
-                    HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Z,
-                        feBounds.HighCoordinate.Z,
-                        position.Coordinate.Z
-                    ),
-
-                    0
-                ]
+                X = 0,
+                Y = HierarchicalFunctionsPlus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsPlus(feBounds.LowCoordinate.Z, feBounds.HighCoordinate.Z, position.Z),
+                Z = 0
             },
             9 => new()
             {
-                Data =
-                [
-                    0,
-                    0,
-
-                    HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position.Coordinate.Y
-                    )
-                ]
+                X = 0,
+                Y = 0,
+                Z = HierarchicalFunctionsMinus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsMinus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position.Y)
             },
             10 => new()
             {
-                Data =
-                [
-                    0,
-                    0,
-
-                    HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position.Coordinate.Y
-                    )
-                ]
+                X = 0,
+                Y = 0,
+                Z = HierarchicalFunctionsPlus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsMinus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position.Y)
             },
             11 => new()
             {
-                Data =
-                [
-                    0,
-                    0,
-
-                    HierarchicalFunctionsMinus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position.Coordinate.Y
-                    )
-                ]
+                X = 0,
+                Y = 0,
+                Z = HierarchicalFunctionsMinus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsPlus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position.Y)
             },
             12 => new()
             {
-                Data =
-                [
-                    0,
-                    0,
-
-                    HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.X,
-                        feBounds.HighCoordinate.X,
-                        position!.Coordinate.X
-                    )
-                    * HierarchicalFunctionsPlus(
-                        feBounds.LowCoordinate.Y,
-                        feBounds.HighCoordinate.Y,
-                        position.Coordinate.Y
-                    )
-                ]
+                X = 0,
+                Y = 0,
+                Z = HierarchicalFunctionsPlus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
+                    * HierarchicalFunctionsPlus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position.Y)
             },
             _ => throw new ArgumentOutOfRangeException()
         };
     }
 
-    public Vector3 GetCurl(FiniteElement element, int number, Sensor point)
+    /// <inheritdoc />
+    public Vector3D GetCurl(FiniteElement element, int number, Point3D point)
     {
         const double h = 1e-6;
 
-        var p = point.Coordinate;
-
         // Малые смещения по каждой оси
-        var dx = new Point3D(p.X + h, p.Y, p.Z);
-        var dy = new Point3D(p.X, p.Y + h, p.Z);
-        var dz = new Point3D(p.X, p.Y, p.Z + h);
+        var dx = new Point3D(point.X + h, point.Y, point.Z);
+        var dy = new Point3D(point.X, point.Y + h, point.Z);
+        var dz = new Point3D(point.X, point.Y, point.Z + h);
 
-        var fx = GetBasicFunctions(element, number, new() { Coordinate = p }).Data;
-        var fxDx = GetBasicFunctions(element, number, new() { Coordinate = dx }).Data;
-        var fxDy = GetBasicFunctions(element, number, new() { Coordinate = dy }).Data;
-        var fxDz = GetBasicFunctions(element, number, new() { Coordinate = dz }).Data;
+        var fx = GetBasicFunctions(element, number, new() { X = point.X, Y = point.Y, Z = point.Z });
+        var fxDx = GetBasicFunctions(element, number, new() { X = dx.X, Y = dx.Y, Z = dx.Z });
+        var fxDy = GetBasicFunctions(element, number, new() { X = dy.X, Y = dy.Y, Z = dy.Z });
+        var fxDz = GetBasicFunctions(element, number, new() { X = dz.X, Y = dz.Y, Z = dz.Z });
 
         // Производные компонент по координатам (d/dx, d/dy, d/dz)
-        var dAxDy = (fxDy[0] - fx[0]) / h;
-        var dAxDz = (fxDz[0] - fx[0]) / h;
+        var dAxDy = (fxDy.X - fx.X) / h;
+        var dAxDz = (fxDz.X - fx.X) / h;
 
-        var dAyDx = (fxDx[1] - fx[1]) / h;
-        var dAyDz = (fxDz[1] - fx[1]) / h;
+        var dAyDx = (fxDx.Y - fx.Y) / h;
+        var dAyDz = (fxDz.Y - fx.Y) / h;
 
-        var dAzDx = (fxDx[2] - fx[2]) / h;
-        var dAzDy = (fxDy[2] - fx[2]) / h;
+        var dAzDx = (fxDx.Z - fx.Z) / h;
+        var dAzDy = (fxDy.Z - fx.Z) / h;
 
-        // Вычисление ротора curl A = (∂Az/∂y - ∂Ay/∂z, ∂Ax/∂z - ∂Az/∂x, ∂Ay/∂x - ∂Ax/∂y)
+        // Вычисление ротора A = (∂Az/∂y - ∂Ay/∂z, ∂Ax/∂z - ∂Az/∂x, ∂Ay/∂x - ∂Ax/∂y)
         var curlX = dAzDy - dAyDz;
         var curlY = dAxDz - dAzDx;
         var curlZ = dAyDx - dAxDy;

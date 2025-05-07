@@ -21,4 +21,12 @@ public static class FiniteElementExtensions
 
         return new() { X = maxX - minX, Y = maxY - minY, Z = maxZ - minZ };
     }
+    
+    public static int[] GetGlobalEdgeIndices(this FiniteElement element)
+    {
+        return element.Edges
+                      .OrderBy(e => e.EdgeIndex) // Порядок должен совпадать с порядком в локальных матрицах
+                      .Select(e => e.EdgeIndex)
+                      .ToArray();
+    }
 }
