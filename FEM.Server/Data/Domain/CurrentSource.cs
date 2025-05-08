@@ -17,7 +17,7 @@ public record CurrentSource
     /// <summary>
     /// Величина тока в амперах
     /// </summary>
-    public double Current { get; set; }
+    public double Amperage { get; set; }
 
     /// <summary>
     /// Число разбиений на сегменты

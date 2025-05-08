@@ -4,10 +4,12 @@ using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Services.AssemblyService;
 using FEM.Server.Services.BoundaryConditionService;
+using FEM.Server.Services.SolutionExportService;
 using FEM.Server.Services.SourceProvider;
 using FEM.Server.Services.TestSessionService;
 using FEM.Server.Services.VisualizerService;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace FEM.Server.Controllers;
 
@@ -23,6 +25,7 @@ public class FemController : ControllerBase
     private readonly IVisualizerService        _visualizerService;
     private readonly IAssemblyService          _assemblyService;
     private readonly IBoundaryConditionService _boundaryConditionService;
+    private readonly ISolutionExportService _solutionExportService;
 
     /// <inheritdoc />
     public FemController(
@@ -30,13 +33,13 @@ public class FemController : ControllerBase
         ICurrentSourceProvider currentSourceProvider,
         IVisualizerService visualizerService,
         IAssemblyService assemblyService,
-        IBoundaryConditionService boundaryConditionService
-    )
+        IBoundaryConditionService boundaryConditionService, ISolutionExportService solutionExportService)
     {
         _testSessionService = testSessionService;
         _currentSourceProvider = currentSourceProvider;
         _assemblyService = assemblyService;
         _boundaryConditionService = boundaryConditionService;
+        _solutionExportService = solutionExportService;
         _visualizerService = visualizerService;
     }
 
@@ -129,6 +132,23 @@ public class FemController : ControllerBase
 
             // Конвертируем обратно в твой Vector
             var solution = Vector.FromMathNet(x);
+            
+            var globalEdges = testSession.Mesh.Elements
+                .SelectMany(e => e.Edges)
+                .DistinctBy(e => e.EdgeIndex)
+                .OrderBy(e => e.EdgeIndex)
+                .ToList();
+
+            _solutionExportService.ExportToJson(globalEdges, solution, "solution.json");
+            
+            string _scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\visualize_potential_2d.py");
+            using Process myProcess = new();
+            myProcess.StartInfo.FileName = "python";
+            myProcess.StartInfo.Arguments = _scriptPath;
+            myProcess.StartInfo.UseShellExecute = false;
+            myProcess.StartInfo.RedirectStandardInput = true;
+            myProcess.StartInfo.RedirectStandardOutput = false;
+            myProcess.Start();
 
             // 8. Постобработка или сохранение результата
             return Ok(new { Message = "Calculation completed successfully" });

@@ -20,7 +20,7 @@ public class BasicFunction : IBasicFunction
     {
         var feBounds = MapFiniteElementsAsync(finiteElement);
 
-        return number switch
+        return (number+1) switch
         {
             1 => new()
             {
@@ -106,7 +106,7 @@ public class BasicFunction : IBasicFunction
                 Z = HierarchicalFunctionsPlus(feBounds.LowCoordinate.X, feBounds.HighCoordinate.X, position!.X)
                     * HierarchicalFunctionsPlus(feBounds.LowCoordinate.Y, feBounds.HighCoordinate.Y, position.Y)
             },
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException($"{number}")
         };
     }
 

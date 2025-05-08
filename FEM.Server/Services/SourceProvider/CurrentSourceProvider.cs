@@ -16,7 +16,7 @@ public class CurrentSourceProvider : ICurrentSourceProvider
         var segmentLength = Math.Sqrt(dx * dx + dy * dy + dz * dz);
         var direction = new Vector3D(dx, dy, dz).Normalize();
 
-        var currentPerSegment = source.Current / source.Segments;
+        var currentPerSegment = source.Amperage / source.Segments;
 
         for (int i = 0; i < source.Segments; i++)
         {
