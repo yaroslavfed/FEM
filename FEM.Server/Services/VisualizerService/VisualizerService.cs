@@ -1,22 +1,13 @@
 ﻿using System.Diagnostics;
-using FEM.Common.Data.MathModels.MatrixFormats;
 using FEM.Server.Data.Parallelepipedal;
-using FEM.Server.Services.SaverService;
 
 namespace FEM.Server.Services.VisualizerService;
 
 public class VisualizerService : IVisualizerService
 {
-    private readonly ISaverService _saverService;
-
     private readonly string _rootPath = Directory.GetCurrentDirectory();
     private readonly string _dataFileName = Path.Combine(Directory.GetCurrentDirectory(), "output.txt");
     private readonly string _scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\draw_mesh_script.py");
-
-    public VisualizerService(ISaverService saverService)
-    {
-        _saverService = saverService;
-    }
 
     public async Task DrawMeshPlotAsync(Mesh mesh)
     {
@@ -33,21 +24,6 @@ public class VisualizerService : IVisualizerService
             throw new FileNotFoundException($"Data file was not found from path {_dataFileName}");
 
         await StartDrawingAsync();
-    }
-
-    public async Task WriteMatrixToFileAsync(IMatrixFormat matrixProfile)
-    {
-        DeleteOutputFiles();
-
-        if (matrixProfile is MatrixProfileFormat source)
-        {
-            Directory.CreateDirectory("OutputProfile/");
-            await _saverService.WriteListToFileAsync("OutputProfile/Di.txt", source.Di);
-            await _saverService.WriteListToFileAsync("OutputProfile/Gg.txt", source.Gg);
-            await _saverService.WriteListToFileAsync("OutputProfile/Ig.txt", source.Ig);
-            await _saverService.WriteListToFileAsync("OutputProfile/Jg.txt", source.Jg);
-            await _saverService.WriteListToFileAsync("OutputProfile/F.txt", source.F);
-        }
     }
 
     private Task StartDrawingAsync()

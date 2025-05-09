@@ -32,7 +32,7 @@ def plot_z_level(index):
     ax.set_title(f"Срез по Z = {z:.2f}")
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
-    ax.quiver(x, y, u, v, values[mask], cmap="plasma", scale=1, scale_units='xy')
+    ax.quiver(x, y, u, v, values[mask], cmap="grey", scale=1, scale_units='xy')
     fig.canvas.draw_idle()
 
 # === Обработчики кнопок ===

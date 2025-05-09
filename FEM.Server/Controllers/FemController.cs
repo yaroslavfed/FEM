@@ -10,6 +10,8 @@ using FEM.Server.Services.TestSessionService;
 using FEM.Server.Services.VisualizerService;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using FEM.Server.Services.PlotService;
+using FEM.Server.Services.SensorEvaluator;
 
 namespace FEM.Server.Controllers;
 
@@ -25,7 +27,9 @@ public class FemController : ControllerBase
     private readonly IVisualizerService        _visualizerService;
     private readonly IAssemblyService          _assemblyService;
     private readonly IBoundaryConditionService _boundaryConditionService;
-    private readonly ISolutionExportService _solutionExportService;
+    private readonly ISolutionExportService    _solutionExportService;
+    private readonly IPlotService              _plotService;
+    private readonly ISensorEvaluator          _sensorEvaluator;
 
     /// <inheritdoc />
     public FemController(
@@ -33,13 +37,19 @@ public class FemController : ControllerBase
         ICurrentSourceProvider currentSourceProvider,
         IVisualizerService visualizerService,
         IAssemblyService assemblyService,
-        IBoundaryConditionService boundaryConditionService, ISolutionExportService solutionExportService)
+        IBoundaryConditionService boundaryConditionService,
+        ISolutionExportService solutionExportService,
+        IPlotService plotService,
+        ISensorEvaluator sensorEvaluator
+    )
     {
         _testSessionService = testSessionService;
         _currentSourceProvider = currentSourceProvider;
         _assemblyService = assemblyService;
         _boundaryConditionService = boundaryConditionService;
         _solutionExportService = solutionExportService;
+        _plotService = plotService;
+        _sensorEvaluator = sensorEvaluator;
         _visualizerService = visualizerService;
     }
 
@@ -56,7 +66,7 @@ public class FemController : ControllerBase
     ///         "meshParameters": {
     ///             "xCenterCoordinate": 0,
     ///             "yCenterCoordinate": 0,
-    ///             "zCenterCoordinate": 0,
+    ///             "zCenterCoordinate": -1,
     ///             "xStepToBounds": 2,
     ///             "yStepToBounds": 2,
     ///             "zStepToBounds": 2
@@ -75,22 +85,36 @@ public class FemController : ControllerBase
     ///             "boundaryCondition": 0
     ///         },
     ///         "strataList": [
-    ///             {
-    ///                 "positioning": {
-    ///                     "centerCoordinate": {
-    ///                         "x": 0,
-    ///                         "y": 0,
-    ///                         "z": 0
-    ///                     },
-    ///                     "boundsDistance": {
-    ///                         "x": 1,
-    ///                         "y": 1,
-    ///                         "z": 1
-    ///                     }
+    ///         {
+    ///             "positioning": {
+    ///                 "centerCoordinate": {
+    ///                     "x": 0,
+    ///                     "y": 0,
+    ///                     "z": 0
     ///                 },
-    ///                 "mu": 6
-    ///             }
-    ///         ]
+    ///                 "boundsDistance": {
+    ///                     "x": 1,
+    ///                     "y": 1,
+    ///                     "z": 1
+    ///                 }
+    ///             },
+    ///             "mu": 6
+    ///         }
+    ///         ],
+    ///         "currentSource": {
+    ///             "start": {
+    ///                 "x": -1,
+    ///                 "y": 0,
+    ///                 "z": 0
+    ///             },
+    ///             "end": {
+    ///                 "x": 1,
+    ///                 "y": 0,
+    ///                 "z": 0
+    ///             },
+    ///             "amperage": 100,
+    ///             "segments": 10
+    ///         }
     ///     }
     ///
     /// </remarks>
@@ -109,6 +133,8 @@ public class FemController : ControllerBase
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
             await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
 
+            await _plotService.ShowPlotAsync(testSession.Mesh);
+
             // 3. Источник тока
             var sources = await _currentSourceProvider.GetSourcesAsync(testSessionParameters.CurrentSource);
 
@@ -121,6 +147,7 @@ public class FemController : ControllerBase
             await _boundaryConditionService.ApplyBoundaryConditionsAsync(matrix, rhs, constrainedDofs);
 
             // 7. Решение СЛАУ
+            // ReSharper disable once InconsistentNaming
             var A = matrix.ToMathNet();
             var b = rhs.ToMathNet();
 
@@ -132,26 +159,44 @@ public class FemController : ControllerBase
 
             // Конвертируем обратно в твой Vector
             var solution = Vector.FromMathNet(x);
-            
-            var globalEdges = testSession.Mesh.Elements
-                .SelectMany(e => e.Edges)
-                .DistinctBy(e => e.EdgeIndex)
-                .OrderBy(e => e.EdgeIndex)
-                .ToList();
+
+            var globalEdges = testSession
+                              .Mesh
+                              .Elements
+                              .SelectMany(e => e.Edges)
+                              .DistinctBy(e => e.EdgeIndex)
+                              .OrderBy(e => e.EdgeIndex)
+                              .ToList();
 
             _solutionExportService.ExportToJson(globalEdges, solution, "solution.json");
-            
-            string _scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\visualize_potential_2d.py");
+
+            var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\visualize_potential_2d.py");
             using Process myProcess = new();
             myProcess.StartInfo.FileName = "python";
-            myProcess.StartInfo.Arguments = _scriptPath;
+            myProcess.StartInfo.Arguments = scriptPath;
             myProcess.StartInfo.UseShellExecute = false;
             myProcess.StartInfo.RedirectStandardInput = true;
             myProcess.StartInfo.RedirectStandardOutput = false;
             myProcess.Start();
 
-            // 8. Постобработка или сохранение результата
-            return Ok(new { Message = "Calculation completed successfully" });
+            // Восстанавливаем значения B на сенсорах
+            var sensorValues = _sensorEvaluator.EvaluateAll(testSessionParameters.Sensors, testSession.Mesh, solution);
+
+            return Ok(
+                new
+                {
+                    Message = "Расчёт завершён",
+                    SensorResults = testSessionParameters.Sensors.Select((s, i) => new
+                        {
+                            s.Position.X,
+                            s.Position.Y,
+                            s.Position.Z,
+                            Component = s.ComponentIndex,
+                            Value = sensorValues[i]
+                        }
+                    )
+                }
+            );
         } catch (Exception exception)
         {
             return BadRequest(

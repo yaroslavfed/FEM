@@ -6,6 +6,4 @@ namespace FEM.Server.Services.VisualizerService;
 public interface IVisualizerService
 {
     Task DrawMeshPlotAsync(Mesh mesh);
-
-    Task WriteMatrixToFileAsync(IMatrixFormat matrixProfile);
 }
