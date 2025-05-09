@@ -1,8 +1,10 @@
 ﻿using FEM.Common.Data.Domain;
+using FEM.Common.Data.MathModels;
 using FEM.Server.Data;
 using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Services.BasisFunctionProvider;
+using Vector = FEM.Server.Data.Domain.Vector;
 
 namespace FEM.Server.Services.SensorEvaluator;
 
@@ -37,7 +39,7 @@ public class SensorEvaluator : ISensorEvaluator
             b.Z += aLocal[i] * curl.Z;
         }
 
-        return sensor.ComponentIndex switch
+        return sensor.ComponentDirection switch
         {
             ESensorComponent.Bx => b.X,
             ESensorComponent.By => b.Y,
@@ -56,5 +58,26 @@ public class SensorEvaluator : ISensorEvaluator
         }
 
         return result;
+    }
+
+    public Vector3D EvaluateFullBAtPoint(Point3D point, Mesh mesh, Vector solution)
+    {
+        var element = mesh.Elements.FirstOrDefault(e => e.Contains(point));
+        if (element is null)
+            return new Vector3D(0, 0, 0);
+
+        var aLocal = element.Edges.OrderBy(e => e.EdgeIndex).Select(e => solution[e.EdgeIndex]).ToArray();
+
+        var b = new Vector3D();
+
+        for (int i = 0; i < 12; i++)
+        {
+            var curl = _basisProvider.GetCurl(element, i, point);
+            b.X += aLocal[i] * curl.X;
+            b.Y += aLocal[i] * curl.Y;
+            b.Z += aLocal[i] * curl.Z;
+        }
+
+        return b;
     }
 }

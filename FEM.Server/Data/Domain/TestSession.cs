@@ -16,5 +16,5 @@ public record TestSession
 
     public required CurrentSource CurrentSource { get; init; }
     
-    public required IReadOnlyList<Sensor> Sensors { get; init; }
+    public required IReadOnlyList<Sensor> Sensors { get; set; }
 }

@@ -10,8 +10,11 @@ using FEM.Server.Services.TestSessionService;
 using FEM.Server.Services.VisualizerService;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Net;
+using System.Text.Json;
 using FEM.Server.Services.PlotService;
 using FEM.Server.Services.SensorEvaluator;
+using FEM.Server.Services.SensorGenerator;
 
 namespace FEM.Server.Controllers;
 
@@ -127,8 +130,20 @@ public class FemController : ControllerBase
     [SuppressMessage("ReSharper.DPA", "DPA0011: High execution time of MVC action")]
     public async Task<IActionResult> CreateCalculation([FromBody] TestSession testSessionParameters)
     {
+        Console.WriteLine($"[Started session] Id: {testSessionParameters.Id}");
         try
         {
+            testSessionParameters.Sensors = SensorGenerator.GenerateXYPlaneSensors(
+                xMin: -5,
+                xMax: 5,
+                xCount: 11,
+                yMin: -5,
+                yMax: 5,
+                yCount: 11,
+                zLevel: 0.0,
+                component: ESensorComponent.Bz
+            );
+
             // 1. Построение сетки
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
             await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
@@ -182,21 +197,34 @@ public class FemController : ControllerBase
             // Восстанавливаем значения B на сенсорах
             var sensorValues = _sensorEvaluator.EvaluateAll(testSessionParameters.Sensors, testSession.Mesh, solution);
 
-            return Ok(
-                new
-                {
-                    Message = "Расчёт завершён",
-                    SensorResults = testSessionParameters.Sensors.Select((s, i) => new
-                        {
-                            s.Position.X,
-                            s.Position.Y,
-                            s.Position.Z,
-                            Component = s.ComponentIndex,
-                            Value = sensorValues[i]
-                        }
-                    )
-                }
+            var output = new
+            {
+                Message = "Расчёт завершён",
+                SensorResults = testSessionParameters.Sensors.Select((s, i) => new
+                    {
+                        x = s.Position.X,
+                        y = s.Position.Y,
+                        z = s.Position.Z,
+                        Component = s.ComponentDirection
+                                     .ToString(),
+                        Value = sensorValues[i]
+                    }
+                )
+            };
+
+            await System.IO.File.WriteAllTextAsync(
+                "bz_surface.json",
+                JsonSerializer.Serialize(output, new JsonSerializerOptions { WriteIndented = true })
             );
+
+            _solutionExportService.ExportBFieldToVtu(
+                testSessionParameters.Sensors,
+                testSession.Mesh,
+                solution,
+                "bfield.vtu"
+            );
+
+            return Ok(output);
         } catch (Exception exception)
         {
             return BadRequest(
@@ -216,8 +244,7 @@ public class FemController : ControllerBase
         {
             foreach (var edge in element.Edges)
             {
-                if (!edgeUsageCount.ContainsKey(edge.EdgeIndex))
-                    edgeUsageCount[edge.EdgeIndex] = 0;
+                edgeUsageCount.TryAdd(edge.EdgeIndex, 0);
 
                 edgeUsageCount[edge.EdgeIndex]++;
             }
