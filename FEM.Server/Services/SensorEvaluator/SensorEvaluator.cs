@@ -64,7 +64,7 @@ public class SensorEvaluator : ISensorEvaluator
     {
         var element = mesh.Elements.FirstOrDefault(e => e.Contains(point));
         if (element is null)
-            return new Vector3D(0, 0, 0);
+            return new(0, 0, 0);
 
         var aLocal = element.Edges.OrderBy(e => e.EdgeIndex).Select(e => solution[e.EdgeIndex]).ToArray();
 

@@ -175,17 +175,14 @@ public class FemController : ControllerBase
             // Конвертируем обратно в твой Vector
             var solution = Vector.FromMathNet(x);
 
-            var globalEdges = testSession
-                              .Mesh
-                              .Elements
-                              .SelectMany(e => e.Edges)
-                              .DistinctBy(e => e.EdgeIndex)
-                              .OrderBy(e => e.EdgeIndex)
-                              .ToList();
-
-            _solutionExportService.ExportToJson(globalEdges, solution, "solution.json");
-
-            var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\visualize_potential_2d.py");
+            _solutionExportService.ExportSensorsToJson(
+                testSessionParameters.Sensors,
+                testSession.Mesh,
+                solution,
+                "bfield_3d.json"
+            );
+            
+            var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\visualize_sensors.py");
             using Process myProcess = new();
             myProcess.StartInfo.FileName = "python";
             myProcess.StartInfo.Arguments = scriptPath;
@@ -194,37 +191,7 @@ public class FemController : ControllerBase
             myProcess.StartInfo.RedirectStandardOutput = false;
             myProcess.Start();
 
-            // Восстанавливаем значения B на сенсорах
-            var sensorValues = _sensorEvaluator.EvaluateAll(testSessionParameters.Sensors, testSession.Mesh, solution);
-
-            var output = new
-            {
-                Message = "Расчёт завершён",
-                SensorResults = testSessionParameters.Sensors.Select((s, i) => new
-                    {
-                        x = s.Position.X,
-                        y = s.Position.Y,
-                        z = s.Position.Z,
-                        Component = s.ComponentDirection
-                                     .ToString(),
-                        Value = sensorValues[i]
-                    }
-                )
-            };
-
-            await System.IO.File.WriteAllTextAsync(
-                "bz_surface.json",
-                JsonSerializer.Serialize(output, new JsonSerializerOptions { WriteIndented = true })
-            );
-
-            _solutionExportService.ExportBFieldToVtu(
-                testSessionParameters.Sensors,
-                testSession.Mesh,
-                solution,
-                "bfield.vtu"
-            );
-
-            return Ok(output);
+            return Ok(solution);
         } catch (Exception exception)
         {
             return BadRequest(

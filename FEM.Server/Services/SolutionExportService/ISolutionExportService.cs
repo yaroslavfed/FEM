@@ -12,4 +12,6 @@ public interface ISolutionExportService
     void ExportFullBFieldToJson(IReadOnlyList<Sensor> sensors, Mesh mesh, Vector solution, string filePath);
 
     void ExportBFieldToVtu(IReadOnlyList<Sensor> sensors, Mesh mesh, Vector solution, string filePath);
+
+    void ExportSensorsToJson(IReadOnlyList<Sensor> sensors, Mesh mesh, Vector solution, string filePath);
 }

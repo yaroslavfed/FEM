@@ -1,10 +1,12 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using FEM.Common.Data.Domain;
 using FEM.Common.Data.MathModels;
 using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
+using FEM.Server.Services.BasisFunctionProvider;
 using FEM.Server.Services.SensorEvaluator;
 using Vector = FEM.Server.Data.Domain.Vector;
 
@@ -140,5 +142,31 @@ public class SolutionExportService : ISolutionExportService
         File.WriteAllText(filePath, sb.ToString());
 
         Console.WriteLine($"▶ Экспортировано {count} точек с вектором B → {filePath}");
+    }
+
+    public void ExportSensorsToJson(IReadOnlyList<Sensor> sensors, Mesh mesh, Vector solution, string filePath)
+    {
+        var sensorData = sensors.Select(sensor =>
+            {
+                var b = _sensorEvaluator.EvaluateFullBAtPoint(sensor.Position, mesh, solution);
+                return new
+                {
+                    x = sensor.Position.X,
+                    y = sensor.Position.Y,
+                    z = sensor.Position.Z,
+                    bx = b?.X ?? 0.0,
+                    by = b?.Y ?? 0.0,
+                    bz = b?.Z ?? 0.0
+                };
+            }
+        );
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true, NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
+        };
+
+        File.WriteAllText(filePath, JsonSerializer.Serialize(sensorData, options));
+        Console.WriteLine($"▶ Данные сенсоров экспортированы в файл: {filePath}");
     }
 }
