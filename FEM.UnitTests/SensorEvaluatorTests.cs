@@ -12,7 +12,7 @@ public class SensorEvaluatorTests
     public void EvaluateBVectorAt_CenterOfUniformElement_ReturnsExpectedB()
     {
         // Arrange
-        var element = TestElementFactory.CreateUnitCube(mu: 1.0); // куб с μ = 1
+        var element = FiniteElementFactory.CreateUnitCube(mu: 1.0);
         var mesh = new Mesh { Elements = [element] };
 
         // Вектор A: просто константы на каждом ребре, например, A_i = 1
@@ -20,7 +20,7 @@ public class SensorEvaluatorTests
         for (int i = 0; i < 12; i++) solution[i] = 1.0;
 
         var center = element.GetCenter();
-        var basis = new BasicFunctionProviderStub(); // Подставной, возвращающий аналитические curl
+        var basis = new BasicFunctionProviderStub();
         var evaluator = new SensorEvaluator(basis);
 
         // Act

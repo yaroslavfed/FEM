@@ -9,28 +9,39 @@ from typing import List, Optional
 from matplotlib.cm import ScalarMappable
 from matplotlib.patches import Polygon
 
+
 @dataclass(frozen=True)
 class Point3D:
     X: float
     Y: float
     Z: float
 
+
+@dataclass(frozen=True)
+class Sensor:
+    Position: Point3D
+    ComponentDirection: str
+
+
 @dataclass(frozen=True)
 class Node:
     NodeIndex: int
     Coordinate: Point3D
+
 
 @dataclass
 class Edge:
     EdgeIndex: int
     Nodes: List[Node]
 
+
 @dataclass
 class FiniteElement:
     Edges: List[Edge]
     Mu: float
 
-def load_from_json(file_path: str) -> List[FiniteElement]:
+
+def load_from_json(file_path: str) -> tuple[List[FiniteElement], List[Sensor]]:
     """Загрузка данных из JSON файла, созданного в C#"""
     try:
         with open(file_path, 'r') as f:
@@ -40,6 +51,7 @@ def load_from_json(file_path: str) -> List[FiniteElement]:
     except json.JSONDecodeError:
         raise ValueError(f"Ошибка парсинга JSON в файле {file_path}")
 
+    # Загрузка КЭ
     elements = []
     for element in data['Elements']:
         edges = []
@@ -66,17 +78,31 @@ def load_from_json(file_path: str) -> List[FiniteElement]:
             Mu=element['Mu']
         ))
 
+    # Загрузка сенсоров
+    sensors = []
+    for sensor_data in data['sensors']:
+        pos_data = sensor_data['Position']
+        sensors.append(Sensor(
+            Position=Point3D(
+                X=pos_data['X'],
+                Y=pos_data['Y'],
+                Z=pos_data['Z']
+            ),
+            ComponentDirection=sensor_data['ComponentDirection']
+        ))
+
     if not elements:
         raise ValueError("Файл не содержит элементов для визуализации")
 
-    return elements
+    return elements, sensors
+
 
 def plot_finite_element_mesh(
         elements: List[FiniteElement],
+        sensors: List[Sensor],
         x_slice: Optional[float] = None,
         y_slice: Optional[float] = None,
-        z_slice: Optional[float] = None,
-        tolerance: float = 0.1
+        z_slice: Optional[float] = None
 ):
     """Основная функция визуализации с поддержкой сечений и 2D проекций"""
 
@@ -94,9 +120,9 @@ def plot_finite_element_mesh(
 
     # Всегда создаем все 4 оси
     ax3d = fig.add_subplot(gs[0, 0], projection='3d')
-    ax_top_right = fig.add_subplot(gs[0, 1])    # Для XY или сечения Z
+    ax_top_right = fig.add_subplot(gs[0, 1])  # Для XY или сечения Z
     ax_bottom_left = fig.add_subplot(gs[1, 0])  # Для XZ или сечения Y
-    ax_bottom_right = fig.add_subplot(gs[1, 1]) # Для YZ или сечения X
+    ax_bottom_right = fig.add_subplot(gs[1, 1])  # Для YZ или сечения X
 
     # Настройка цветовой карты
     mues = [el.Mu for el in elements]
@@ -118,8 +144,8 @@ def plot_finite_element_mesh(
         min_vals = arr.min(axis=0)
         max_vals = arr.max(axis=0)
     else:
-        min_vals = [0-padding, 0-padding, 0-padding]
-        max_vals = [1+padding, 1+padding, 1+padding]
+        min_vals = [0 - padding, 0 - padding, 0 - padding]
+        max_vals = [1 + padding, 1 + padding, 1 + padding]
 
     bounds = {
         'xy': {'x': (min_vals[0], max_vals[0]), 'y': (min_vals[1], max_vals[1])},
@@ -128,6 +154,39 @@ def plot_finite_element_mesh(
     }
 
     # 3D визуализация рёбер
+    if sensors:
+        sensor_coords = np.array([
+            [s.Position.X, s.Position.Y, s.Position.Z]
+            for s in sensors
+        ])
+        ax3d.scatter(
+            sensor_coords[:, 0],
+            sensor_coords[:, 1],
+            sensor_coords[:, 2],
+            c='red',
+            marker='o',
+            s=50,
+            edgecolors='black',
+            linewidths=1,
+            label='Sensors',
+            alpha=0.8
+        )
+
+        # Добавляем подписи для сенсоров
+        for i, sensor in enumerate(sensors):
+            ax3d.text(
+                sensor.Position.X,
+                sensor.Position.Y,
+                sensor.Position.Z,
+                f'S{i + 1}',
+                color='darkred',
+                fontsize=8,
+                ha='center',
+                va='bottom'
+            )
+
+        ax3d.legend(loc='upper right')
+
     for element in elements:
         color = cmap(norm(element.Mu))
         for edge in element.Edges:
@@ -145,10 +204,10 @@ def plot_finite_element_mesh(
     ax3d.xaxis.set_pane_color((0.95, 0.95, 0.95, 0.1))
     ax3d.yaxis.set_pane_color((0.95, 0.95, 0.95, 0.1))
     ax3d.zaxis.set_pane_color((0.95, 0.95, 0.95, 0.1))
-    ax3d.xaxis._axinfo["grid"].update({"linewidth":0.5, "color":"gray"})
-    ax3d.yaxis._axinfo["grid"].update({"linewidth":0.5, "color":"gray"})
-    ax3d.zaxis._axinfo["grid"].update({"linewidth":0.5, "color":"gray"})
-    
+    ax3d.xaxis._axinfo["grid"].update({"linewidth": 0.5, "color": "gray"})
+    ax3d.yaxis._axinfo["grid"].update({"linewidth": 0.5, "color": "gray"})
+    ax3d.zaxis._axinfo["grid"].update({"linewidth": 0.5, "color": "gray"})
+
     ax3d.set_xlabel('X', fontsize=12, labelpad=15)
     ax3d.set_ylabel('Y', fontsize=12, labelpad=15)
     ax3d.set_zlabel('Z', fontsize=12, labelpad=15)
@@ -243,9 +302,9 @@ def plot_finite_element_mesh(
 
                 if (coord1 <= position <= coord2) or (coord2 <= position <= coord1):
                     t = (position - coord1) / (coord2 - coord1 + 1e-9)
-                    x = n1.Coordinate.X + t*(n2.Coordinate.X - n1.Coordinate.X)
-                    y = n1.Coordinate.Y + t*(n2.Coordinate.Y - n1.Coordinate.Y)
-                    z = n1.Coordinate.Z + t*(n2.Coordinate.Z - n1.Coordinate.Z)
+                    x = n1.Coordinate.X + t * (n2.Coordinate.X - n1.Coordinate.X)
+                    y = n1.Coordinate.Y + t * (n2.Coordinate.Y - n1.Coordinate.Y)
+                    z = n1.Coordinate.Z + t * (n2.Coordinate.Z - n1.Coordinate.Z)
 
                     if axis == 'X':
                         points.append((y, z))
@@ -300,6 +359,7 @@ def plot_finite_element_mesh(
     plt.savefig("graph.png", dpi=300)
     plt.show()
 
+
 if __name__ == "__main__":
     # Настройка параметров командной строки
     parser = argparse.ArgumentParser(
@@ -330,18 +390,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        elements = load_from_json("mesh_data.json")
+        elements, sensors = load_from_json("mesh_data.json")
         plot_finite_element_mesh(
             elements=elements,
+            sensors=sensors,
             x_slice=0,
             y_slice=0,
             z_slice=0
         )
     except Exception as e:
         print(f"\nОшибка: {str(e)}")
-        print("Проверьте следующие моменты:")
-        print("1. Файл существует и доступен для чтения")
-        print("2. Формат файла соответствует спецификации")
-        print("3. Данные содержат хотя бы один конечный элемент")
-        print("4. Указанные координаты сечения находятся в пределах модели\n")
         exit(1)

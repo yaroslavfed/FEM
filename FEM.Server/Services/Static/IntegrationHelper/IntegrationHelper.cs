@@ -5,7 +5,7 @@ namespace FEM.Server.Services.Static.IntegrationHelper;
 
 public static class IntegrationHelper
 {
-    public static List<Point3D> GetIntegrationPoints(FiniteElement element)
+    public static List<IntegrationPoint> GetIntegrationPoints(FiniteElement element)
     {
         var nodes = element.Edges.SelectMany(e => e.Nodes).DistinctBy(n => n.NodeIndex).ToList();
 
@@ -20,7 +20,8 @@ public static class IntegrationHelper
         var centerY = (minY + maxY) / 2.0;
         var centerZ = (minZ + maxZ) / 2.0;
 
-        var points = new List<Point3D>();
+        var points = new List<IntegrationPoint>();
+        var weight = element.Volume / 8.0;
 
         foreach (var x in new[]
         {
@@ -38,7 +39,7 @@ public static class IntegrationHelper
                     centerZ
                 })
                 {
-                    points.Add(new Point3D(x + (maxX - minX) / 4, y + (maxY - minY) / 4, z + (maxZ - minZ) / 4));
+                    points.Add(new() { Position = new(x, y, z), Weight = weight });
                 }
 
         return points;

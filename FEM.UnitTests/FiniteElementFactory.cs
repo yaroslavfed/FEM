@@ -3,7 +3,7 @@ using FEM.Server.Data.Parallelepipedal;
 
 namespace FEM.UnitTests;
 
-public static class TestElementFactory
+public static class FiniteElementFactory
 {
     public static FiniteElement CreateUnitCube(double mu)
     {

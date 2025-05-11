@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using FEM.Common.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using Newtonsoft.Json;
 
@@ -6,9 +7,20 @@ namespace FEM.Server.Services.PlotService;
 
 public class PlotService : IPlotService
 {
-    private Task CreateDataFiles(Mesh mesh)
+    private Task CreateDataFiles(Mesh mesh, IReadOnlyList<Sensor> sensors)
     {
-        var json = JsonConvert.SerializeObject(mesh, Formatting.Indented);
+        var model = new
+        {
+            mesh.Elements,
+            sensors = sensors.Select(sensor => new
+                {
+                    Position = new { sensor.Position.X, sensor.Position.Y, sensor.Position.Z },
+                    ComponentDirection = sensor.ComponentDirection.ToString()
+                }
+            )
+        };
+
+        var json = JsonConvert.SerializeObject(model, Formatting.Indented);
         File.WriteAllText("mesh_data.json", json);
 
         Console.WriteLine("Data saved to mesh_data.json");
@@ -30,9 +42,9 @@ public class PlotService : IPlotService
         return Task.CompletedTask;
     }
 
-    public async Task ShowPlotAsync(Mesh mesh)
+    public async Task ShowPlotAsync(Mesh mesh, IReadOnlyList<Sensor> sensors)
     {
-        await CreateDataFiles(mesh);
+        await CreateDataFiles(mesh, sensors);
 
         using Process myProcess = new();
         myProcess.StartInfo.FileName = "python";

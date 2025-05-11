@@ -20,7 +20,7 @@ public class BasicFunction : IBasicFunction
     {
         var feBounds = MapFiniteElementsAsync(finiteElement);
 
-        return (number+1) switch
+        return (number + 1) switch
         {
             1 => new()
             {
@@ -113,7 +113,7 @@ public class BasicFunction : IBasicFunction
     /// <inheritdoc />
     public Vector3D GetCurl(FiniteElement element, int number, Point3D point)
     {
-        const double h = 1e-6;
+        const double h = 1e-4;
 
         // Малые смещения по каждой оси
         var dx = new Point3D(point.X + h, point.Y, point.Z);
@@ -121,6 +121,7 @@ public class BasicFunction : IBasicFunction
         var dz = new Point3D(point.X, point.Y, point.Z + h);
 
         var fx = GetBasicFunctions(element, number, new() { X = point.X, Y = point.Y, Z = point.Z });
+        
         var fxDx = GetBasicFunctions(element, number, new() { X = dx.X, Y = dx.Y, Z = dx.Z });
         var fxDy = GetBasicFunctions(element, number, new() { X = dy.X, Y = dy.Y, Z = dy.Z });
         var fxDz = GetBasicFunctions(element, number, new() { X = dz.X, Y = dz.Y, Z = dz.Z });
@@ -140,7 +141,7 @@ public class BasicFunction : IBasicFunction
         var curlY = dAxDz - dAzDx;
         var curlZ = dAyDx - dAxDy;
 
-        return new((float)curlX, (float)curlY, (float)curlZ);
+        return new(curlX, curlY, curlZ);
     }
 
     private FiniteElementBounds MapFiniteElementsAsync(FiniteElement finiteElement)

@@ -1,4 +1,5 @@
 using FEM.Common.Data.Domain;
+using FEM.Common.Data.MathModels;
 using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
 using FEM.Server.Data.Domain;
@@ -6,6 +7,8 @@ using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Extensions;
 using FEM.Server.Services.BasisFunctionProvider;
 using FEM.Server.Services.Static.IntegrationHelper;
+using Matrix = FEM.Server.Data.Domain.Matrix;
+using Vector = FEM.Server.Data.Domain.Vector;
 
 namespace FEM.Server.Services.ProblemService;
 
@@ -36,10 +39,10 @@ public class ProblemService : IProblemService
 
                 foreach (var point in integrationPoints)
                 {
-                    var weight = volume / integrationPoints.Count;
-                    var curlI = _basisFunctionProvider.GetCurl(element, i, point);
-                    var curlJ = _basisFunctionProvider.GetCurl(element, j, point);
-                    sum += (1.0 / element.Mu) * curlI.Dot(curlJ) * weight;
+                    var curlI = _basisFunctionProvider.GetCurl(element, i, point.Position);
+                    var curlJ = _basisFunctionProvider.GetCurl(element, j, point.Position);
+
+                    sum += (element.Mu) * curlI.Dot(curlJ) * point.Weight;
                 }
 
                 localMatrix[i, j] = sum;
@@ -61,20 +64,25 @@ public class ProblemService : IProblemService
         const int edgeCount = 12;
         var localVector = new Vector(edgeCount);
 
-        var volume = element.GetSizes().X * element.GetSizes().Y * element.GetSizes().Z;
-
-        foreach (var source in sources)
+        foreach (var segment in sources)
         {
-            if (!element.Contains(source.Center)) continue;
+            if (!element.Contains(segment.Center))
+            {
+                Console.WriteLine($"Segment center {segment.Center} is outside element.");
+                continue;
+            }
 
             for (int i = 0; i < edgeCount; i++)
             {
-                var basis = _basisFunctionProvider.GetValue(element, i, source.Center);
-                double contribution = basis.Dot(source.Direction) * source.Current;
-
-                localVector[i] += contribution * volume;
+                var phi = _basisFunctionProvider.GetValue(element, i, segment.Center); // φ_i(r_k)
+                var dot = segment.Direction.Dot(phi);
+                localVector[i] += dot * segment.Current;
             }
         }
+
+        Console.WriteLine(
+            $"localVector.Size {localVector.Size}\tlocalVector.Min {localVector.Min()}\tlocalVector.Max {localVector.Max()}"
+        );
 
         return Task.FromResult(localVector);
     }

@@ -2,12 +2,6 @@
 
 public record Vector3D
 {
-    public double X { get; set; }
-
-    public double Y { get; set; }
-
-    public double Z { get; set; }
-
     public Vector3D() { }
 
     public Vector3D(double x, double y, double z)
@@ -16,6 +10,14 @@ public record Vector3D
         Y = y;
         Z = z;
     }
+
+    public double X { get; set; }
+
+    public double Y { get; set; }
+
+    public double Z { get; set; }
+
+    public static Vector3D Zero => new(0.0, 0.0, 0.0);
 
     public double Norm() => Math.Sqrt(X * X + Y * Y + Z * Z);
 

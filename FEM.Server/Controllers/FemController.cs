@@ -4,17 +4,17 @@ using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Services.AssemblyService;
 using FEM.Server.Services.BoundaryConditionService;
-using FEM.Server.Services.SolutionExportService;
 using FEM.Server.Services.SourceProvider;
 using FEM.Server.Services.TestSessionService;
-using FEM.Server.Services.VisualizerService;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using System.Net;
 using System.Text.Json;
+using FEM.Common.Data.MathModels;
+using FEM.Server.Services.BasisFunctionProvider;
 using FEM.Server.Services.PlotService;
-using FEM.Server.Services.SensorEvaluator;
 using FEM.Server.Services.SensorGenerator;
+using MathNet.Numerics.LinearAlgebra.Double;
+using Vector = FEM.Server.Data.Domain.Vector;
 
 namespace FEM.Server.Controllers;
 
@@ -27,33 +27,27 @@ public class FemController : ControllerBase
 {
     private readonly ITestSessionService       _testSessionService;
     private readonly ICurrentSourceProvider    _currentSourceProvider;
-    private readonly IVisualizerService        _visualizerService;
     private readonly IAssemblyService          _assemblyService;
     private readonly IBoundaryConditionService _boundaryConditionService;
-    private readonly ISolutionExportService    _solutionExportService;
     private readonly IPlotService              _plotService;
-    private readonly ISensorEvaluator          _sensorEvaluator;
+    private readonly IBasisFunctionProvider    _basisFunctionProvider;
 
     /// <inheritdoc />
     public FemController(
         ITestSessionService testSessionService,
         ICurrentSourceProvider currentSourceProvider,
-        IVisualizerService visualizerService,
         IAssemblyService assemblyService,
         IBoundaryConditionService boundaryConditionService,
-        ISolutionExportService solutionExportService,
         IPlotService plotService,
-        ISensorEvaluator sensorEvaluator
+        IBasisFunctionProvider basisFunctionProvider
     )
     {
         _testSessionService = testSessionService;
         _currentSourceProvider = currentSourceProvider;
         _assemblyService = assemblyService;
         _boundaryConditionService = boundaryConditionService;
-        _solutionExportService = solutionExportService;
         _plotService = plotService;
-        _sensorEvaluator = sensorEvaluator;
-        _visualizerService = visualizerService;
+        _basisFunctionProvider = basisFunctionProvider;
     }
 
     /// <summary>
@@ -69,21 +63,21 @@ public class FemController : ControllerBase
     ///         "meshParameters": {
     ///             "xCenterCoordinate": 0,
     ///             "yCenterCoordinate": 0,
-    ///             "zCenterCoordinate": -1,
-    ///             "xStepToBounds": 2,
-    ///             "yStepToBounds": 2,
-    ///             "zStepToBounds": 2
+    ///             "zCenterCoordinate": -200,
+    ///             "xStepToBounds": 250,
+    ///             "yStepToBounds": 250,
+    ///             "zStepToBounds": 100
     ///         },
     ///         "splittingParameters": {
-    ///             "xSplittingCoefficient": 4,
-    ///             "ySplittingCoefficient": 4,
-    ///             "zSplittingCoefficient": 4,
+    ///             "xSplittingCoefficient": 10,
+    ///             "ySplittingCoefficient": 10,
+    ///             "zSplittingCoefficient": 6,
     ///             "xMultiplyCoefficient": 1,
     ///             "yMultiplyCoefficient": 1,
     ///             "zMultiplyCoefficient": 1
     ///         },
     ///         "additionParameters": {
-    ///             "muCoefficient": 1,
+    ///             "muCoefficient": 1.2566e-6,
     ///             "gammaCoefficient": 1,
     ///             "boundaryCondition": 0
     ///         },
@@ -93,31 +87,41 @@ public class FemController : ControllerBase
     ///                 "centerCoordinate": {
     ///                     "x": 0,
     ///                     "y": 0,
-    ///                     "z": 0
+    ///                     "z": -200
     ///                 },
     ///                 "boundsDistance": {
-    ///                     "x": 1,
-    ///                     "y": 1,
-    ///                     "z": 1
+    ///                     "x": 50,
+    ///                     "y": 100,
+    ///                     "z": 100
     ///                 }
     ///             },
-    ///             "mu": 6
+    ///             "mu": 1.2566e-3
     ///         }
     ///         ],
     ///         "currentSource": {
     ///             "start": {
-    ///                 "x": -1,
-    ///                 "y": 0,
+    ///                 "x": 0,
+    ///                 "y": -25,
     ///                 "z": 0
     ///             },
     ///             "end": {
-    ///                 "x": 1,
+    ///                 "x": 0,
+    ///                 "y": 25,
+    ///                 "z": 0
+    ///             },
+    ///             "amperage": 10,
+    ///             "segments": 100 
+    ///         },
+    ///         "sensors": [
+    ///         {
+    ///             "position": {
+    ///                 "x": 0,
     ///                 "y": 0,
     ///                 "z": 0
     ///             },
-    ///             "amperage": 100,
-    ///             "segments": 10
+    ///             "componentDirection": "Bx"
     ///         }
+    ///         ]
     ///     }
     ///
     /// </remarks>
@@ -133,66 +137,91 @@ public class FemController : ControllerBase
         Console.WriteLine($"[Started session] Id: {testSessionParameters.Id}");
         try
         {
-            testSessionParameters.Sensors = SensorGenerator.GenerateXYPlaneSensors(
-                xMin: -5,
-                xMax: 5,
-                xCount: 11,
-                yMin: -5,
-                yMax: 5,
-                yCount: 11,
-                zLevel: 0.0,
+            var sensors = testSessionParameters.Sensors = SensorGenerator.GenerateXYPlaneSensors(
+                xMin: -100,
+                xMax: 100,
+                xCount: 30,
+                yMin: -100,
+                yMax: 100,
+                yCount: 30,
+                zLevel: 0,
                 component: ESensorComponent.Bz
             );
 
             // 1. Построение сетки
             var testSession = await _testSessionService.CreateTestSessionAsync(testSessionParameters);
-            await _visualizerService.DrawMeshPlotAsync(testSession.Mesh);
-
-            await _plotService.ShowPlotAsync(testSession.Mesh);
+            await _plotService.ShowPlotAsync(testSession.Mesh, sensors);
 
             // 3. Источник тока
             var sources = await _currentSourceProvider.GetSourcesAsync(testSessionParameters.CurrentSource);
 
             // 5. Построение матрицы жесткости и вектора правой части
-            // Собираем глобальный список уникальных рёбер по EdgeIndex
-            var (matrix, rhs) = await _assemblyService.AssembleGlobalSystemAsync(testSession.Mesh, sources);
+            var (globalMatrix, globalRhs) = await _assemblyService.AssembleGlobalSystemAsync(testSession.Mesh, sources);
 
-            Console.WriteLine($"5.\trhs.Size {rhs.Size}\trhs.Min {rhs.Min()}\trhs.Max {rhs.Max()}");
+            Console.WriteLine(
+                $"5.\tglobalMatrix.Size (globalMatrix.Rows {globalMatrix.Rows} * globalMatrix.Columns {globalMatrix.Columns} = {globalMatrix.Rows * globalMatrix.Columns})\tglobalMatrix.Min {globalMatrix.Min()}\tglobalMatrix.Max {globalMatrix.Max()}"
+            );
+
+            Console.WriteLine(
+                $"5.\tglobalRhs.Size {globalRhs.Size}\tglobalRhs.Min {globalRhs.Min()}\tglobalRhs.Max {globalRhs.Max()}"
+            );
 
             // 6. Применение краевых условий
             var constrainedDofs = ComputeBoundaryEdgeIndices(testSession.Mesh);
-            await _boundaryConditionService.ApplyBoundaryConditionsAsync(matrix, rhs, constrainedDofs);
+            await _boundaryConditionService.ApplyBoundaryConditionsAsync(globalMatrix, globalRhs, constrainedDofs);
 
-            Console.WriteLine($"6.\trhs.Size {rhs.Size}\trhs.Min {rhs.Min()}\trhs.Max {rhs.Max()}");
+            Console.WriteLine($"6.\tConstrained DOFs: {constrainedDofs.Count} / {globalMatrix.Rows}");
 
             // 7. Решение СЛАУ
             // ReSharper disable once InconsistentNaming
-            var A = matrix.ToMathNet();
-            var b = rhs.ToMathNet();
+            var A = globalMatrix.ToMathNet();
+            var b = globalRhs.ToMathNet();
 
+            Console.WriteLine(
+                $"7.\tA.Size (A.Rows {A.RowCount} * A.Columns {A.ColumnCount} = {A.RowCount * A.ColumnCount})"
+            );
             Console.WriteLine($"7.\tb.Size {b.Count}\tb.Min {b.Min()}\tb.Max {b.Max()}");
 
-            // Выполняем LU-разложение
-            var solver = A.LU();
-
             // Решаем СЛАУ
-            var x = solver.Solve(b);
+            var At = A.Transpose();
+            var lambda = 1e-3;
+            var AtA = At * A;
+            var I = DenseMatrix.CreateIdentity(A.ColumnCount);
+            
+            var regularized = AtA + lambda * I;
+            var rhs = At * b;
+            
+            var x = regularized.Solve(rhs);
 
-            // Конвертируем обратно в твой Vector
             var solution = Vector.FromMathNet(x);
-            Console.WriteLine(
-                $"8.\tsolution.Size {solution.Size}\tsolution.Min {solution.Min()}\tsolution.Max {solution.Max()}"
-            );
-            Console.WriteLine(solution.ToString());
 
-            _solutionExportService.ExportSensorsToJson(
-                testSessionParameters.Sensors,
-                testSession.Mesh,
-                solution,
-                "bfield_3d.json"
-            );
+            Console.WriteLine($"8.\tsolution.Min = {solution.Min()}, solution.Max = {solution.Max()}");
 
-            var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\visualize_sensors.py");
+            var samples = new List<FieldSample>();
+
+            foreach (var sensor in sensors)
+            {
+                var element = FindElementContaining(sensor.Position, testSession.Mesh);
+                var B = ComputeMagneticFieldAt(sensor.Position, element, solution);
+
+                samples.Add(
+                    new()
+                    {
+                        X = sensor.Position.X,
+                        Y = sensor.Position.Y,
+                        Z = sensor.Position.Z,
+                        Bx = B.X,
+                        By = B.Y,
+                        Bz = B.Z,
+                        Magnitude = B.Norm()
+                    }
+                );
+            }
+
+            var json = JsonSerializer.Serialize(samples, new JsonSerializerOptions { WriteIndented = true });
+            await System.IO.File.WriteAllTextAsync("field_data.json", json);
+
+            var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\contour_plot.py");
             using Process myProcess = new();
             myProcess.StartInfo.FileName = "python";
             myProcess.StartInfo.Arguments = scriptPath;
@@ -213,7 +242,7 @@ public class FemController : ControllerBase
         }
     }
 
-    private static List<int> ComputeBoundaryEdgeIndices(Mesh mesh)
+    private static List<int> ComputeBoundaryEdgeIndices(Mesh mesh, double eps = 1e-8)
     {
         var edgeUsageCount = new Dictionary<int, int>();
 
@@ -222,15 +251,86 @@ public class FemController : ControllerBase
             foreach (var edge in element.Edges)
             {
                 edgeUsageCount.TryAdd(edge.EdgeIndex, 0);
-
                 edgeUsageCount[edge.EdgeIndex]++;
             }
         }
 
-        // Рёбра, которые встречаются только один раз — это граничные
-        var boundaryEdges = edgeUsageCount.Where(kvp => kvp.Value == 1).Select(kvp => kvp.Key).ToList();
+        var allNodes = mesh
+                       .Elements
+                       .SelectMany(e => e.Edges)
+                       .SelectMany(e => e.Nodes)
+                       .DistinctBy(n => n.NodeIndex)
+                       .ToList();
 
-        return boundaryEdges;
+        var xMin = allNodes.Min(n => n.Coordinate.X);
+        var xMax = allNodes.Max(n => n.Coordinate.X);
+        var yMin = allNodes.Min(n => n.Coordinate.Y);
+        var yMax = allNodes.Max(n => n.Coordinate.Y);
+        var zMin = allNodes.Min(n => n.Coordinate.Z);
+        var zMax = allNodes.Max(n => n.Coordinate.Z);
+
+        var constrainedEdges = edgeUsageCount
+                               .Where(kvp => kvp.Value == 1) // граничные рёбра
+                               .Select(kvp => mesh.GetEdgeByIndex(kvp.Key))
+                               .Where(edge =>
+                                   {
+                                       var coords = edge.Nodes.Select(n => n.Coordinate).ToList();
+                                       return coords.All(c => Math.Abs(c.X - xMin) < eps
+                                                              || Math.Abs(c.X - xMax) < eps
+                                                              || Math.Abs(c.Y - yMin) < eps
+                                                              || Math.Abs(c.Y - yMax) < eps
+                                                              || Math.Abs(c.Z - zMin) < eps
+                                                              || Math.Abs(c.Z - zMax) < eps
+                                       );
+                                   }
+                               )
+                               .Select(edge => edge.EdgeIndex)
+                               .Distinct()
+                               .ToList();
+
+        return constrainedEdges;
     }
 
+    private FiniteElement FindElementContaining(Point3D point, Mesh mesh)
+    {
+        foreach (var element in mesh.Elements)
+        {
+            var nodes = element.Edges.SelectMany(e => e.Nodes).DistinctBy(n => n.NodeIndex).ToList();
+
+            var minX = nodes.Min(n => n.Coordinate.X);
+            var maxX = nodes.Max(n => n.Coordinate.X);
+            var minY = nodes.Min(n => n.Coordinate.Y);
+            var maxY = nodes.Max(n => n.Coordinate.Y);
+            var minZ = nodes.Min(n => n.Coordinate.Z);
+            var maxZ = nodes.Max(n => n.Coordinate.Z);
+
+            if (point.X >= minX
+                && point.X <= maxX
+                && point.Y >= minY
+                && point.Y <= maxY
+                && point.Z >= minZ
+                && point.Z <= maxZ)
+            {
+                return element;
+            }
+        }
+
+        throw new("Sensor is not inside any element.");
+    }
+
+    private Vector3D ComputeMagneticFieldAt(Point3D sensor, FiniteElement element, Vector solution)
+    {
+        Vector3D B = Vector3D.Zero;
+
+        for (int i = 0; i < element.Edges.Count; i++)
+        {
+            var curlWi = _basisFunctionProvider.GetCurl(element, i, sensor);
+            var dofIndex = element.Edges[i].EdgeIndex;
+            var coeff = solution[dofIndex];
+
+            B += curlWi * coeff;
+        }
+
+        return B;
+    }
 }
