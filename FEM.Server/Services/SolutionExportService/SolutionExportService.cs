@@ -167,6 +167,6 @@ public class SolutionExportService : ISolutionExportService
         };
 
         File.WriteAllText(filePath, JsonSerializer.Serialize(sensorData, options));
-        Console.WriteLine($"▶ Данные сенсоров экспортированы в файл: {filePath}");
+        Console.WriteLine($"Данные сенсоров экспортированы в файл: {filePath}");
     }
 }

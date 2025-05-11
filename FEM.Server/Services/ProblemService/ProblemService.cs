@@ -5,6 +5,7 @@ using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Extensions;
 using FEM.Server.Services.BasisFunctionProvider;
+using FEM.Server.Services.Static.IntegrationHelper;
 
 namespace FEM.Server.Services.ProblemService;
 
@@ -23,22 +24,33 @@ public class ProblemService : IProblemService
     {
         const int edgeCount = 12;
         var localMatrix = new Matrix(edgeCount, edgeCount);
+        var volume = element.Volume;
 
-        var volume = element.GetSizes().X * element.GetSizes().Y * element.GetSizes().Z;
-        var center = element.GetCenter();
+        var integrationPoints = IntegrationHelper.GetIntegrationPoints(element);
 
         for (int i = 0; i < edgeCount; i++)
         {
-            var curlI = _basisFunctionProvider.GetCurl(element, i, center);
-
-            for (int j = 0; j < edgeCount; j++)
+            for (int j = i; j < edgeCount; j++)
             {
-                var curlJ = _basisFunctionProvider.GetCurl(element, j, center);
+                double sum = 0.0;
 
-                var dot = curlI.Dot(curlJ);
-                localMatrix[i, j] = (1.0 / element.Mu) * dot * volume;
+                foreach (var point in integrationPoints)
+                {
+                    var weight = volume / integrationPoints.Count;
+                    var curlI = _basisFunctionProvider.GetCurl(element, i, point);
+                    var curlJ = _basisFunctionProvider.GetCurl(element, j, point);
+                    sum += (1.0 / element.Mu) * curlI.Dot(curlJ) * weight;
+                }
+
+                localMatrix[i, j] = sum;
+                if (i != j)
+                    localMatrix[j, i] = sum;
             }
         }
+
+        Console.WriteLine(
+            $"localMatrix.Size {localMatrix.Rows * localMatrix.Columns}\tlocalMatrix.Min {localMatrix.Min()}\tlocalMatrix.Max {localMatrix.Max()}"
+        );
 
         return Task.FromResult(localMatrix);
     }

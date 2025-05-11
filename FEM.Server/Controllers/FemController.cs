@@ -157,14 +157,20 @@ public class FemController : ControllerBase
             // Собираем глобальный список уникальных рёбер по EdgeIndex
             var (matrix, rhs) = await _assemblyService.AssembleGlobalSystemAsync(testSession.Mesh, sources);
 
+            Console.WriteLine($"5.\trhs.Size {rhs.Size}\trhs.Min {rhs.Min()}\trhs.Max {rhs.Max()}");
+
             // 6. Применение краевых условий
             var constrainedDofs = ComputeBoundaryEdgeIndices(testSession.Mesh);
             await _boundaryConditionService.ApplyBoundaryConditionsAsync(matrix, rhs, constrainedDofs);
+
+            Console.WriteLine($"6.\trhs.Size {rhs.Size}\trhs.Min {rhs.Min()}\trhs.Max {rhs.Max()}");
 
             // 7. Решение СЛАУ
             // ReSharper disable once InconsistentNaming
             var A = matrix.ToMathNet();
             var b = rhs.ToMathNet();
+
+            Console.WriteLine($"7.\tb.Size {b.Count}\tb.Min {b.Min()}\tb.Max {b.Max()}");
 
             // Выполняем LU-разложение
             var solver = A.LU();
@@ -174,6 +180,10 @@ public class FemController : ControllerBase
 
             // Конвертируем обратно в твой Vector
             var solution = Vector.FromMathNet(x);
+            Console.WriteLine(
+                $"8.\tsolution.Size {solution.Size}\tsolution.Min {solution.Min()}\tsolution.Max {solution.Max()}"
+            );
+            Console.WriteLine(solution.ToString());
 
             _solutionExportService.ExportSensorsToJson(
                 testSessionParameters.Sensors,
@@ -181,7 +191,7 @@ public class FemController : ControllerBase
                 solution,
                 "bfield_3d.json"
             );
-            
+
             var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\visualize_sensors.py");
             using Process myProcess = new();
             myProcess.StartInfo.FileName = "python";

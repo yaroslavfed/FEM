@@ -23,6 +23,74 @@ public record Matrix
         set => _data[i, j] = value;
     }
 
+    public double Min()
+    {
+        if (_data == null)
+            throw new InvalidOperationException("Массив не инициализирован.");
+
+        int rows = _data.GetLength(0);
+        int cols = _data.GetLength(1);
+
+        if (rows == 0 || cols == 0)
+            throw new InvalidOperationException("Массив пуст.");
+
+        // Проверяем наличие NaN
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (double.IsNaN(_data[i, j]))
+                    throw new InvalidOperationException("Массив содержит значения NaN.");
+            }
+        }
+
+        double min = _data[0, 0];
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (_data[i, j] < min)
+                    min = _data[i, j];
+            }
+        }
+
+        return min;
+    }
+
+    public double Max()
+    {
+        if (_data == null)
+            throw new InvalidOperationException("Массив не инициализирован.");
+
+        int rows = _data.GetLength(0);
+        int cols = _data.GetLength(1);
+
+        if (rows == 0 || cols == 0)
+            throw new InvalidOperationException("Массив пуст.");
+
+        // Проверяем наличие NaN
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (double.IsNaN(_data[i, j]))
+                    throw new InvalidOperationException("Массив содержит значения NaN.");
+            }
+        }
+
+        double max = _data[0, 0];
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (_data[i, j] > max)
+                    max = _data[i, j];
+            }
+        }
+
+        return max;
+    }
+
     public void Add(Matrix other)
     {
         if (other.Rows != Rows || other.Columns != Columns)

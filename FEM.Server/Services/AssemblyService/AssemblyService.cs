@@ -44,6 +44,14 @@ public class AssemblyService : IAssemblyService
             globalRhs.Assemble(localVector, globalIndices);
         }
 
+        Console.WriteLine(
+            $"globalMatrix.Size (globalMatrix.Rows {globalMatrix.Rows} * globalMatrix.Columns {globalMatrix.Columns} = {globalMatrix.Rows * globalMatrix.Columns})\tglobalMatrix.Min {globalMatrix.Min()}\tglobalMatrix.Max {globalMatrix.Max()}"
+        );
+
+        Console.WriteLine(
+            $"globalRhs.Size {globalRhs.Size}\tglobalRhs.Min {globalRhs.Min()}\tglobalRhs.Max {globalRhs.Max()}"
+        );
+
         return (globalMatrix, globalRhs);
     }
 }

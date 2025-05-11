@@ -24,6 +24,10 @@ public record Vector
         set => _data[i] = value;
     }
 
+    public double Min() => _data.Min();
+
+    public double Max() => _data.Max();
+
     public void Add(Vector other)
     {
         if (other.Size != Size)
