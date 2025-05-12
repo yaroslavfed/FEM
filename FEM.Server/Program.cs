@@ -14,10 +14,10 @@ services.AddCors();
 services
     .AddControllers()
     .AddJsonOptions(
-        e =>
+        options =>
         {
-            e.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            e.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         }
     );
 
@@ -32,8 +32,8 @@ services.AddOpenApiDocument(
                 Title = "FEM API",
                 Description = "Vector FEM solver",
                 TermsOfService = "https://example.com/terms",
-                Contact = new OpenApiContact { Name = "Example Contact", Url = "https://example.com/contact" },
-                License = new OpenApiLicense { Name = "Example License", Url = "https://example.com/license" }
+                Contact = new() { Name = "Example Contact", Url = "https://example.com/contact" },
+                License = new() { Name = "Example License", Url = "https://example.com/license" }
             };
         };
     }
@@ -41,7 +41,6 @@ services.AddOpenApiDocument(
 
 // Configure DI for application
 services.AddServices();
-services.AddStorages();
 
 // Configure AutoMapper
 services.AddAutoMapper();

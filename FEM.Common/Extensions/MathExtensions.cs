@@ -9,11 +9,13 @@ public static class MathExtensions
     public static Matrix Transpose(this Matrix matrix) =>
         new()
         {
-            Data = matrix.Data.Select(inner => inner.Select((s, i) => new { s, i }))
-                         .SelectMany(a => a.ToList())
-                         .GroupBy(a => a.i, a => a.s)
-                         .Select(a => a.ToList())
-                         .ToList()
+            Data = matrix
+                   .Data
+                   .Select(inner => inner.Select((s, i) => new { s, i }))
+                   .SelectMany(a => a.ToList())
+                   .GroupBy(a => a.i, a => a.s)
+                   .Select(a => a.ToList())
+                   .ToList()
         };
 
     public static TResult GetBoundsPoint<TSource, TResult>(
@@ -29,27 +31,29 @@ public static class MathExtensions
         {
             EPositions.First => coordinates.First(),
             EPositions.Last  => coordinates.Last(),
-            _               => throw new ArgumentOutOfRangeException(nameof(position), position, null)
+            _                => throw new ArgumentOutOfRangeException(nameof(position), position, null)
         };
     }
 
     public static List<double> SplitAxis(
-        this List<double> axis,
         double multiplyCoefficient,
         int splittingCoefficient,
         double strataLastPoint,
         double strataFirstPoint
     )
     {
+        if (multiplyCoefficient == 0)
+            return [strataFirstPoint, strataLastPoint];
+
         // Обработка по X
-        var h = multiplyCoefficient is not 1.0
+        var h = Math.Abs(multiplyCoefficient - 1.0) > 0E-16
             ? (strataLastPoint - strataFirstPoint)
               * (1.0 - multiplyCoefficient)
               / (1.0 - Math.Pow(multiplyCoefficient, splittingCoefficient))
-            : (strataLastPoint - strataFirstPoint)
-              / splittingCoefficient;
+            : (strataLastPoint - strataFirstPoint) / splittingCoefficient;
 
-        axis.Add(strataFirstPoint);
+        List<double> axis = [strataFirstPoint];
+
         for (var i = 0; i < splittingCoefficient; i++)
         {
             axis.Add(axis.Last() + h);
@@ -62,16 +66,39 @@ public static class MathExtensions
     public static Point3D GetLowPoint3D(this Positioning positioning) =>
         new()
         {
-            X = positioning.Coordinate.X - positioning.BoundsDistance.X,
-            Y = positioning.Coordinate.Y - positioning.BoundsDistance.Y,
-            Z = positioning.Coordinate.Z - positioning.BoundsDistance.Z
+            X = positioning.CenterCoordinate.X - positioning.BoundsDistance.X,
+            Y = positioning.CenterCoordinate.Y - positioning.BoundsDistance.Y,
+            Z = positioning.CenterCoordinate.Z - positioning.BoundsDistance.Z
         };
 
     public static Point3D GetHighPoint3D(this Positioning positioning) =>
         new()
         {
-            X = positioning.Coordinate.X + positioning.BoundsDistance.X,
-            Y = positioning.Coordinate.Y + positioning.BoundsDistance.Y,
-            Z = positioning.Coordinate.Z + positioning.BoundsDistance.Z
+            X = positioning.CenterCoordinate.X + positioning.BoundsDistance.X,
+            Y = positioning.CenterCoordinate.Y + positioning.BoundsDistance.Y,
+            Z = positioning.CenterCoordinate.Z + positioning.BoundsDistance.Z
         };
+
+    public static Dictionary<string, List<double>> GetPoints(this Positioning positioning)
+    {
+        var xPoints = new List<double>
+        {
+            positioning.CenterCoordinate.X + positioning.BoundsDistance.X,
+            positioning.CenterCoordinate.X - positioning.BoundsDistance.X
+        };
+
+        var yPoints = new List<double>
+        {
+            positioning.CenterCoordinate.Y + positioning.BoundsDistance.Y,
+            positioning.CenterCoordinate.Y - positioning.BoundsDistance.Y
+        };
+
+        var zPoints = new List<double>
+        {
+            positioning.CenterCoordinate.Z + positioning.BoundsDistance.Z,
+            positioning.CenterCoordinate.Z - positioning.BoundsDistance.Z
+        };
+
+        return new Dictionary<string, List<double>>() { { "x", xPoints }, { "y", yPoints }, { "z", zPoints } };
+    }
 }

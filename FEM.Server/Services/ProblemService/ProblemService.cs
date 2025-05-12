@@ -1,59 +1,103 @@
 using FEM.Common.Data.Domain;
+using FEM.Common.Data.MathModels;
 using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
+using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 using FEM.Server.Extensions;
-using FEM.Server.Services.TestingService;
+using FEM.Server.Services.BasisFunctionProvider;
+using FEM.Server.Services.Static.IntegrationHelper;
+using Matrix = FEM.Server.Data.Domain.Matrix;
+using Vector = FEM.Server.Data.Domain.Vector;
 
 namespace FEM.Server.Services.ProblemService;
 
 /// <inheritdoc cref="IProblemService"/>
 public class ProblemService : IProblemService
 {
-    public async Task<double> ResolveMatrixContributionsAsync(
-        (Node firstNode, Node secondNode) nodesPair,
-        EDirections direction
-    )
-    {
-        var coordinate = (await CalculateNodeAsync(direction, nodesPair)).Coordinate;
-        List<double> contributionsFromVectorA =
-        [
-            35.0 * Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
-            Math.Pow(coordinate.X, 3) + 25.0 * Math.Pow(coordinate.Y, 3) + Math.Pow(coordinate.Z, 3),
-            Math.Pow(coordinate.X, 3) + Math.Pow(coordinate.Y, 3) + 45.0 * Math.Pow(coordinate.Z, 3)
-        ];
+    private readonly IBasisFunctionProvider _basisFunctionProvider;
 
-        return direction switch
-        {
-            EDirections.Ox => contributionsFromVectorA[0],
-            EDirections.Oy => contributionsFromVectorA[1],
-            EDirections.Oz => contributionsFromVectorA[2],
-            _              => throw new NotImplementedException()
-        };
+    public ProblemService(IBasisFunctionProvider basisFunctionProvider)
+    {
+        _basisFunctionProvider = basisFunctionProvider;
     }
 
-    public async Task<double> ResolveVectorContributionsAsync(
-        (Node firstNode, Node secondNode) nodesPair,
-        EDirections direction
-    )
+    /// <inheritdoc />
+    public Task<Matrix> AssembleElementStiffnessMatrixAsync(FiniteElement element)
     {
-        var coordinate = (await CalculateNodeAsync(direction, nodesPair)).Coordinate;
-        List<double> contributionsFromVectorF =
-        [
-            8.0 * (coordinate.Y + coordinate.Z),
-            8.0 * (coordinate.X + coordinate.Z),
-            8.0 * (coordinate.X + coordinate.Y)
-        ];
+        const int edgeCount = 12;
+        var localMatrix = new Matrix(edgeCount, edgeCount);
 
-        return direction switch
+        var integrationPoints = IntegrationHelper.GetIntegrationPoints(element);
+
+        for (int i = 0; i < edgeCount; i++)
         {
-            EDirections.Ox => contributionsFromVectorF[0],
-            EDirections.Oy => contributionsFromVectorF[1],
-            EDirections.Oz => contributionsFromVectorF[2],
-            _              => throw new NotImplementedException()
-        };
+            for (int j = i; j < edgeCount; j++)
+            {
+                double sum = 0.0;
+
+                foreach (var point in integrationPoints)
+                {
+                    var curlI = _basisFunctionProvider.GetCurl(element, i, point.Position);
+                    var curlJ = _basisFunctionProvider.GetCurl(element, j, point.Position);
+
+                    sum += (1.0 / element.Mu) * curlI.Dot(curlJ) * point.Weight;
+                    Console.WriteLine(
+                        $"i = {i}, j = {j}, Mu = {element.Mu}, curlI.Norm = {curlI.Norm()}, curlJ.Norm = {curlJ.Norm()}, curlI·curlJ = {curlI.Dot(curlJ)}, weight = {point.Weight}, term = {(1.0 / element.Mu) * curlI.Dot(curlJ) * point.Weight}"
+                    );
+                }
+
+                localMatrix[i, j] = sum;
+                if (i != j)
+                    localMatrix[j, i] = sum;
+            }
+        }
+
+        var localMin = localMatrix.Min();
+        var localMax = localMatrix.Max();
+
+        if (localMin < -1 || localMax > 1)
+            Console.ForegroundColor = ConsoleColor.Red;
+
+        Console.WriteLine(
+            $"localMatrix.Size {localMatrix.Rows * localMatrix.Columns}\tlocalMatrix.Min {localMin}\tlocalMatrix.Max {localMax}"
+        );
+
+        Console.ResetColor();
+
+        return Task.FromResult(localMatrix);
     }
 
+    /// <inheritdoc />
+    public Task<Vector> AssembleElementRightHandVectorAsync(FiniteElement element, IEnumerable<CurrentSegment> sources)
+    {
+        const int edgeCount = 12;
+        var localVector = new Vector(edgeCount);
+
+        foreach (var segment in sources)
+        {
+            if (!element.Contains(segment.Center))
+            {
+                // Console.WriteLine($"Segment center {segment.Center} is outside element.");
+                continue;
+            }
+
+            for (int i = 0; i < edgeCount; i++)
+            {
+                var phi = _basisFunctionProvider.GetValue(element, i, segment.Center); // φ_i(r_k)
+                var dot = segment.Direction.Dot(phi);
+                localVector[i] += dot * segment.Current;
+            }
+        }
+
+        // Console.WriteLine(
+        //     $"localVector.Size {localVector.Size}\tlocalVector.Min {localVector.Min()}\tlocalVector.Max {localVector.Max()}"
+        // );
+
+        return Task.FromResult(localVector);
+    }
+
+    /// <inheritdoc />
     public async Task<(Node firstNode, Node secondNode, EDirections direction)> ResolveLocalNodes(
         Edge edge,
         TestSession<Mesh> testSession

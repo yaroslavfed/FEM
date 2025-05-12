@@ -6,7 +6,7 @@
 public record Edge
 {
     /// <summary>
-    /// Номер ребра в конечном элементе
+    /// Глобальный номер ребра
     /// </summary>
     public int EdgeIndex { get; init; }
 

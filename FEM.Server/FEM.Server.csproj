@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
 		<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.12" />
 		<PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
@@ -23,17 +24,20 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\FEM.Common\FEM.Common.csproj" />
-		<ProjectReference Include="..\FEM.Solvers\FEM.Solvers.csproj" />
-		<ProjectReference Include="..\FEM.Storage\FEM.Storage.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Services\SolverService\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <None Update="Scripts\draw_mesh_script.py">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\visualize_potential_2d.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\show_plots_script.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\contour_plot.py">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
 

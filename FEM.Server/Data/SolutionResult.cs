@@ -1,5 +1,6 @@
 ﻿using FEM.Common.Data.MathModels;
 using FEM.Common.Data.TestSession;
+using Vector = FEM.Server.Data.Domain.Vector;
 
 namespace FEM.Server.Data;
 

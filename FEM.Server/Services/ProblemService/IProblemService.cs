@@ -1,15 +1,26 @@
 using FEM.Common.Data.Domain;
 using FEM.Common.Data.TestSession;
 using FEM.Common.Enums;
+using FEM.Server.Data.Domain;
 using FEM.Server.Data.Parallelepipedal;
 
-namespace FEM.Server.Services.TestingService;
+namespace FEM.Server.Services.ProblemService;
 
 public interface IProblemService
 {
-    Task<double> ResolveMatrixContributionsAsync((Node firstNode, Node secondNode) nodesPair, EDirections direction);
+    /// <summary>
+    /// Собирает локальную матрицу жёсткости (rot-rot) для заданного конечного элемента.
+    /// </summary>
+    /// <param name="element">Конечный элемент</param>
+    Task<Matrix> AssembleElementStiffnessMatrixAsync(FiniteElement element);
 
-    Task<double> ResolveVectorContributionsAsync((Node firstNode, Node secondNode) nodesPair, EDirections direction);
+    /// <summary>
+    /// Собирает локальный вектор правой части для заданного конечного элемента.
+    /// Вклад даётся только от тех сегментов тока, которые попадают внутрь элемента.
+    /// </summary>
+    /// <param name="element">Конечный элемент</param>
+    /// <param name="sources">Список токовых сегментов</param>
+    Task<Vector> AssembleElementRightHandVectorAsync(FiniteElement element, IEnumerable<CurrentSegment> sources);
 
     Task<(Node firstNode, Node secondNode, EDirections direction)> ResolveLocalNodes(
         Edge edge,

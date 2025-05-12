@@ -12,8 +12,6 @@ public record TestSession<TMesh>
     /// </summary>
     public required TMesh Mesh { get; init; }
 
-    public double Mu { get; init; }
-
     public double Gamma { get; init; }
     
     /// <summary>

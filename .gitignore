@@ -381,6 +381,7 @@ FodyWeavers.xsd
 /FEM.Server/OutputPlots
 /FEM.Server/TestResults
 /FEM.Server/output.txt
+/FEM.Server/mesh_data.json
 
 /Redist
 gource.*
