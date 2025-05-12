@@ -16,6 +16,8 @@ using FEM.Server.Services.SensorGenerator;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Vector = FEM.Server.Data.Domain.Vector;
 
+// ReSharper disable InconsistentNaming
+
 namespace FEM.Server.Controllers;
 
 /// <summary>
@@ -138,12 +140,12 @@ public class FemController : ControllerBase
         try
         {
             var sensors = testSessionParameters.Sensors = SensorGenerator.GenerateXYPlaneSensors(
-                xMin: -100,
-                xMax: 100,
-                xCount: 30,
-                yMin: -100,
-                yMax: 100,
-                yCount: 30,
+                xMin: -40,
+                xMax: 40,
+                xCount: 40,
+                yMin: -40,
+                yMax: 40,
+                yCount: 40,
                 zLevel: 0,
                 component: ESensorComponent.Bz
             );
@@ -167,13 +169,9 @@ public class FemController : ControllerBase
             );
 
             // 6. Применение краевых условий
-            var constrainedDofs = ComputeBoundaryEdgeIndices(testSession.Mesh);
-            await _boundaryConditionService.ApplyBoundaryConditionsAsync(globalMatrix, globalRhs, constrainedDofs);
-
-            Console.WriteLine($"6.\tConstrained DOFs: {constrainedDofs.Count} / {globalMatrix.Rows}");
+            await _boundaryConditionService.ApplyBoundaryConditionsAsync(globalMatrix, globalRhs, testSession.Mesh);
 
             // 7. Решение СЛАУ
-            // ReSharper disable once InconsistentNaming
             var A = globalMatrix.ToMathNet();
             var b = globalRhs.ToMathNet();
 
@@ -184,21 +182,19 @@ public class FemController : ControllerBase
 
             // Решаем СЛАУ
             var At = A.Transpose();
-            var lambda = 1e-3;
+            var lambda = 1e-2;
             var AtA = At * A;
             var I = DenseMatrix.CreateIdentity(A.ColumnCount);
-            
+
             var regularized = AtA + lambda * I;
             var rhs = At * b;
-            
+
             var x = regularized.Solve(rhs);
 
             var solution = Vector.FromMathNet(x);
-
             Console.WriteLine($"8.\tsolution.Min = {solution.Min()}, solution.Max = {solution.Max()}");
 
             var samples = new List<FieldSample>();
-
             foreach (var sensor in sensors)
             {
                 var element = FindElementContaining(sensor.Position, testSession.Mesh);
@@ -220,7 +216,9 @@ public class FemController : ControllerBase
 
             var json = JsonSerializer.Serialize(samples, new JsonSerializerOptions { WriteIndented = true });
             await System.IO.File.WriteAllTextAsync("field_data.json", json);
+            Console.WriteLine($"The file field_data.json has been created.");
 
+            Console.WriteLine("Start drowning plot");
             var scriptPath = Path.Combine(Directory.GetCurrentDirectory(), "Scripts\\contour_plot.py");
             using Process myProcess = new();
             myProcess.StartInfo.FileName = "python";
@@ -229,6 +227,7 @@ public class FemController : ControllerBase
             myProcess.StartInfo.RedirectStandardInput = true;
             myProcess.StartInfo.RedirectStandardOutput = false;
             myProcess.Start();
+            Console.WriteLine("End drowning plot");
 
             return Ok(solution);
         } catch (Exception exception)

@@ -27,7 +27,6 @@ public class ProblemService : IProblemService
     {
         const int edgeCount = 12;
         var localMatrix = new Matrix(edgeCount, edgeCount);
-        var volume = element.Volume;
 
         var integrationPoints = IntegrationHelper.GetIntegrationPoints(element);
 
@@ -42,7 +41,10 @@ public class ProblemService : IProblemService
                     var curlI = _basisFunctionProvider.GetCurl(element, i, point.Position);
                     var curlJ = _basisFunctionProvider.GetCurl(element, j, point.Position);
 
-                    sum += (element.Mu) * curlI.Dot(curlJ) * point.Weight;
+                    sum += (1.0 / element.Mu) * curlI.Dot(curlJ) * point.Weight;
+                    Console.WriteLine(
+                        $"i = {i}, j = {j}, Mu = {element.Mu}, curlI.Norm = {curlI.Norm()}, curlJ.Norm = {curlJ.Norm()}, curlI·curlJ = {curlI.Dot(curlJ)}, weight = {point.Weight}, term = {(1.0 / element.Mu) * curlI.Dot(curlJ) * point.Weight}"
+                    );
                 }
 
                 localMatrix[i, j] = sum;
@@ -51,9 +53,17 @@ public class ProblemService : IProblemService
             }
         }
 
+        var localMin = localMatrix.Min();
+        var localMax = localMatrix.Max();
+
+        if (localMin < -1 || localMax > 1)
+            Console.ForegroundColor = ConsoleColor.Red;
+
         Console.WriteLine(
-            $"localMatrix.Size {localMatrix.Rows * localMatrix.Columns}\tlocalMatrix.Min {localMatrix.Min()}\tlocalMatrix.Max {localMatrix.Max()}"
+            $"localMatrix.Size {localMatrix.Rows * localMatrix.Columns}\tlocalMatrix.Min {localMin}\tlocalMatrix.Max {localMax}"
         );
+
+        Console.ResetColor();
 
         return Task.FromResult(localMatrix);
     }
@@ -68,7 +78,7 @@ public class ProblemService : IProblemService
         {
             if (!element.Contains(segment.Center))
             {
-                Console.WriteLine($"Segment center {segment.Center} is outside element.");
+                // Console.WriteLine($"Segment center {segment.Center} is outside element.");
                 continue;
             }
 
@@ -80,9 +90,9 @@ public class ProblemService : IProblemService
             }
         }
 
-        Console.WriteLine(
-            $"localVector.Size {localVector.Size}\tlocalVector.Min {localVector.Min()}\tlocalVector.Max {localVector.Max()}"
-        );
+        // Console.WriteLine(
+        //     $"localVector.Size {localVector.Size}\tlocalVector.Min {localVector.Min()}\tlocalVector.Max {localVector.Max()}"
+        // );
 
         return Task.FromResult(localVector);
     }

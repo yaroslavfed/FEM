@@ -14,8 +14,7 @@ public class BasicFunction : IBasicFunction
     {
         _mapper = mapper;
     }
-
-    /// <inheritdoc />
+    
     public Vector3D GetBasicFunctions(FiniteElement finiteElement, int? number, Point3D? position)
     {
         var feBounds = MapFiniteElementsAsync(finiteElement);

@@ -1,4 +1,5 @@
-﻿using FEM.Server.Services.ProblemService;
+﻿using FEM.Server.Services.BasisFunctionProvider;
+using FEM.Server.Services.ProblemService;
 using Xunit;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
@@ -21,7 +22,7 @@ public class AssembleElementStiffnessMatrixTests
         const double mu0 = 4 * Math.PI * 1e-7;
 
         var cube = FiniteElementFactory.CreateUnitCube(mu0);
-        var basis = new BasicFunctionProviderStub();
+        var basis = new BasicFunctionProvider();
 
         var service = new ProblemService(basis);
 

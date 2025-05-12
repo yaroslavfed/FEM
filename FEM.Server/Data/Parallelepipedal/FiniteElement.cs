@@ -61,4 +61,22 @@ public record FiniteElement
                && point.Z >= minZ - epsilon
                && point.Z <= maxZ + epsilon;
     }
+
+    public (double MinX, double MaxX, double MinY, double MaxY, double MinZ, double MaxZ) GetBounds()
+    {
+        var pointsX = from edges in Edges from nodes in edges.Nodes select nodes.Coordinate.X;
+        var pointsY = from edges in Edges from nodes in edges.Nodes select nodes.Coordinate.Y;
+        var pointsZ = from edges in Edges from nodes in edges.Nodes select nodes.Coordinate.Z;
+
+        var MinX = pointsX.Min();
+        var MaxX = pointsX.Max();
+
+        var MinY = pointsY.Min();
+        var MaxY = pointsY.Max();
+
+        var MinZ = pointsZ.Min();
+        var MaxZ = pointsZ.Max();
+
+        return (MinX, MaxX, MinY, MaxY, MinZ, MaxZ);
+    }
 }

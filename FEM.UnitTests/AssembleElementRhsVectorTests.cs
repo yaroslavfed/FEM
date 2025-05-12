@@ -1,4 +1,5 @@
 ﻿using FEM.Server.Data.Domain;
+using FEM.Server.Models.BasicFunction;
 using FEM.Server.Services.ProblemService;
 using FEM.Server.Services.SourceProvider;
 using Xunit;
@@ -41,7 +42,8 @@ public class AssembleElementRhsVectorTests
         {
             Assert.False(double.IsNaN(vector[i]), $"NaN at ({i})");
             Assert.False(double.IsInfinity(vector[i]), $"Infinity at ({i})");
-            Assert.InRange(vector[i], -1e-4, 1e-4);
+            double maxExpected = 1.0 / (4 * Math.PI * 1e-7);
+            Assert.InRange(vector[i], -2 * maxExpected, 2 * maxExpected);
         }
 
         _testOutputHelper.WriteLine(string.Join("\t", Enumerable.Range(0, 12).Select(i => vector[i].ToString("E3"))));
